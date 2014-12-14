@@ -27,7 +27,10 @@ WhiteSpace     = ({LineTerminator} | [ \t\f])*
 %%
 
 <YYINITIAL> {
-    {StringLiteral} { return ValaTypes.STRING_LITERAL; }
-    {Digits} {return ValaTypes.INT; }
-    {WhiteSpace} {/* ignore */}
+    {StringLiteral}     {return ValaTypes.STRING_LITERAL; }
+    {Digits}            {return ValaTypes.INT; }
+    {WhiteSpace}        {/* ignore */ }
+    .                   {return TokenType.BAD_CHARACTER;}
 }
+
+.                       {return TokenType.BAD_CHARACTER;}

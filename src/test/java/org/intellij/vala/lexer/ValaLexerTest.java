@@ -1,5 +1,6 @@
 package org.intellij.vala.lexer;
 
+import com.intellij.psi.TokenType;
 import org.intellij.vala.ValaTypes;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +52,22 @@ public class ValaLexerTest {
     @Test
     public void shouldAdvanceOnMultipleContents() throws IOException {
         valaLexer.start("\"string\" 3");
+        valaLexer.advance();
+
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.INT));
+    }
+
+    @Test
+    public void shouldHandleInvalidCharacters() throws IOException {
+        valaLexer.start("not_string");
+
+        assertThat(valaLexer.getTokenType(), is(TokenType.BAD_CHARACTER));
+    }
+
+    @Test
+    public void shouldProceedAfterSeeingBadCharacter() throws IOException {
+        valaLexer.start("na 3");
+        valaLexer.advance();
         valaLexer.advance();
 
         assertThat(valaLexer.getTokenType(), is(ValaTypes.INT));
