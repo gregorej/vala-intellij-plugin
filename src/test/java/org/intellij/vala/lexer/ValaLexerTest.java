@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class ValaLexerTest {
@@ -29,6 +30,28 @@ public class ValaLexerTest {
     @Test
     public void shouldDetectInteger() throws IOException {
         valaLexer.start("2");
+
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.INT));
+    }
+
+    @Test
+    public void shouldHandleEmptyContent() throws IOException {
+        valaLexer.start("");
+
+        assertThat(valaLexer.getTokenType(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldHandleWhiteSpace() throws IOException {
+        valaLexer.start(" \t\t\t  ");
+
+        assertThat(valaLexer.getTokenType(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldAdvanceOnMultipleContents() throws IOException {
+        valaLexer.start("\"string\" 3");
+        valaLexer.advance();
 
         assertThat(valaLexer.getTokenType(), is(ValaTypes.INT));
     }

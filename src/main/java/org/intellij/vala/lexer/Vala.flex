@@ -19,14 +19,15 @@ public ValaFlexLexer() {
 %eof{  return;
 %eof}
 
-Digits         =[0-9]+
-StringLiteral  =\"[^\"&]*\"
-LineTerminator = \r|\n|\r\n
-WhiteSpace     = {LineTerminator} | [ \t\f]
+Digits         = [0-9]+
 EqualTo        = \=
+StringLiteral  = "\"" [^\"&]* "\""
+LineTerminator = \r|\n|\r\n
+WhiteSpace     = ({LineTerminator} | [ \t\f])*
 %%
 
 <YYINITIAL> {
     {StringLiteral} { return ValaTypes.STRING_LITERAL; }
     {Digits} {return ValaTypes.INT; }
+    {WhiteSpace} {/* ignore */}
 }
