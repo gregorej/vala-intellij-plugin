@@ -1,15 +1,11 @@
 package org.intellij.vala.actions;
 
-import com.intellij.ide.fileTemplates.CreateFromTemplateHandler;
 import com.intellij.ide.fileTemplates.DefaultCreateFromTemplateHandler;
 import com.intellij.ide.fileTemplates.FileTemplate;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.ex.FileTypeManagerEx;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.intellij.vala.ValaLanguage;
 import org.intellij.vala.ValaLanguageFileType;
 
 import java.util.Map;
@@ -19,7 +15,7 @@ import static org.intellij.vala.ValaLanguageFileType.DEFAULT_EXTENSION_WITH_DOT;
 public class ValaCreateFromTemplateHandler extends DefaultCreateFromTemplateHandler {
     private Project project;
 
-    public static final String VALA_SOURCE = "valaSource";
+    public static final String VALA_GENERIC_SOURCE_FILE = "Generic Source File";
 
     @Override
     public PsiElement createFromTemplate(Project project, PsiDirectory directory, String fileName, FileTemplate template, String templateText, Map<String, Object> props) throws IncorrectOperationException {
@@ -29,7 +25,7 @@ public class ValaCreateFromTemplateHandler extends DefaultCreateFromTemplateHand
 
     @Override
     public boolean handlesTemplate(FileTemplate template) {
-        return template.getName().equals(VALA_SOURCE + DEFAULT_EXTENSION_WITH_DOT);
+        return template.getName().equals(VALA_GENERIC_SOURCE_FILE + DEFAULT_EXTENSION_WITH_DOT);
     }
 
     @Override
@@ -44,7 +40,7 @@ public class ValaCreateFromTemplateHandler extends DefaultCreateFromTemplateHand
     }
 
     private String getExtension(FileTemplate template) {
-        if (template.getName().equals(VALA_SOURCE + DEFAULT_EXTENSION_WITH_DOT)) return ValaLanguageFileType.DEFAULT_EXTENSION;
+        if (template.getName().equals(VALA_GENERIC_SOURCE_FILE + DEFAULT_EXTENSION_WITH_DOT)) return ValaLanguageFileType.DEFAULT_EXTENSION;
         return template.getExtension();
     }
 

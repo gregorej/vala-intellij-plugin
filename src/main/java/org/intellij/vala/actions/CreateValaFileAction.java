@@ -9,12 +9,9 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiDirectory;
 import org.intellij.vala.ValaIcons;
-import org.intellij.vala.ValaLanguageFileType;
-
-import javax.swing.*;
 
 import static org.intellij.vala.ValaLanguageFileType.DEFAULT_EXTENSION_WITH_DOT;
-import static org.intellij.vala.actions.ValaCreateFromTemplateHandler.VALA_SOURCE;
+import static org.intellij.vala.actions.ValaCreateFromTemplateHandler.VALA_GENERIC_SOURCE_FILE;
 
 
 public class CreateValaFileAction extends CreateFileFromTemplateAction implements DumbAware {
@@ -29,7 +26,7 @@ public class CreateValaFileAction extends CreateFileFromTemplateAction implement
     protected void buildDialog(Project project, PsiDirectory psiDirectory, CreateFileFromTemplateDialog.Builder builder) {
         builder
                 .setTitle(NEW_VALA_FILE)
-                .addKind("Source file", ValaIcons.FILE, VALA_SOURCE + DEFAULT_EXTENSION_WITH_DOT)
+                .addKind("Source file", ValaIcons.FILE, VALA_GENERIC_SOURCE_FILE + DEFAULT_EXTENSION_WITH_DOT)
                 .setValidator(getValidator());
     }
 
