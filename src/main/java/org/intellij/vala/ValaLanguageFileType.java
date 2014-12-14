@@ -8,7 +8,10 @@ import javax.swing.*;
 
 public class ValaLanguageFileType extends LanguageFileType {
 
-    private Icon valaIcon = new ImageIcon(ValaLanguageFileType.class.getResource("gnome-icon.png"));
+    public static final String DEFAULT_EXTENSION = "vala";
+    public static final String DEFAULT_EXTENSION_WITH_DOT = "." + DEFAULT_EXTENSION;
+    public static final ValaLanguageFileType INSTANCE = new ValaLanguageFileType();
+    public static final String ALL_EXTENSIONS = DEFAULT_EXTENSION;
 
     protected ValaLanguageFileType() {
         super(ValaLanguage.INSTANCE);
@@ -29,12 +32,12 @@ public class ValaLanguageFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "vala";
+        return DEFAULT_EXTENSION;
     }
 
     @Nullable
     @Override
     public Icon getIcon() {
-        return valaIcon;
+        return ValaIcons.FILE;
     }
 }
