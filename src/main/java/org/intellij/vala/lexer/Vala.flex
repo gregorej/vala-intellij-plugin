@@ -23,14 +23,16 @@ Digits         = [0-9]+
 EqualTo        = \=
 StringLiteral  = "\"" [^\"&]* "\""
 LineTerminator = \r|\n|\r\n
-WhiteSpace     = ({LineTerminator} | [ \t\f])*
+WhiteSpace     = ({LineTerminator} | [ \t\f])+
 %%
 
 <YYINITIAL> {
-    {StringLiteral}     {return ValaTypes.STRING_LITERAL; }
-    {Digits}            {return ValaTypes.INT; }
-    {WhiteSpace}        {/* ignore */ }
-    .                   {return TokenType.BAD_CHARACTER;}
+    "class"                 {return ValaTypes.KEY_CLASS; }
+    "ref"                   {return ValaTypes.KEY_REF; }
+    {StringLiteral}         {return ValaTypes.STRING_LITERAL; }
+    {Digits}                {return ValaTypes.INT; }
+    {WhiteSpace}            {return TokenType.WHITE_SPACE; }
+//    .                   {return TokenType.BAD_CHARACTER;}
 }
 
 .                       {return TokenType.BAD_CHARACTER;}

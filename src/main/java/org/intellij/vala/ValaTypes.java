@@ -10,4 +10,6 @@ public interface ValaTypes {
     IElementType EQ = new IElementType("equal to", ValaLanguage.INSTANCE);
     IElementType ASGN = new IElementType("assignment", ValaLanguage.INSTANCE);
     IElementType INT = new IElementType("integer", ValaLanguage.INSTANCE);
+    IElementType KEY_CLASS = new IElementType("class keyword", ValaLanguage.INSTANCE);
+    IElementType KEY_REF = new IElementType("ref keyword", ValaLanguage.INSTANCE);
 }

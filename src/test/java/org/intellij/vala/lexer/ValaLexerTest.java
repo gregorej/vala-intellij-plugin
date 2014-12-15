@@ -46,12 +46,13 @@ public class ValaLexerTest {
     public void shouldHandleWhiteSpace() throws IOException {
         valaLexer.start(" \t\t\t  ");
 
-        assertThat(valaLexer.getTokenType(), is(nullValue()));
+        assertThat(valaLexer.getTokenType(), is(TokenType.WHITE_SPACE));
     }
 
     @Test
     public void shouldAdvanceOnMultipleContents() throws IOException {
         valaLexer.start("\"string\" 3");
+        valaLexer.advance();
         valaLexer.advance();
 
         assertThat(valaLexer.getTokenType(), is(ValaTypes.INT));
@@ -69,7 +70,16 @@ public class ValaLexerTest {
         valaLexer.start("na 3");
         valaLexer.advance();
         valaLexer.advance();
+        valaLexer.advance();
 
         assertThat(valaLexer.getTokenType(), is(ValaTypes.INT));
     }
+
+    @Test
+    public void shouldRecognizeClassKeyword() throws IOException {
+         valaLexer.start("class");
+
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.KEY_CLASS));
+    }
+
 }

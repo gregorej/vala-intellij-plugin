@@ -17,6 +17,7 @@ public class ValaHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey STRING = createTextAttributesKey("VALA_STRING",
             DefaultLanguageHighlighterColors.STRING);
     private static final TextAttributesKey INTEGER = createTextAttributesKey("VALA_INTEGER", DefaultLanguageHighlighterColors.NUMBER);
+    private static final TextAttributesKey KEYWORD = createTextAttributesKey("VALA_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
 
     @NotNull
     @Override
@@ -27,6 +28,7 @@ public class ValaHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
+        if (ValaLexer.KEYWORDS.contains(tokenType)) return pack(KEYWORD);
         if (tokenType == ValaTypes.STRING_LITERAL) return pack(STRING);
         if (tokenType == ValaTypes.INT) return pack(INTEGER);
         return EMPTY;
