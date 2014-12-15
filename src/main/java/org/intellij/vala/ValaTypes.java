@@ -12,4 +12,5 @@ public interface ValaTypes {
     IElementType INT = new IElementType("integer", ValaLanguage.INSTANCE);
     IElementType KEY_CLASS = new IElementType("class keyword", ValaLanguage.INSTANCE);
     IElementType KEY_REF = new IElementType("ref keyword", ValaLanguage.INSTANCE);
+    IElementType IDENTIFIER = new IElementType("Identifier", ValaLanguage.INSTANCE);
 }

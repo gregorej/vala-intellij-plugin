@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -60,14 +61,14 @@ public class ValaLexerTest {
 
     @Test
     public void shouldHandleInvalidCharacters() throws IOException {
-        valaLexer.start("not_string");
+        valaLexer.start("$%");
 
         assertThat(valaLexer.getTokenType(), is(TokenType.BAD_CHARACTER));
     }
 
     @Test
     public void shouldProceedAfterSeeingBadCharacter() throws IOException {
-        valaLexer.start("na 3");
+        valaLexer.start("%^ 3");
         valaLexer.advance();
         valaLexer.advance();
         valaLexer.advance();
@@ -80,6 +81,14 @@ public class ValaLexerTest {
          valaLexer.start("class");
 
         assertThat(valaLexer.getTokenType(), is(ValaTypes.KEY_CLASS));
+    }
+
+    @Test
+    public void shouldRecognizeIdentifiers() throws IOException {
+        valaLexer.start("some_identifier");
+
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.IDENTIFIER));
+        assertThat(valaLexer.getTokenText(), is(equalTo("some_identifier")));
     }
 
 }

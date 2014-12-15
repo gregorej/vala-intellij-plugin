@@ -22,6 +22,7 @@ public ValaFlexLexer() {
 Digits         = [0-9]+
 EqualTo        = \=
 StringLiteral  = "\"" [^\"&]* "\""
+Identifier     = [A-Za-z_][A-Za-z_0-9]*
 LineTerminator = \r|\n|\r\n
 WhiteSpace     = ({LineTerminator} | [ \t\f])+
 %%
@@ -29,6 +30,7 @@ WhiteSpace     = ({LineTerminator} | [ \t\f])+
 <YYINITIAL> {
     "class"                 {return ValaTypes.KEY_CLASS; }
     "ref"                   {return ValaTypes.KEY_REF; }
+    {Identifier}            {return ValaTypes.IDENTIFIER; }
     {StringLiteral}         {return ValaTypes.STRING_LITERAL; }
     {Digits}                {return ValaTypes.INT; }
     {WhiteSpace}            {return TokenType.WHITE_SPACE; }
