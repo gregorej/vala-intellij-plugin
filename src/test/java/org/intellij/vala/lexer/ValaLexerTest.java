@@ -1,7 +1,7 @@
 package org.intellij.vala.lexer;
 
 import com.intellij.psi.TokenType;
-import org.intellij.vala.ValaTypes;
+import org.intellij.vala.psi.ValaTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,14 +26,14 @@ public class ValaLexerTest {
         String content = "\"blah\"";
         valaLexer.start(content);
 
-        assertThat(valaLexer.getTokenType(), is(ValaTypes.STRING_LITERAL));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.STRING));
     }
 
     @Test
     public void shouldDetectInteger() throws IOException {
         valaLexer.start("2");
 
-        assertThat(valaLexer.getTokenType(), is(ValaTypes.INT));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.NUMBER));
     }
 
     @Test
@@ -56,7 +56,7 @@ public class ValaLexerTest {
         valaLexer.advance();
         valaLexer.advance();
 
-        assertThat(valaLexer.getTokenType(), is(ValaTypes.INT));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.NUMBER));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class ValaLexerTest {
         valaLexer.advance();
         valaLexer.advance();
 
-        assertThat(valaLexer.getTokenType(), is(ValaTypes.INT));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.NUMBER));
     }
 
     @Test

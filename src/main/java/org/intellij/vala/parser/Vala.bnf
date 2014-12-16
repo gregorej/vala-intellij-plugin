@@ -1,0 +1,84 @@
+{
+  //classHeader="license.txt"
+  generate=[names="long"]
+
+  parserClass="org.intellij.vala.parser.ValaParser"
+  parserUtilClass="org.intellij.grammar.parser.GeneratedParserUtilBase"
+
+  implements="org.intellij.vala.psi.ValaPsiElement"
+  extends="org.intellij.vala.psi.impl.ValaPsiElementImpl"
+
+  psiClassPrefix="Vala"
+  psiImplClassSuffix="Impl"
+  psiPackage="org.intellij.vala.psi"
+  psiImplPackage="org.intellij.vala.psi.impl"
+  psiImplUtilClass="org.intellij.vala.psi.impl.ValaPsiImplUtil"
+
+  elementTypeHolderClass="org.intellij.vala.psi.ValaTypes"
+  elementTypeClass="org.intellij.vala.psi.ValaElementType"
+  tokenTypeClass="org.intellij.vala.psi.ValaTokenType"
+
+  tokens = [
+    OP_EQ="=="
+    OP_ASGN="="
+    OP_OR="|"
+    OP_ADD="+"
+    OP_MUL="*"
+    OP_AND="&&"
+    OP_NOT="!"
+    SEMICOLON=";"
+    LEFT_CURLY="{"
+    RIGHT_CURLY="}"
+    LEFT_SQUARE="["
+    RIGHT_SQUARE="]"
+    LEFT_PAREN="("
+    RIGHT_PAREN=")"
+    KEY_NAMESPACE="namespace"
+    KEY_USING="using"
+    KEY_CLASS="class"
+    KEY_REF="ref"
+    KEY_VOID="void"
+    KEY_INT="int"
+    KEY_PROTECTED="protected"
+    KEY_PUBLIC="public"
+    KEY_PRIVATE="private"
+    KEY_THROWS="throws"
+
+    identifier="regexp:[A-Za-z_][A-Za-z0-9_]*"
+    string="regexp:\"([^\"\\]|\\\"|\\\'|\\)*\""
+    number="regexp:\d+"
+    line_comment="regexp://.*"
+    block_comment="regexp:/\*(.|\n)*\*/"
+  ]
+
+  extends("paren_.*expression")=parenthesized
+}
+
+vala_module ::= namespace_import_list namespace_declaration
+
+namespace_import_list ::= namespace_import*
+
+namespace_import ::= "using" namespace_name ";"
+
+namespace_declaration ::= "namespace" identifier "{" class_definition "}"
+class_definition ::= access_modifier "class" class_name "{" class_definition_body "}"
+
+class_definition_body ::= class_definition_element*
+
+class_definition_element ::= class_field_definition | method_definition
+method_definition ::= method_signature "{" method_body "}"
+method_body ::=
+class_name ::= identifier
+namespace_name ::= identifier
+method_name ::= identifier
+
+method_signature ::= access_modifier return_type_declaration method_name "(" argument_list ")" exception_declaration
+argument_list ::=
+exception_declaration ::= "throws" identifier |
+
+class_field_definition ::= access_modifier type_name identifier ";"
+
+access_modifier ::= "private" | "protected" | "public"
+type_name ::= class_name | "int"
+
+return_type_declaration ::= "void" | type_name

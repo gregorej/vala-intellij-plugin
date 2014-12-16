@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
-import org.intellij.vala.ValaTypes;
+import org.intellij.vala.psi.ValaTypes;
 import org.intellij.vala.lexer.ValaLexer;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,8 +29,8 @@ public class ValaHighlighter extends SyntaxHighlighterBase {
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
         if (ValaLexer.KEYWORDS.contains(tokenType)) return pack(KEYWORD);
-        if (tokenType == ValaTypes.STRING_LITERAL) return pack(STRING);
-        if (tokenType == ValaTypes.INT) return pack(INTEGER);
+        if (tokenType == ValaTypes.STRING) return pack(STRING);
+        if (tokenType == ValaTypes.NUMBER) return pack(INTEGER);
         return EMPTY;
     }
 }
