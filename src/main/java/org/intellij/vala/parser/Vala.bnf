@@ -20,12 +20,12 @@
 
   tokens = [
     OP_EQ="=="
-    OP_ASGN="="
     OP_OR="|"
     OP_ADD="+"
     OP_MUL="*"
     OP_AND="&&"
     OP_NOT="!"
+    OP_LAMBDA="=>"
     SEMICOLON=";"
     LEFT_CURLY="{"
     RIGHT_CURLY="}"
@@ -41,44 +41,309 @@
     KEY_INT="int"
     KEY_PROTECTED="protected"
     KEY_PUBLIC="public"
+    KEY_INTERNAL="internal"
     KEY_PRIVATE="private"
     KEY_THROWS="throws"
+    KEY_IF="if"
+    KEY_ELSE="else"
+    KEY_SWITCH="switch"
+    KEY_CASE="case"
+    KEY_DEFAULT="default"
+    KEY_DO="do"
+    KEY_WHILE="while"
+    KEY_FOR="for"
+    KEY_FOREACH="foreach"
+    KEY_VAR="var"
+    KEY_IN="in"
+    KEY_BREAK="break"
+    KEY_CONTINUE="continue"
+    KEY_RETURN="return"
+    KEY_YIELD="yield"
+    KEY_TRY="try"
+    KEY_THROW="throw"
+    KEY_FINALLY="finally"
+    KEY_CATCH="catch"
+    KEY_LOCK="lock"
+    KEY_DELETE="delete"
+    KEY_BASE="base"
+    KEY_THIS="this"
+    KEY_NEW="new"
+    KEY_NEW="out"
+    KEY_INTERFACE="interface"
+    KEY_STRUCT="struct"
+    KEY_STRUCT="params"
+    KEY_ENSURES="ensures"
+    KEY_REQUIRES="requires"
+    KEY_ASYNC="async"
+    KEY_INLINE="inline"
+    KEY_ABSTRACT="abstract"
+    KEY_EXTERN="extern"
+    KEY_VIRTUAL="virtual"
+    KEY_OVERRIDE="override"
+    KEY_CONST="const"
+    KEY_GET="get"
+    KEY_SET="set"
+    KEY_CONSTRUCT="construct"
+    KEY_SIGNAL="signal"
+    KEY_STATIC="static"
+    KEY_TYPEOF="typeof"
+    KEY_SIZEOF="sizeof"
+    KEY_OWNED="owned"
+    KEY_DYNAMIC="dynamic"
+    KEY_UNOWNED="unowned"
+    KEY_WEAK="weak"
 
     identifier="regexp:[A-Za-z_][A-Za-z0-9_]*"
     string="regexp:\"([^\"\\]|\\\"|\\\'|\\)*\""
+    real_literal="regexp:\d+\.\d+" //FIXME
     number="regexp:\d+"
     line_comment="regexp://.*"
     block_comment="regexp:/\*(.|\n)*\*/"
+    character_literal="regexp:\'[A-Za-z0-9]\'"
   ]
 
   extends("paren_.*expression")=parenthesized
 }
 
-vala_module ::= namespace_import_list namespace_declaration
+vala_module ::= using_directive * namespace_member *
+symbol ::= symbol_part ( "." symbol_part )*
+symbol_part ::= ( "global::" identifier ) | identifier
 
-namespace_import_list ::= namespace_import*
+using_directive ::= "using" symbol ( "," symbol )* ";"
+namespace_member ::= ( attributes )?
+                     ( namespace_declaration |
+                       class_declaration |
+                       interface_declaration |
+                       struct_declaration |
+                       enum_declaration |
+                       errordomain_declaration |
+                       method_declaration |
+                       field_declaration |
+                       constant_declaration )
 
-namespace_import ::= "using" namespace_name ";"
+attributes ::= attribute*
+attribute ::= "[" identifier ( attribute_arguments )? "]"
+attribute_arguments ::= "(" attribute_argument ( "," attribute_argument )* ")"
+attribute_argument ::= identifier "=" expression
 
-namespace_declaration ::= "namespace" identifier "{" class_definition "}"
-class_definition ::= access_modifier "class" class_name "{" class_definition_body "}"
+access_modifier ::= "private" | "protected" | "public" | "internal"
 
-class_definition_body ::= class_definition_element*
+assignment_operator ::= "=" | "+=" | "-=" | "|=" | "&=" | "^=" | "/=" | "*=" | "%=" | "<<=" | ">>="
+expression ::= lambda_expression | ( conditional_expression [ assignment_operator expression ] )
 
-class_definition_element ::= class_field_definition | method_definition
-method_definition ::= method_signature "{" method_body "}"
-method_body ::=
-class_name ::= identifier
-namespace_name ::= identifier
-method_name ::= identifier
+conditional_expression ::= coalescing_expression ( "?" expression ":" expression )?
 
-method_signature ::= access_modifier return_type_declaration method_name "(" argument_list ")" exception_declaration
-argument_list ::=
-exception_declaration ::= "throws" identifier |
+coalescing_expression ::= conditional_or_expression ( "??" coalescing_expression )?
+conditional_or_expression ::= conditional_and_expression ( "||" conditional_and_expression )?
+conditional_and_expression ::= in_expression ( "&&" in_expression )?
+in_expression ::= inclusive_or_expression ( "in" inclusive_or_expression )?
+inclusive_or_expression ::= exclusive_or_expression ( "|" exclusive_or_expression )?
+exclusive_or_expression ::= and_expression ( "^" and_expression )
+and_expression ::= equality_expression ( "&" equality_expression )?
+equality_expression ::= relational_expression ( ( "==" | "!=" ) relational_expression )*
+relational_expression ::= shift_expression ( (( "<" | "<=" | ">" | ">=" ) shift_expression ) |( "is" type ) | ( "as" type ) )*
+shift_expression ::= additive_expression ( ( "<<" | ">>" ) additive_expression )*
+additive_expression ::= multiplicative_expression ( ( "+" | "-" ) multiplicative_expression )*
+multiplicative_expression ::= unary_expression ( ( "*" | "/" | "%" ) unary_expression )*
+unary_expression ::= ( unary_operator unary_expression ) |
+                     ( "(" ( "owned" | "void" | "dynamic" | "!" | type ) ")" unary_expression ) |
+                     primary_expression
 
-class_field_definition ::= access_modifier type_name identifier ";"
+primary_expression ::= ( literal | initializer | tuple | template | this_access | base_access |
+                       object_or_array_creation_expression | yield_expression | sizeof_expression | typeof_expression |
+                       simple_name )
+                       ( member_access | pointer_member_access | method_call | element_access |
+                         post_increment_expression | post_decrement_expression )*
+sizeof_expression ::= "sizeof" "(" type ")"
+typeof_expression ::= "typeof" "(" type ")"
+simple_name ::= ( "global::" identifier | identifier ) type_arguments?
 
-access_modifier ::= "private" | "protected" | "public"
-type_name ::= class_name | "int"
+literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal
 
-return_type_declaration ::= "void" | type_name
+// get_unary_operator
+unary_operator ::= "+" | "-" | "!" | "~" | "++" | "--" | "*" | "&" | "(owned)" | "(void)" | "(dynamic)" | "(!)"
+
+lambda_expression_params ::= identifier | ( "(" ( identifier ( "," identifier )* ) ")" )
+lambda_expression ::= lambda_expression_params "=>" lambda_expression_body
+lambda_expression_body ::= expression | block
+
+yield_expression ::= "yield" [ base_access "." ] member method_call
+method_call ::= "(" arguments? ")" object_initializer?
+
+member_declaration_modifiers ::= member_declaration_modifier ( " " member_declaration_modifier )*
+member_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override" | "new"
+
+constructor_declaration ::= [ constructor_declaration_modifiers ] "construct" block
+
+constructor_declaration_modifiers ::= constructor_declaration_modifier ( " " constructor_declaration_modifier )*
+constructor_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override"
+
+destructor_declaration ::= [ constructor_declaration_modifiers ] "~" "(" ")" block
+
+class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? "{" class_member* "}"
+
+base_types ::= type ( "," type )*
+
+class_member ::= [ attributes ]
+                 ( class_declaration |
+                   struct_declaration |
+                   enum_declaration |
+                   delegate_declaration |
+                   method_declaration |
+                   signal_declaration |
+                   field_declaration |
+                   constant_declaration |
+                   property_declaration |
+                   constructor_declaration |
+                   destructor_declaration )
+
+
+type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
+type_declaration_modifier ::= "abstract" | "extern" | "static"
+enum_declaration ::= [ access_modifier ] [ type_declaration_modifiers ] "enum" symbol
+                     "{" enumvalues ( ";" ( method_declaration | constant_declaration )* )? "}"
+enumvalues ::= enumvalue ( "," enumvalue )*
+enumvalue ::= attributes? identifier ( "=" expression )?
+errordomain_declaration ::= access_modifier? type_declaration_modifiers? "errordomain" symbol
+                            "{" errorcodes ( ";" method_declaration* )? "}"
+errorcodes ::= errorcode ( "," errorcode )*
+errorcode ::= attributes? identifier ("=" expression)?
+
+interface_declaration ::= [ access_modifier ] [ type_declaration_modifiers ] "interface" symbol [ type_parameters ]
+                          [ ":" base_types ] "{" interface_member* "}"
+interface_member ::= attributes?
+                     ( class_declaration |
+                       struct_declaration |
+                       enum_declaration |
+                       delegate_declaration |
+                       method_declaration |
+                       signal_declaration |
+                       field_declaration |
+                       constant_declaration |
+                       property_declaration )
+
+namespace_declaration ::= "namespace" symbol "{" using_directive* namespace_member* "}"
+struct_declaration ::= access_modifier? type_declaration_modifiers? "struct" symbol
+                       [ ":" base_types ] "{" struct_member* "}"
+struct_member ::= attributes? ( method_declaration | field_declaration | constant_declaration | property_declaration )
+
+creation_method_declaration ::= [ access_modifier ] [ constructor_declaration_modifiers ] symbol
+                                "(" [ parameters ] ")" [ throws_declaration ] [ requires ] [ ensures ] ( ";" | block )
+
+parameters ::= parameter ( "," parameter )*
+parameter ::= [ attributes ] ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression ) ) )
+
+
+throws_declaration ::= "throws" type ( "," type )*
+requires ::= "requires" "(" expression ")" requires?
+ensures ::= "ensures" "(" expression ")" ensures?
+
+delegate_declaration ::= access_modifier? delegate_declaration_modifiers? type symbol type_parameters?
+                         "(" parameters? ")" throws_declaration? ";"
+delegate_declaration_modifiers ::= delegate_declaration_modifier ( " " delegate_declaration_modifier )*
+delegate_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "abstract" | "virtual" | "override"
+signal_declaration ::= access_modifier? signal_declaration_modifiers? "signal" type identifier
+                       "(" parameters? ")" ( ";" | block )
+signal_declaration_modifiers ::= signal_declaration_modifier ( " " signal_declaration_modifier )*
+signal_declaration_modifier ::= "async" | "extern" | "inline" | "abstract" | "virtual" | "override" | "new"
+
+method_declaration ::= access_modifier? member_declaration_modifier? type identifier type_parameters?
+                       "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )
+constant_declaration ::= access_modifier? member_declaration_modifiers? "const" type identifier inline_array_type?
+                         ("=" expression )? ";"
+field_declaration ::= access_modifier? member_declaration_modifiers? type_weak identifier ( "=" expression )? ";"
+
+property_declaration ::= [ access_modifier ] [ property_declaration_modifiers ] type_weak identifier
+                         "{" property_declaration_part* "}"
+
+property_declaration_part ::= ( "default" "=" expression ";" ) | property_accessor
+property_accessor ::= attributes? access_modifier? ( property_get_accessor | property_set_construct_accessor )
+property_get_accessor ::= "get" ( ";" | block )
+property_set_construct_accessor ::= ( "set" "construct" | "construct" "set" ) ( ";" | block )
+property_declaration_modifiers ::= property_declaration_modifier ( " " property_declaration_modifier )*
+property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "abstract" | "virtual" | "override" | "new"
+
+tuple ::= "(" expression ( "," expression )* ")"
+this_access ::= "this"
+base_access ::= "base"
+object_or_array_creation_expression ::= "new" member ( object_creation_expression | array_creation_expression )
+object_creation_expression ::= "(" ( arguments )? ")" ( object_initializer )?
+object_initializer ::= "{" member_initializer ( "," member_initializer )? "}"
+member_initializer ::= identifier "=" expression
+arguments ::= argument ( "," argument )*
+argument ::= "ref" expression | "out" expression | expression | identifier ( ":" expression )?
+array_creation_expression ::= ( "[" "]" )* ( "["  array_size? "]" )? ( initializer )?
+initializer ::= "{" argument ( "," argument )* "}"
+
+block ::= "{" statement* "}"
+statement ::= block
+              | ";"
+              | if_statement
+              | switch_statement
+              | while_statement
+              | for_statement
+              | foreach_statement
+              | break_statement
+              | continue_statement
+              | return_statement
+              | yield_statement
+              | throw_statement
+              | try_statement
+              | lock_statement
+              | delete_statement
+              | local_variable_declarations
+              | expression_statement
+              | do_statement
+
+if_statement ::= "if" "(" expression ")" embedded_statement ( "else" embedded_statement )?
+embedded_statement ::= block | embedded_statement_without_block
+embedded_statement_without_block ::= ";"
+                                    | if_statement
+                                    | switch_statement
+                                    | while_statement
+                                    | for_statement
+                                    | foreach_statement
+                                    | break_statement
+                                    | continue_statement
+                                    | return_statement
+                                    | yield_statement
+                                    | throw_statement
+                                    | try_statement
+                                    | lock_statement
+                                    | delete_statement
+                                    | expression_statement
+
+switch_statement ::= "switch" "(" expression ")" "{" switch_section* "}"
+switch_section ::= ( "case" | "default" ) expression ":"
+while_statement ::= "while" "(" expression ")" embedded_statement
+do_statement ::= "do" embedded_statement "while" "(" expression ")" ";"
+for_statement ::= "for" "("  for_initializer  ";"  expression  ";"  for_iterator  ")" embedded_statement
+for_initializer ::= local_variable_declarations | ( statement_expression ( "," statement_expression )* )
+for_iterator ::= statement_expression ( "," statement_expression )*
+statement_expression ::= expression
+foreach_statement ::= "foreach" "(" ( "var" | type) identifier "in" expression ")" embedded_statement
+break_statement ::= "break" ";"
+continue_statement ::= "continue" ";"
+return_statement ::= "return" ( expression )? ";"
+yield_statement ::= "yield" ( expression_statement | "return" expression )? ";"
+throw_statement ::= "throw" expression ";"
+try_statement ::= "try" block catch_clause* [ finally_clause ]
+catch_clause ::= "catch" [ "(" type_weak identifier ")" ] block
+finally_clause ::= "finally" block
+lock_statement ::= "lock" "(" expression ")" embedded_statement
+delete_statement ::= "delete" expression ";"
+
+local_variable_declarations ::= ( "var" | type ) local_variable_declaration ( "," local_variable_declaration )*
+local_variable_declaration ::= local_tuple_declaration | local_variable
+local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression
+local_variable ::= identifier ( inline_array_type )? ( "=" expression )?
+expression_statement ::= statement_expression ";"
+type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? symbol ( type_arguments )? ( "*" )* ( "?" ) array_type* )
+type_arguments ::= "<" type ( "," type )* ">"
+type_parameters ::= "<" identifier ( "," identifier )* ">"
+type_weak ::= ( "void" ( "*" )* ) | ( [ "dynamic" ] [ "unowned" | "weak" ] symbol ( type_arguments ) ( "*" )* ( "?" ) array_type* )
+array_type ::= "[" array_size "]" ( "?" )
+array_size ::= expression ( "," expression ) *
+inline_array_type ::= "[" integer_literal "]"
+integer_literal ::= number
+

@@ -1,1 +1,4 @@
-"sample" 4
+namespace Test {
+	public class MyClass {
+	}
+}
