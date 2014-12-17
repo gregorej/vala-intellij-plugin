@@ -109,6 +109,8 @@
   ]
 
   extends(".*expression")=expression
+  extends(".*statement")=statement
+  extends("namespace_declaration|class_declaration|interface_declaration|struct_declaration|enum_declaration|errordomain_declaration|method_declaration|field_declaration|constant_declaration")=namespace_member
 }
 
 vala_module ::= using_directive * namespace_member *
@@ -125,7 +127,7 @@ namespace_member ::= attributes?
                        errordomain_declaration |
                        method_declaration |
                        field_declaration |
-                       constant_declaration )
+                       constant_declaration ) {methods=[getNamespace]}
 
 attributes ::= attribute*
 attribute ::= "[" identifier ( attribute_arguments )? "]"
