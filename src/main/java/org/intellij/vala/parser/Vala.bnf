@@ -108,7 +108,7 @@
     dot="."
   ]
 
-  extends("paren_.*expression")=parenthesized
+  extends(".*expression")=expression
 }
 
 vala_module ::= using_directive * namespace_member *
@@ -345,10 +345,10 @@ local_variable_declaration ::= local_tuple_declaration | local_variable
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression
 local_variable ::= identifier ( inline_array_type )? ( "=" expression )?
 expression_statement ::= statement_expression ";"
-type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? symbol ( type_arguments )? ( "*" )* ( "?" )? array_type* )
+type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? symbol ( type_arguments )? ( "*" )* ( "?" )? array_type* ) {methods=[getReference]}
 type_arguments ::= "<" type ( "," type )* ">"
 type_parameters ::= "<" identifier ( "," identifier )* ">"
-type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? symbol type_arguments? ( "*" )* ( "?" )? array_type* )
+type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? symbol type_arguments? ( "*" )* ( "?" )? array_type* ) {methods=[getReference]}
 array_type ::= "[" array_size? "]" ( "?" )?
 array_size ::= expression ( "," expression ) *
 inline_array_type ::= "[" integer_literal "]"
