@@ -20,12 +20,14 @@
 
   tokens = [
     OP_EQ="=="
+    OP_ASGN="="
     OP_OR="|"
     OP_ADD="+"
     OP_MUL="*"
     OP_AND="&&"
     OP_NOT="!"
     OP_LAMBDA="=>"
+    COMA=","
     SEMICOLON=";"
     LEFT_CURLY="{"
     RIGHT_CURLY="}"
@@ -169,7 +171,7 @@ template ::= '@"' ( expression "," )* '"'
 // get_unary_operator
 unary_operator ::= "+" | "-" | "!" | "~" | "++" | "--" | "*" | "&" | "(owned)" | "(void)" | "(dynamic)" | "(!)"
 
-lambda_expression_params ::= identifier | ( "(" ( identifier ( "," identifier )* ) ")" )
+lambda_expression_params ::= identifier | ( "(" ( identifier ( "," identifier )* )? ")" )
 lambda_expression ::= lambda_expression_params "=>" lambda_expression_body
 lambda_expression_body ::= expression | block
 

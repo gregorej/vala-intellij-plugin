@@ -33,4 +33,16 @@ public class ValaParserTest extends ParsingTestCase {
     public void testSingleObjectCreation() {
         doTest(true);
     }
+
+    public void testGtkHelloWorld() {
+        doTest(true);
+    }
+
+    public void testSingleObjectPropertyAssignment() {
+        doTest(true);
+    }
+
+    public void testSingleLambdaExpression() {
+        doTest(true);
+    }
 }
