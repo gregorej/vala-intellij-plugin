@@ -92,6 +92,9 @@
     KEY_DYNAMIC="dynamic"
     KEY_UNOWNED="unowned"
     KEY_WEAK="weak"
+    KEY_ERRORDOMAIN="errordomain"
+    KEY_ENUM="enum"
+    KEY_STRING="string"
 
     identifier="regexp:[A-Za-z_][A-Za-z0-9_]*"
     string="regexp:\"([^\"\\]|\\\"|\\\'|\\)*\""
@@ -100,6 +103,7 @@
     line_comment="regexp://.*"
     block_comment="regexp:/\*(.|\n)*\*/"
     character_literal="regexp:\'[A-Za-z0-9]\'"
+    dot="."
   ]
 
   extends("paren_.*expression")=parenthesized
@@ -107,10 +111,10 @@
 
 vala_module ::= using_directive * namespace_member *
 symbol ::= symbol_part ( "." symbol_part )*
-symbol_part ::= ( "global::" identifier ) | identifier
+symbol_part ::= "string" | "int" | ( "global::" identifier ) | identifier
 
 using_directive ::= "using" symbol ( "," symbol )* ";"
-namespace_member ::= ( attributes )?
+namespace_member ::= attributes?
                      ( namespace_declaration |
                        class_declaration |
                        interface_declaration |
@@ -129,16 +133,14 @@ attribute_argument ::= identifier "=" expression
 access_modifier ::= "private" | "protected" | "public" | "internal"
 
 assignment_operator ::= "=" | "+=" | "-=" | "|=" | "&=" | "^=" | "/=" | "*=" | "%=" | "<<=" | ">>="
-expression ::= lambda_expression | ( conditional_expression [ assignment_operator expression ] )
-
+expression ::= lambda_expression | ( conditional_expression ( assignment_operator expression )? )
 conditional_expression ::= coalescing_expression ( "?" expression ":" expression )?
-
 coalescing_expression ::= conditional_or_expression ( "??" coalescing_expression )?
 conditional_or_expression ::= conditional_and_expression ( "||" conditional_and_expression )?
 conditional_and_expression ::= in_expression ( "&&" in_expression )?
 in_expression ::= inclusive_or_expression ( "in" inclusive_or_expression )?
 inclusive_or_expression ::= exclusive_or_expression ( "|" exclusive_or_expression )?
-exclusive_or_expression ::= and_expression ( "^" and_expression )
+exclusive_or_expression ::= and_expression ( "^" and_expression )?
 and_expression ::= equality_expression ( "&" equality_expression )?
 equality_expression ::= relational_expression ( ( "==" | "!=" ) relational_expression )*
 relational_expression ::= shift_expression ( (( "<" | "<=" | ">" | ">=" ) shift_expression ) |( "is" type ) | ( "as" type ) )*
@@ -148,7 +150,6 @@ multiplicative_expression ::= unary_expression ( ( "*" | "/" | "%" ) unary_expre
 unary_expression ::= ( unary_operator unary_expression ) |
                      ( "(" ( "owned" | "void" | "dynamic" | "!" | type ) ")" unary_expression ) |
                      primary_expression
-
 primary_expression ::= ( literal | initializer | tuple | template | this_access | base_access |
                        object_or_array_creation_expression | yield_expression | sizeof_expression | typeof_expression |
                        simple_name )
@@ -156,9 +157,14 @@ primary_expression ::= ( literal | initializer | tuple | template | this_access 
                          post_increment_expression | post_decrement_expression )*
 sizeof_expression ::= "sizeof" "(" type ")"
 typeof_expression ::= "typeof" "(" type ")"
-simple_name ::= ( "global::" identifier | identifier ) type_arguments?
+simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference]}
 
 literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal
+private string_literal ::= string
+member_access ::= "." member
+member ::= member_part ( "." member_part )*
+member_part ::= ( "global::" identifier | identifier ) type_arguments?
+template ::= '@"' ( expression "," )* '"'
 
 // get_unary_operator
 unary_operator ::= "+" | "-" | "!" | "~" | "++" | "--" | "*" | "&" | "(owned)" | "(void)" | "(dynamic)" | "(!)"
@@ -167,24 +173,24 @@ lambda_expression_params ::= identifier | ( "(" ( identifier ( "," identifier )*
 lambda_expression ::= lambda_expression_params "=>" lambda_expression_body
 lambda_expression_body ::= expression | block
 
-yield_expression ::= "yield" [ base_access "." ] member method_call
-method_call ::= "(" arguments? ")" object_initializer?
+yield_expression ::= "yield" ( base_access "." )? member method_call
+method_call ::= "(" arguments? ")" object_initializer? {methods=[getReference]}
 
 member_declaration_modifiers ::= member_declaration_modifier ( " " member_declaration_modifier )*
 member_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override" | "new"
 
-constructor_declaration ::= [ constructor_declaration_modifiers ] "construct" block
+constructor_declaration ::= constructor_declaration_modifiers? "construct" block
 
 constructor_declaration_modifiers ::= constructor_declaration_modifier ( " " constructor_declaration_modifier )*
 constructor_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override"
 
-destructor_declaration ::= [ constructor_declaration_modifiers ] "~" "(" ")" block
+destructor_declaration ::= constructor_declaration_modifiers? "~" "(" ")" block
 
 class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? "{" class_member* "}"
 
 base_types ::= type ( "," type )*
 
-class_member ::= [ attributes ]
+class_member ::= attributes?
                  ( class_declaration |
                    struct_declaration |
                    enum_declaration |
@@ -197,10 +203,9 @@ class_member ::= [ attributes ]
                    constructor_declaration |
                    destructor_declaration )
 
-
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
 type_declaration_modifier ::= "abstract" | "extern" | "static"
-enum_declaration ::= [ access_modifier ] [ type_declaration_modifiers ] "enum" symbol
+enum_declaration ::= access_modifier? type_declaration_modifiers? "enum" symbol
                      "{" enumvalues ( ";" ( method_declaration | constant_declaration )* )? "}"
 enumvalues ::= enumvalue ( "," enumvalue )*
 enumvalue ::= attributes? identifier ( "=" expression )?
@@ -209,8 +214,8 @@ errordomain_declaration ::= access_modifier? type_declaration_modifiers? "errord
 errorcodes ::= errorcode ( "," errorcode )*
 errorcode ::= attributes? identifier ("=" expression)?
 
-interface_declaration ::= [ access_modifier ] [ type_declaration_modifiers ] "interface" symbol [ type_parameters ]
-                          [ ":" base_types ] "{" interface_member* "}"
+interface_declaration ::= access_modifier? type_declaration_modifiers? "interface" symbol type_parameters?
+                          (":" base_types)? "{" interface_member* "}"
 interface_member ::= attributes?
                      ( class_declaration |
                        struct_declaration |
@@ -223,15 +228,14 @@ interface_member ::= attributes?
                        property_declaration )
 
 namespace_declaration ::= "namespace" symbol "{" using_directive* namespace_member* "}"
-struct_declaration ::= access_modifier? type_declaration_modifiers? "struct" symbol
-                       [ ":" base_types ] "{" struct_member* "}"
+struct_declaration ::= access_modifier? type_declaration_modifiers? "struct" symbol ( ":" base_types )? "{" struct_member* "}"
 struct_member ::= attributes? ( method_declaration | field_declaration | constant_declaration | property_declaration )
 
-creation_method_declaration ::= [ access_modifier ] [ constructor_declaration_modifiers ] symbol
-                                "(" [ parameters ] ")" [ throws_declaration ] [ requires ] [ ensures ] ( ";" | block )
+creation_method_declaration ::= access_modifier? constructor_declaration_modifiers? symbol
+                                "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )
 
 parameters ::= parameter ( "," parameter )*
-parameter ::= [ attributes ] ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression ) ) )
+parameter ::= attributes? ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression )? ) )
 
 
 throws_declaration ::= "throws" type ( "," type )*
@@ -253,7 +257,7 @@ constant_declaration ::= access_modifier? member_declaration_modifiers? "const" 
                          ("=" expression )? ";"
 field_declaration ::= access_modifier? member_declaration_modifiers? type_weak identifier ( "=" expression )? ";"
 
-property_declaration ::= [ access_modifier ] [ property_declaration_modifiers ] type_weak identifier
+property_declaration ::= access_modifier? property_declaration_modifiers? type_weak identifier
                          "{" property_declaration_part* "}"
 
 property_declaration_part ::= ( "default" "=" expression ";" ) | property_accessor
@@ -266,6 +270,7 @@ property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "ab
 tuple ::= "(" expression ( "," expression )* ")"
 this_access ::= "this"
 base_access ::= "base"
+object_access ::= identifier
 object_or_array_creation_expression ::= "new" member ( object_creation_expression | array_creation_expression )
 object_creation_expression ::= "(" ( arguments )? ")" ( object_initializer )?
 object_initializer ::= "{" member_initializer ( "," member_initializer )? "}"
@@ -327,8 +332,8 @@ continue_statement ::= "continue" ";"
 return_statement ::= "return" ( expression )? ";"
 yield_statement ::= "yield" ( expression_statement | "return" expression )? ";"
 throw_statement ::= "throw" expression ";"
-try_statement ::= "try" block catch_clause* [ finally_clause ]
-catch_clause ::= "catch" [ "(" type_weak identifier ")" ] block
+try_statement ::= "try" block catch_clause* finally_clause?
+catch_clause ::= "catch" ( "(" type_weak identifier ")" )? block
 finally_clause ::= "finally" block
 lock_statement ::= "lock" "(" expression ")" embedded_statement
 delete_statement ::= "delete" expression ";"
@@ -338,11 +343,11 @@ local_variable_declaration ::= local_tuple_declaration | local_variable
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression
 local_variable ::= identifier ( inline_array_type )? ( "=" expression )?
 expression_statement ::= statement_expression ";"
-type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? symbol ( type_arguments )? ( "*" )* ( "?" ) array_type* )
+type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? symbol ( type_arguments )? ( "*" )* ( "?" )? array_type* )
 type_arguments ::= "<" type ( "," type )* ">"
 type_parameters ::= "<" identifier ( "," identifier )* ">"
-type_weak ::= ( "void" ( "*" )* ) | ( [ "dynamic" ] [ "unowned" | "weak" ] symbol ( type_arguments ) ( "*" )* ( "?" ) array_type* )
-array_type ::= "[" array_size "]" ( "?" )
+type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? symbol ( type_arguments ) ( "*" )* ( "?" ) array_type* )
+array_type ::= "[" array_size? "]" ( "?" )?
 array_size ::= expression ( "," expression ) *
 inline_array_type ::= "[" integer_literal "]"
 integer_literal ::= number

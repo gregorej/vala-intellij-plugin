@@ -25,4 +25,12 @@ public class ValaParserTest extends ParsingTestCase {
     public void testEmptyClassInNamespace() {
         doTest(true);
     }
+
+    public void testSingleMethodCall() {
+        doTest(true);
+    }
+
+    public void testSingleObjectCreation() {
+        doTest(true);
+    }
 }
