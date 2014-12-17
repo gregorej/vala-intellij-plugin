@@ -45,4 +45,8 @@ public class ValaParserTest extends ParsingTestCase {
     public void testSingleLambdaExpression() {
         doTest(true);
     }
+
+    public void testSimpleClassDefinition() {
+        doTest(true);
+    }
 }

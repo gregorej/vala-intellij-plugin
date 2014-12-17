@@ -16,6 +16,7 @@
   <extensions defaultExtensionNs="com.intellij">
     <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
     <fileTypeFactory implementation="org.intellij.vala.ValaFileTypeFactory"/>
+    <lang.parserDefinition language="Vala" implementationClass="org.intellij.vala.parser.ValaParserDefinition"/>
     <lang.syntaxHighlighterFactory key="Vala" implementationClass="org.intellij.vala.highlighting.ValaSyntaxHighlighterFactory"/>
     <createFromTemplateHandler order="first" implementation="org.intellij.vala.actions.ValaCreateFromTemplateHandler"/>
   </extensions>
