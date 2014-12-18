@@ -108,8 +108,9 @@
     dot="."
   ]
 
+  extends("expression")=argument
   extends(".*expression")=expression
-  extends(".*statement")=statement
+  extends(".*statement|local_variable_declarations|block")=statement
   extends("namespace_declaration|class_declaration|interface_declaration|struct_declaration|enum_declaration|errordomain_declaration|method_declaration|field_declaration|constant_declaration")=namespace_member
 }
 

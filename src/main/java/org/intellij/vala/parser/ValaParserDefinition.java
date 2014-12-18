@@ -24,7 +24,7 @@ public class ValaParserDefinition implements ParserDefinition {
 
     public static final IFileElementType FILE = new IFileElementType(ValaLanguage.INSTANCE);
 
-    public static final TokenSet STRINGS = TokenSet.EMPTY;
+    public static final TokenSet STRINGS = TokenSet.create(ValaTypes.STRING);
 
     @NotNull
     @Override
@@ -57,7 +57,7 @@ public class ValaParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public TokenSet getStringLiteralElements() {
-        return null;
+        return STRINGS;
     }
 
     @NotNull

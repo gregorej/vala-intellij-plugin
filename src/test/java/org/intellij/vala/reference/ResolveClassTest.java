@@ -28,10 +28,6 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
         return false;
     }
 
-    protected String getDefaultFileName() {
-        return getTestName(false) + ValaLanguageFileType.DEFAULT_EXTENSION_WITH_DOT;
-    }
-
     public void testDetectingElementAtCaret() {
         myFixture.configureByFiles("ResolveClassDefinitionInSameFile.vala");
 
@@ -44,13 +40,21 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
     public void testResolveClassDefinitionInSameFile() {
         myFixture.configureByFiles("ResolveClassDefinitionInSameFile.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret().getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaTypeWeak.class).getReference().resolve();
 
         assertThat(referencedElement, instanceOf(ValaClassDeclaration.class));
     }
 
-    private ValaTypeWeak getElementOfTypeAtCaret() {
-        return getParentOfType(myFixture.getFile().findElementAt(myFixture.getCaretOffset()), ValaTypeWeak.class);
+    public void testResolveClassDefinitionInAnotherFile() {
+        myFixture.configureByFiles("FileContainingClassReference.vala", "FileContainingClassDefinition.vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaTypeWeak.class).getReference().resolve();
+
+        assertThat(referencedElement, instanceOf(ValaClassDeclaration.class));
+    }
+
+    private PsiElement getElementOfTypeAtCaret(Class<? extends PsiElement> elementType) {
+        return getParentOfType(myFixture.getFile().findElementAt(myFixture.getCaretOffset()), elementType);
     }
 
     private static Matcher<PsiElement> hasParentOfType(final Class<? extends PsiElement> expectedPsiElement) {

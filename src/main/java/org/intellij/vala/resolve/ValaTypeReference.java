@@ -1,7 +1,12 @@
 package org.intellij.vala.resolve;
 
+import com.intellij.openapi.roots.ContentIterator;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.intellij.vala.psi.ValaClassDeclaration;
@@ -22,8 +27,38 @@ public class ValaTypeReference extends PsiReferenceBase<ValaTypeWeak> {
     @Nullable
     @Override
     public PsiElement resolve() {
-        ValaFile file = PsiTreeUtil.getParentOfType(myElement, ValaFile.class);
-        List<ValaClassDeclaration> classDeclarations = PsiTreeUtil.getChildrenOfTypeAsList(file, ValaClassDeclaration.class);
+        PsiManager psiManager = PsiManager.getInstance(myElement.getProject());
+        ProjectRootManager projectRootManager = ProjectRootManager.getInstance(myElement.getProject());
+        ClassFindingIterator iterator = new ClassFindingIterator(psiManager);
+        projectRootManager.getFileIndex().iterateContent(iterator);
+        return iterator.getMatch();
+    }
+
+    private class ClassFindingIterator implements ContentIterator {
+
+        public ClassFindingIterator(PsiManager psiManager) {
+            this.psiManager = psiManager;
+        }
+
+        private PsiManager psiManager;
+        private PsiElement match;
+
+        @Override
+        public boolean processFile(VirtualFile virtualFile) {
+            PsiFile file = psiManager.findFile(virtualFile);
+            if (file instanceof ValaFile) {
+                match = findMatchIn(file);
+            }
+            return match == null;
+        }
+
+        public PsiElement getMatch() {
+            return match;
+        }
+    }
+
+    private PsiElement findMatchIn(PsiFile psiFile) {
+        List<ValaClassDeclaration> classDeclarations = PsiTreeUtil.getChildrenOfTypeAsList(psiFile, ValaClassDeclaration.class);
         for (ValaClassDeclaration classDeclaration : classDeclarations) {
             if (classDeclaration.getSymbol().getText().equals(myElement.getSymbol().getText())) {
                 return classDeclaration;
