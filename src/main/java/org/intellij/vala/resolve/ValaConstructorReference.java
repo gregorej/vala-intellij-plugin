@@ -21,7 +21,8 @@ public class ValaConstructorReference extends PsiReferenceBase<ValaObjectOrArray
 
     private static TextRange calculateRange(ValaObjectOrArrayCreationExpression expression) {
         ValaMemberPart memberPart = expression.getMember().getMemberPartList().get(0);
-        return memberPart.getTextRange();
+        int offset = memberPart.getTextOffset() - expression.getTextOffset();
+        return new TextRange(offset, offset + memberPart.getName().length());
     }
 
     @Nullable
