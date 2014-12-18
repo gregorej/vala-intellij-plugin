@@ -18,7 +18,9 @@
     <fileTypeFactory implementation="org.intellij.vala.ValaFileTypeFactory"/>
     <lang.parserDefinition language="Vala" implementationClass="org.intellij.vala.parser.ValaParserDefinition"/>
     <lang.syntaxHighlighterFactory key="Vala" implementationClass="org.intellij.vala.highlighting.ValaSyntaxHighlighterFactory"/>
+    <lang.braceMatcher language="Vala" implementationClass="org.intellij.vala.braces.ValaBraceMatcher"/>
     <createFromTemplateHandler order="first" implementation="org.intellij.vala.actions.ValaCreateFromTemplateHandler"/>
+    <completion.contributor language="Vala" implementationClass="org.intellij.vala.completion.ValaCompletionContributor"/>
   </extensions>
 
   <application-components>

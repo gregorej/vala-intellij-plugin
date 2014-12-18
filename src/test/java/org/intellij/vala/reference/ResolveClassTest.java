@@ -9,8 +9,7 @@ import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.intellij.vala.psi.PsiMatchers.hasName;
-import static org.intellij.vala.psi.PsiMatchers.isInFile;
+import static org.intellij.vala.psi.PsiMatchers.*;
 import static org.junit.Assert.assertThat;
 
 public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
@@ -31,8 +30,8 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
 
         PsiElement elementAtCaret = myFixture.getFile().findElementAt(myFixture.getCaretOffset());
 
-        assertThat(myFixture.getFile(), PsiMatchers.hasNoErrors());
-        assertThat(elementAtCaret, PsiMatchers.hasParentOfType(ValaFieldDeclaration.class));
+        assertThat(myFixture.getFile(), hasNoErrors());
+        assertThat(elementAtCaret, hasParentOfType(ValaFieldDeclaration.class));
     }
 
     public void testResolveClassDefinitionInSameFile() {
