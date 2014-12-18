@@ -70,7 +70,7 @@
     KEY_BASE="base"
     KEY_THIS="this"
     KEY_NEW="new"
-    KEY_NEW="out"
+    KEY_OUT="out"
     KEY_INTERFACE="interface"
     KEY_STRUCT="struct"
     KEY_STRUCT="params"
@@ -112,11 +112,12 @@
   extends(".*expression")=expression
   extends(".*statement|local_variable_declarations|block")=statement
   extends("namespace_declaration|class_declaration|interface_declaration|struct_declaration|enum_declaration|errordomain_declaration|method_declaration|field_declaration|constant_declaration")=namespace_member
+  implements("class_declaration|simple_name|symbol_part|member_part|method_declaration") = "com.intellij.psi.PsiNamedElement"
 }
 
 vala_module ::= using_directive * namespace_member *
 symbol ::= symbol_part ( "." symbol_part )*
-symbol_part ::= "string" | "int" | ( "global::" identifier ) | identifier
+symbol_part ::= "string" | "int" | ( "global::" identifier ) | identifier {methods=[getName setName]}
 
 using_directive ::= "using" symbol ( "," symbol )* ";"
 namespace_member ::= attributes?
@@ -162,13 +163,13 @@ primary_expression ::= ( literal | initializer | tuple | template | this_access 
                          post_increment_expression | post_decrement_expression )*
 sizeof_expression ::= "sizeof" "(" type ")"
 typeof_expression ::= "typeof" "(" type ")"
-simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference]}
+simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference getName setName]}
 
 literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal
 private string_literal ::= string
 member_access ::= "." member
 member ::= member_part ( "." member_part )*
-member_part ::= ( "global::" identifier | identifier ) type_arguments?
+member_part ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getName setName]}
 template ::= '@"' ( expression "," )* '"'
 
 // get_unary_operator
@@ -191,7 +192,7 @@ constructor_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "
 
 destructor_declaration ::= constructor_declaration_modifiers? "~" "(" ")" block
 
-class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? "{" class_member* "}"
+class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? "{" class_member* "}" {methods=[getName setName]}
 
 base_types ::= type ( "," type )*
 
@@ -257,7 +258,7 @@ signal_declaration_modifiers ::= signal_declaration_modifier ( " " signal_declar
 signal_declaration_modifier ::= "async" | "extern" | "inline" | "abstract" | "virtual" | "override" | "new"
 
 method_declaration ::= access_modifier? member_declaration_modifier? type identifier type_parameters?
-                       "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )
+                       "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )  {methods=[getName setName]}
 constant_declaration ::= access_modifier? member_declaration_modifiers? "const" type identifier inline_array_type?
                          ("=" expression )? ";"
 field_declaration ::= access_modifier? member_declaration_modifiers? type_weak identifier ( "=" expression )? ";"
@@ -275,8 +276,7 @@ property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "ab
 tuple ::= "(" expression ( "," expression )* ")"
 this_access ::= "this"
 base_access ::= "base"
-object_access ::= identifier
-object_or_array_creation_expression ::= "new" member ( object_creation_expression | array_creation_expression )
+object_or_array_creation_expression ::= "new" member ( object_creation_expression | array_creation_expression ) {methods=[getReference]}
 object_creation_expression ::= "(" ( arguments )? ")" ( object_initializer )?
 object_initializer ::= "{" member_initializer ( "," member_initializer )? "}"
 member_initializer ::= identifier "=" expression
