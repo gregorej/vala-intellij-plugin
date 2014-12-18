@@ -186,7 +186,6 @@ member_declaration_modifiers ::= member_declaration_modifier ( " " member_declar
 member_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override" | "new"
 
 constructor_declaration ::= constructor_declaration_modifiers? "construct" block
-
 constructor_declaration_modifiers ::= constructor_declaration_modifier ( " " constructor_declaration_modifier )*
 constructor_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override"
 
@@ -207,6 +206,7 @@ class_member ::= attributes?
                    constant_declaration |
                    property_declaration |
                    constructor_declaration |
+                   creation_method_declaration |
                    destructor_declaration )
 
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
