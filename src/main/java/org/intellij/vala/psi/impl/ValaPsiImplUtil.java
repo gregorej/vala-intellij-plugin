@@ -9,6 +9,10 @@ import com.intellij.util.IncorrectOperationException;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.resolve.ValaConstructorReference;
 import org.intellij.vala.resolve.ValaTypeReference;
+import org.intellij.vala.resolve.method.ValaMethodReference;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ValaPsiImplUtil {
 
@@ -16,8 +20,16 @@ public class ValaPsiImplUtil {
         return null;
     }
 
-    public static PsiReference getReference(ValaSimpleName methodCall) {
+    public static PsiReference getReference(ValaSimpleName simpleName) {
+        if (isPartOfMethodCall(simpleName)) {
+            return new ValaMethodReference(simpleName);
+        }
         return null;
+    }
+
+    private static boolean isPartOfMethodCall(ValaSimpleName simpleName) {
+        ValaPrimaryExpression parent = (ValaPrimaryExpression) simpleName.getParent();
+        return !parent.getMethodCallList().isEmpty();
     }
 
     public static PsiReference getReference(ValaTypeWeak typeWeak) {
@@ -59,5 +71,17 @@ public class ValaPsiImplUtil {
 
     public static PsiReference getReference(ValaObjectOrArrayCreationExpression objectCreationExpression) {
         return new ValaConstructorReference(objectCreationExpression);
+    }
+
+    public static PsiReference getReference(ValaMemberPart memberPart) {
+        return null;
+    }
+
+    public static List<ValaMethodDeclaration> getMethodDeclarations(ValaClassDeclaration classDeclaration) {
+        return ClassDeclarationUtil.getMethodDeclarations(classDeclaration);
+    }
+
+    public static List<ValaNamespaceMember> getNamespaceMemberList(ValaClassDeclaration classDeclaration) {
+        return ClassDeclarationUtil.getNamespaceMemberList(classDeclaration);
     }
 }

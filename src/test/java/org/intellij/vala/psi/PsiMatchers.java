@@ -2,6 +2,7 @@ package org.intellij.vala.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.hamcrest.CustomTypeSafeMatcher;
 import org.hamcrest.Matcher;
@@ -46,7 +47,7 @@ public final class PsiMatchers {
         return element;
     }
 
-    public static Matcher<PsiElement> isInFile(final Matcher<? extends PsiFile> psiFileMatcher) {
+    public static Matcher<PsiElement> isInFile(final Matcher<? super PsiFile> psiFileMatcher) {
         return new CustomTypeSafeMatcher<PsiElement>("is contained in file that " + psiFileMatcher) {
 
             @Override
@@ -57,12 +58,14 @@ public final class PsiMatchers {
         };
     }
 
-    public static Matcher<PsiFile> hasName(final Matcher<String> name) {
-        return new CustomTypeSafeMatcher<PsiFile>("file with name " + name) {
+    public static Matcher<? super PsiElement> hasName(final Matcher<String> name) {
+        return new CustomTypeSafeMatcher<PsiElement>("file with name " + name) {
             @Override
-            protected boolean matchesSafely(PsiFile psiFile) {
-                return name.matches(psiFile.getVirtualFile().getName());
+            protected boolean matchesSafely(PsiElement psiFile) {
+                return psiFile instanceof PsiNamedElement && name.matches(((PsiNamedElement) psiFile).getName());
             }
         };
     }
+
+
 }

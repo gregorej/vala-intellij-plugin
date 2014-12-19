@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ValaFile extends PsiFileBase {
+public class ValaFile extends PsiFileBase implements ValaNamespaceLike {
     public ValaFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, ValaLanguage.INSTANCE);
     }
@@ -24,5 +24,11 @@ public class ValaFile extends PsiFileBase {
 
     public List<ValaNamespaceDeclaration> getNamespaces() {
         return PsiTreeUtil.getChildrenOfTypeAsList(this, ValaNamespaceDeclaration.class);
+    }
+
+    @NotNull
+    @Override
+    public List<ValaNamespaceMember> getNamespaceMemberList() {
+        return PsiTreeUtil.getChildrenOfTypeAsList(this, ValaNamespaceMember.class);
     }
 }
