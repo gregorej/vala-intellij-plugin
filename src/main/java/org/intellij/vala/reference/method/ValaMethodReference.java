@@ -1,4 +1,4 @@
-package org.intellij.vala.resolve.method;
+package org.intellij.vala.reference.method;
 
 
 import com.intellij.openapi.util.TextRange;

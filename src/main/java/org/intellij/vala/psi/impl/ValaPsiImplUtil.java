@@ -7,10 +7,9 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.intellij.vala.psi.*;
-import org.intellij.vala.resolve.ValaConstructorReference;
-import org.intellij.vala.resolve.ValaTypeReference;
-import org.intellij.vala.resolve.method.ValaMethodReference;
-import org.jetbrains.annotations.Nullable;
+import org.intellij.vala.reference.ValaConstructorReference;
+import org.intellij.vala.reference.ValaTypeReference;
+import org.intellij.vala.reference.method.ValaMethodReference;
 
 import java.util.List;
 
