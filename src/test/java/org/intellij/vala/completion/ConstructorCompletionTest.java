@@ -1,13 +1,8 @@
 package org.intellij.vala.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.testFramework.PlatformTestCase;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
-import org.hamcrest.Matchers;
-
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 
 public class ConstructorCompletionTest extends LightPlatformCodeInsightFixtureTestCase {

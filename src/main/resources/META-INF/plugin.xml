@@ -21,6 +21,8 @@
     <lang.braceMatcher language="Vala" implementationClass="org.intellij.vala.braces.ValaBraceMatcher"/>
     <createFromTemplateHandler order="first" implementation="org.intellij.vala.actions.ValaCreateFromTemplateHandler"/>
     <completion.contributor language="Vala" implementationClass="org.intellij.vala.completion.ValaCompletionContributor"/>
+    <stubElementTypeHolder class="org.intellij.vala.psi.ValaTypes"/>
+    <stubIndex implementation="org.intellij.vala.psi.ClassNameIndex" />
   </extensions>
 
   <application-components>

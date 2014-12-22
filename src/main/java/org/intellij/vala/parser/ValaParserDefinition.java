@@ -9,10 +9,12 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import org.intellij.vala.ValaLanguage;
+import org.intellij.vala.ValaLanguageFileType;
 import org.intellij.vala.lexer.ValaLexer;
+import org.intellij.vala.psi.ValaElementType;
 import org.intellij.vala.psi.ValaFile;
 import org.intellij.vala.psi.ValaTypes;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +23,6 @@ public class ValaParserDefinition implements ParserDefinition {
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
 
     public static final TokenSet COMMENTS = TokenSet.EMPTY;
-
-    public static final IFileElementType FILE = new IFileElementType(ValaLanguage.INSTANCE);
 
     public static final TokenSet STRINGS = TokenSet.create(ValaTypes.STRING);
 
@@ -39,7 +39,7 @@ public class ValaParserDefinition implements ParserDefinition {
 
     @Override
     public IFileElementType getFileNodeType() {
-        return FILE;
+        return ValaLanguageFileType.FILE;
     }
 
     @NotNull
@@ -64,6 +64,15 @@ public class ValaParserDefinition implements ParserDefinition {
     @Override
     public PsiElement createElement(ASTNode astNode) {
         return ValaTypes.Factory.createElement(astNode);
+    }
+
+    @NotNull
+    public static IElementType createElementType(String string) {
+        if ("CLASS_DECLARATION".equals(string)) {
+            return new ValaClassDeclarationStubElementType();
+        } else {
+            return new ValaElementType(string);
+        }
     }
 
     @Override

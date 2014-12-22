@@ -1,5 +1,6 @@
 package org.intellij.vala.psi;
 
+import com.google.common.collect.ImmutableList;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
@@ -24,6 +25,17 @@ public class ValaFile extends PsiFileBase implements ValaNamespaceLike {
 
     public List<ValaNamespaceDeclaration> getNamespaces() {
         return PsiTreeUtil.getChildrenOfTypeAsList(this, ValaNamespaceDeclaration.class);
+    }
+
+    @NotNull
+    public List<ValaClassDeclaration> getDeclaredClasses() {
+        ImmutableList.Builder<ValaClassDeclaration> declarations = ImmutableList.builder();
+        for (ValaNamespaceMember member : getNamespaceMemberList()) {
+            if (member.getClassDeclaration() != null) {
+                declarations.add(member.getClassDeclaration());
+            }
+        }
+        return declarations.build();
     }
 
     @NotNull

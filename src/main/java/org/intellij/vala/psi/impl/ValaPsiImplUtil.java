@@ -4,6 +4,7 @@ package org.intellij.vala.psi.impl;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.intellij.vala.psi.*;
@@ -78,6 +79,10 @@ public class ValaPsiImplUtil {
 
     public static List<ValaMethodDeclaration> getMethodDeclarations(ValaClassDeclaration classDeclaration) {
         return ClassDeclarationUtil.getMethodDeclarations(classDeclaration);
+    }
+
+    public static String toString(StubBasedPsiElement<?> element) {
+        return element.getClass().getSimpleName() + "(" + element.getElementType().toString() + ")";
     }
 
     public static List<ValaNamespaceMember> getNamespaceMemberList(ValaClassDeclaration classDeclaration) {

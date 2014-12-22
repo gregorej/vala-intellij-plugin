@@ -15,7 +15,7 @@
   psiImplUtilClass="org.intellij.vala.psi.impl.ValaPsiImplUtil"
 
   elementTypeHolderClass="org.intellij.vala.psi.ValaTypes"
-  elementTypeClass="org.intellij.vala.psi.ValaElementType"
+  elementTypeFactory="org.intellij.vala.parser.ValaParserDefinition.createElementType"
   tokenTypeClass="org.intellij.vala.psi.ValaTokenType"
 
   tokens = [
@@ -111,7 +111,7 @@
   extends("expression")=argument
   extends(".*expression")=expression
   extends(".*statement|local_variable_declarations|block")=statement
-  extends("namespace_declaration|class_declaration|interface_declaration|struct_declaration|enum_declaration|errordomain_declaration|method_declaration|field_declaration|constant_declaration")=namespace_member
+  extends("namespace_declaration|interface_declaration|struct_declaration|enum_declaration|errordomain_declaration|method_declaration|field_declaration|constant_declaration")=namespace_member
   implements("simple_name|symbol_part|member_part|method_declaration") = "com.intellij.psi.PsiNamedElement"
   implements("namespace_declaration|class_declaration") = "org.intellij.vala.psi.ValaNamespaceLike"
 }
@@ -192,7 +192,11 @@ constructor_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "
 
 destructor_declaration ::= constructor_declaration_modifiers? "~" "(" ")" block
 
-class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? "{" class_member* "}" {methods=[getName setName getMethodDeclarations getNamespaceMemberList]}
+class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? "{" class_member* "}"
+{
+    methods=[getName setName getMethodDeclarations getNamespaceMemberList toString]
+    stubClass="org.intellij.vala.psi.stub.ValaClassDeclarationStub"
+}
 
 base_types ::= type ( "," type )*
 

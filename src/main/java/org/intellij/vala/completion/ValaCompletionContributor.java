@@ -6,11 +6,13 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.intellij.vala.psi.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
@@ -50,10 +52,8 @@ public class ValaCompletionContributor extends CompletionContributor {
     }
 
     private static void addResultsForClassesIn(CompletionResultSet result, ValaFile containingNamespace) {
-        for (ValaNamespaceMember member : containingNamespace.getNamespaceMemberList()) {
-            if (member instanceof ValaClassDeclaration) {
-                result.addElement(LookupElementBuilder.create(((ValaClassDeclaration) member).getName()));
-            }
+        for (ValaClassDeclaration declaration : containingNamespace.getDeclaredClasses()) {
+            result.addElement(LookupElementBuilder.create(declaration.getName()));
         }
     }
 }

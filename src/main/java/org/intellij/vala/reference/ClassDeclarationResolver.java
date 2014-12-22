@@ -45,7 +45,7 @@ public class ClassDeclarationResolver {
         public boolean processFile(VirtualFile virtualFile) {
             PsiFile file = psiManager.findFile(virtualFile);
             if (file instanceof ValaFile) {
-                match = findMatchIn(file, name);
+                match = findMatchIn((ValaFile) file, name);
             }
             return match == null;
         }
@@ -55,9 +55,8 @@ public class ClassDeclarationResolver {
         }
     }
 
-    private ValaClassDeclaration findMatchIn(PsiFile psiFile, String name) {
-        List<ValaClassDeclaration> classDeclarations = PsiTreeUtil.getChildrenOfTypeAsList(psiFile, ValaClassDeclaration.class);
-        for (ValaClassDeclaration classDeclaration : classDeclarations) {
+    private ValaClassDeclaration findMatchIn(ValaFile psiFile, String name) {
+        for (ValaClassDeclaration classDeclaration : psiFile.getDeclaredClasses()) {
             if (classDeclaration.getSymbol().getText().equals(name)) {
                 return classDeclaration;
             }
