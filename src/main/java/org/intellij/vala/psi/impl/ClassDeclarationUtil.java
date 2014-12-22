@@ -27,6 +27,7 @@ public class ClassDeclarationUtil {
         return declarations.build();
     }
 
+    @NotNull
     public static List<ValaNamespaceMember> getNamespaceMemberList(ValaClassDeclaration valaClassDeclaration) {
         return getMembersOfType(valaClassDeclaration, ValaNamespaceMember.class);
     }

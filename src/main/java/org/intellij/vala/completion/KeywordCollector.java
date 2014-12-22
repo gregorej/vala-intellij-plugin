@@ -10,7 +10,12 @@ import java.util.List;
 import static org.intellij.vala.lexer.ValaLexer.KEYWORDS;
 
 public class KeywordCollector {
+
     public List<LookupElement> getProposedLookUpItems() {
+        return getLookupElements();
+    }
+
+    private static List<LookupElement> getLookupElements() {
         List<LookupElement> result = new LinkedList<LookupElement>();
         for (IElementType keywordTokenType : KEYWORDS.getTypes()) {
             result.add(LookupElementBuilder.create(keywordTokenType.toString()).bold());
