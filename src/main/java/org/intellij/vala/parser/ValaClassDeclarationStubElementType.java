@@ -26,12 +26,12 @@ public class ValaClassDeclarationStubElementType extends ILightStubElementType<V
     }
 
     @Override
-    public ValaClassDeclaration createPsi(ValaClassDeclarationStub valaNamespaceLikeStub) {
+    public ValaClassDeclaration createPsi(@NotNull ValaClassDeclarationStub valaNamespaceLikeStub) {
         return new ValaClassDeclarationImpl(valaNamespaceLikeStub, (IStubElementType) ValaTypes.CLASS_DECLARATION);
     }
 
     @Override
-    public ValaClassDeclarationStub createStub(ValaClassDeclaration classDeclaration, StubElement parent) {
+    public ValaClassDeclarationStub createStub(@NotNull ValaClassDeclaration classDeclaration, StubElement parent) {
         return new ValaClassDeclarationStubImpl(parent, classDeclaration.getName());
     }
 

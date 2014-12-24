@@ -1,15 +1,13 @@
 package org.intellij.vala.completion;
 
-import com.google.common.collect.ImmutableList;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ProcessingContext;
-import org.intellij.vala.psi.ClassNameIndex;
 import org.intellij.vala.psi.ValaClassDeclaration;
 import org.intellij.vala.psi.ValaFile;
 import org.intellij.vala.psi.ValaTypes;
+import org.intellij.vala.reference.ClassDeclarationResolver;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -39,27 +37,23 @@ public class ValaCompletionContributor extends CompletionContributor {
 
     private void extendForConstructors() {
         extend(CompletionType.BASIC, psiElement().withSuperParent(3, psiElement(ValaTypes.OBJECT_OR_ARRAY_CREATION_EXPRESSION)),
-                new CompletionProvider<CompletionParameters>() {
-                    @Override
-                    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet result) {
-                        final Project project = parameters.getOriginalFile().getProject();
-                        final String classNamePrefix = parameters.getOriginalPosition().getText();
-                        final List<ValaClassDeclaration> declarations = getAllClassesWithNameStartingWith(project, classNamePrefix);
-                        addResultsForClasses(declarations, result);
-                    }
-                });
+                completeConstructorNames());
+    }
+
+    private CompletionProvider<CompletionParameters> completeConstructorNames() {
+        return new CompletionProvider<CompletionParameters>() {
+            @Override
+            protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet result) {
+                final Project project = parameters.getOriginalFile().getProject();
+                final String classNamePrefix = parameters.getOriginalPosition().getText();
+                final List<ValaClassDeclaration> declarations = getAllClassesWithNameStartingWith(project, classNamePrefix);
+                addResultsForClasses(declarations, result);
+            }
+        };
     }
 
     private List<ValaClassDeclaration> getAllClassesWithNameStartingWith(Project project, String namePrefix) {
-        final GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-        final ClassNameIndex index = ClassNameIndex.getInstance();
-        ImmutableList.Builder<ValaClassDeclaration> declarations = ImmutableList.builder();
-        for (String name : index.getAllKeys(project)) {
-            if (name.startsWith(namePrefix)) {
-                declarations.addAll(index.get(name, project, scope));
-            }
-        }
-        return declarations.build();
+        return new ClassDeclarationResolver(project).getAllClassesWithNameStartingWith(namePrefix);
     }
 
     private static void addResultsForClasses(Iterable<ValaClassDeclaration> classes, CompletionResultSet resultSet) {

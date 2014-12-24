@@ -4,18 +4,15 @@ package org.intellij.vala.reference;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ContentIterator;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.intellij.vala.psi.ClassNameIndex;
 import org.intellij.vala.psi.ValaClassDeclaration;
-import org.intellij.vala.psi.ValaFile;
 
 import java.util.List;
+
+import static org.hamcrest.Matchers.equalTo;
 
 public class ClassDeclarationResolver {
 
@@ -29,12 +26,20 @@ public class ClassDeclarationResolver {
         return Iterables.getFirst(getAllClassesWithName(name), null);
     }
 
+    public List<ValaClassDeclaration> getAllClassesWithNameStartingWith(String namePrefix) {
+        return getAllClassesWithNameThat(Matchers.startsWith(namePrefix));
+    }
+
     private List<ValaClassDeclaration> getAllClassesWithName(String expectedName) {
+        return getAllClassesWithNameThat(equalTo(expectedName));
+    }
+
+    private List<ValaClassDeclaration> getAllClassesWithNameThat(Matcher<String> matches) {
         final GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         final ClassNameIndex index = ClassNameIndex.getInstance();
         ImmutableList.Builder<ValaClassDeclaration> declarations = ImmutableList.builder();
         for (String name : index.getAllKeys(project)) {
-            if (name.equals(expectedName)) {
+            if (matches.matches(name)) {
                 declarations.addAll(index.get(name, project, scope));
             }
         }
