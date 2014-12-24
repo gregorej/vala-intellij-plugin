@@ -1,18 +1,17 @@
 package org.intellij.vala.completion;
 
+import com.google.common.collect.ImmutableList;
 import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import org.intellij.vala.psi.*;
+import org.intellij.vala.psi.ClassNameIndex;
+import org.intellij.vala.psi.ValaClassDeclaration;
+import org.intellij.vala.psi.ValaFile;
+import org.intellij.vala.psi.ValaTypes;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
@@ -43,17 +42,29 @@ public class ValaCompletionContributor extends CompletionContributor {
                 new CompletionProvider<CompletionParameters>() {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet result) {
-                        ValaFile containingNamespace = PsiTreeUtil.getParentOfType(parameters.getOriginalPosition(), ValaFile.class, false);
-                        if (containingNamespace != null) {
-                            addResultsForClassesIn(result, containingNamespace);
-                        }
+                        final Project project = parameters.getOriginalFile().getProject();
+                        final String classNamePrefix = parameters.getOriginalPosition().getText();
+                        final List<ValaClassDeclaration> declarations = getAllClassesWithNameStartingWith(project, classNamePrefix);
+                        addResultsForClasses(declarations, result);
                     }
                 });
     }
 
-    private static void addResultsForClassesIn(CompletionResultSet result, ValaFile containingNamespace) {
-        for (ValaClassDeclaration declaration : containingNamespace.getDeclaredClasses()) {
-            result.addElement(LookupElementBuilder.create(declaration.getName()));
+    private List<ValaClassDeclaration> getAllClassesWithNameStartingWith(Project project, String namePrefix) {
+        final GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+        final ClassNameIndex index = ClassNameIndex.getInstance();
+        ImmutableList.Builder<ValaClassDeclaration> declarations = ImmutableList.builder();
+        for (String name : index.getAllKeys(project)) {
+            if (name.startsWith(namePrefix)) {
+                declarations.addAll(index.get(name, project, scope));
+            }
+        }
+        return declarations.build();
+    }
+
+    private static void addResultsForClasses(Iterable<ValaClassDeclaration> classes, CompletionResultSet resultSet) {
+        for (ValaClassDeclaration declaration : classes) {
+            resultSet.addElement(LookupElementBuilder.create(declaration.getName()));
         }
     }
 }
