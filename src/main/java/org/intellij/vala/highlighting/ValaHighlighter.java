@@ -6,8 +6,8 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
-import org.intellij.vala.psi.ValaTypes;
 import org.intellij.vala.lexer.ValaLexer;
+import org.intellij.vala.psi.ValaTypes;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;

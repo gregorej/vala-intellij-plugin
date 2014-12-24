@@ -28,7 +28,7 @@ public class ValaConstructorReference extends PsiReferenceBase<ValaObjectOrArray
     @Nullable
     @Override
     public PsiElement resolve() {
-        List<ValaMemberPart> parts= myElement.getMember().getMemberPartList();
+        List<ValaMemberPart> parts = myElement.getMember().getMemberPartList();
         String className = parts.get(0).getName();
         ValaClassDeclaration classDeclaration = resolver.resolve(className);
         if (parts.size() > 1) {

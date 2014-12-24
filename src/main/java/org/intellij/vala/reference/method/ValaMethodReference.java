@@ -6,7 +6,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.intellij.vala.psi.*;
+import org.intellij.vala.psi.ValaMethodDeclaration;
+import org.intellij.vala.psi.ValaNamespaceLike;
+import org.intellij.vala.psi.ValaNamespaceMember;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

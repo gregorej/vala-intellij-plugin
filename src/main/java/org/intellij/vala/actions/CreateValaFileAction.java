@@ -52,7 +52,7 @@ public class CreateValaFileAction extends CreateFileFromTemplateAction implement
 
             @Override
             public boolean canClose(String inputString) {
-                return ! StringUtil.isEmptyOrSpaces(inputString) && getErrorText(inputString) == null;
+                return !StringUtil.isEmptyOrSpaces(inputString) && getErrorText(inputString) == null;
             }
 
             @Override

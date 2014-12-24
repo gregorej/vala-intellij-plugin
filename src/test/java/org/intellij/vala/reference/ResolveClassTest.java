@@ -6,9 +6,7 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 import org.intellij.vala.psi.*;
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 import static org.intellij.vala.psi.PsiMatchers.*;
 import static org.junit.Assert.assertThat;
 

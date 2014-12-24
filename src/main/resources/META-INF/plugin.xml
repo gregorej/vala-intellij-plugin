@@ -1,41 +1,44 @@
 <idea-plugin version="2">
-  <id>org.gregorej.intellij.vala</id>
-  <name>Vala support plugin</name>
-  <version>0.0.1</version>
-  <vendor email="grzegorz.dyk@gmail.com" url="http://www.yourcompany.com">Grzegorz Dyk</vendor>
+    <id>org.gregorej.intellij.vala</id>
+    <name>Vala support plugin</name>
+    <version>0.0.1</version>
+    <vendor email="grzegorz.dyk@gmail.com" url="http://www.yourcompany.com">Grzegorz Dyk</vendor>
 
-  <description>Support for Vala programming language</description>
+    <description>Support for Vala programming language</description>
 
-  <change-notes/>
+    <change-notes/>
 
-  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="131"/>
+    <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="131"/>
 
-  <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.lang</depends>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
-    <fileTypeFactory implementation="org.intellij.vala.ValaFileTypeFactory"/>
-    <lang.parserDefinition language="Vala" implementationClass="org.intellij.vala.parser.ValaParserDefinition"/>
-    <lang.syntaxHighlighterFactory key="Vala" implementationClass="org.intellij.vala.highlighting.ValaSyntaxHighlighterFactory"/>
-    <lang.braceMatcher language="Vala" implementationClass="org.intellij.vala.braces.ValaBraceMatcher"/>
-    <createFromTemplateHandler order="first" implementation="org.intellij.vala.actions.ValaCreateFromTemplateHandler"/>
-    <completion.contributor language="Vala" implementationClass="org.intellij.vala.completion.ValaCompletionContributor"/>
-    <stubElementTypeHolder class="org.intellij.vala.psi.ValaTypes"/>
-    <stubIndex implementation="org.intellij.vala.psi.ClassNameIndex" />
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
+        <fileTypeFactory implementation="org.intellij.vala.ValaFileTypeFactory"/>
+        <lang.parserDefinition language="Vala" implementationClass="org.intellij.vala.parser.ValaParserDefinition"/>
+        <lang.syntaxHighlighterFactory key="Vala"
+                                       implementationClass="org.intellij.vala.highlighting.ValaSyntaxHighlighterFactory"/>
+        <lang.braceMatcher language="Vala" implementationClass="org.intellij.vala.braces.ValaBraceMatcher"/>
+        <createFromTemplateHandler order="first"
+                                   implementation="org.intellij.vala.actions.ValaCreateFromTemplateHandler"/>
+        <completion.contributor language="Vala"
+                                implementationClass="org.intellij.vala.completion.ValaCompletionContributor"/>
+        <stubElementTypeHolder class="org.intellij.vala.psi.ValaTypes"/>
+        <stubIndex implementation="org.intellij.vala.psi.ClassNameIndex"/>
+    </extensions>
 
-  <application-components>
-  </application-components>
+    <application-components>
+    </application-components>
 
-  <project-components>
-  </project-components>
+    <project-components>
+    </project-components>
 
-  <actions>
-    <action id="Vala.NewValaFile" class="org.intellij.vala.actions.CreateValaFileAction"
-            text="Vala File" description="Create new Vala file">
-      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
-    </action>
-  </actions>
+    <actions>
+        <action id="Vala.NewValaFile" class="org.intellij.vala.actions.CreateValaFileAction"
+                text="Vala File" description="Create new Vala file">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
+    </actions>
 
 </idea-plugin>

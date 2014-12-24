@@ -1,6 +1,5 @@
 package org.intellij.vala.psi;
 
-import com.intellij.lang.Language;
 import com.intellij.psi.tree.IElementType;
 import org.intellij.vala.ValaLanguage;
 

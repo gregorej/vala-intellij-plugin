@@ -40,7 +40,8 @@ public class ValaCreateFromTemplateHandler extends DefaultCreateFromTemplateHand
     }
 
     private String getExtension(FileTemplate template) {
-        if (template.getName().equals(VALA_GENERIC_SOURCE_FILE + DEFAULT_EXTENSION_WITH_DOT)) return ValaLanguageFileType.DEFAULT_EXTENSION;
+        if (template.getName().equals(VALA_GENERIC_SOURCE_FILE + DEFAULT_EXTENSION_WITH_DOT))
+            return ValaLanguageFileType.DEFAULT_EXTENSION;
         return template.getExtension();
     }
 

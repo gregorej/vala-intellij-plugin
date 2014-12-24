@@ -7,9 +7,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class ValaLexerTest {
@@ -78,7 +76,7 @@ public class ValaLexerTest {
 
     @Test
     public void shouldRecognizeClassKeyword() throws IOException {
-         valaLexer.start("class");
+        valaLexer.start("class");
 
         assertThat(valaLexer.getTokenType(), is(ValaTypes.KEY_CLASS));
     }

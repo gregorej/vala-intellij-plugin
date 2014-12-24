@@ -7,9 +7,7 @@ import org.intellij.vala.psi.ValaMethodDeclaration;
 import org.intellij.vala.psi.ValaSimpleName;
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 import static org.intellij.vala.psi.PsiMatchers.hasName;
 import static org.junit.Assert.assertThat;
 
@@ -38,7 +36,6 @@ public class ResolveMethodDeclaration extends LightPlatformCodeInsightFixtureTes
 
         assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName(equalTo("run"))));
     }
-
 
 
     private PsiElement getElementOfTypeAtCaret(Class<? extends PsiElement> elementType) {
