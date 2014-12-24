@@ -6,17 +6,17 @@ import com.google.common.collect.Iterables;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 import org.intellij.vala.psi.ClassNameIndex;
 import org.intellij.vala.psi.ValaClassDeclaration;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.startsWith;
 
 public class ClassDeclarationResolver {
 
-    private Project project;
+    private final Project project;
 
     public ClassDeclarationResolver(Project project) {
         this.project = project;
@@ -27,7 +27,7 @@ public class ClassDeclarationResolver {
     }
 
     public List<ValaClassDeclaration> getAllClassesWithNameStartingWith(String namePrefix) {
-        return getAllClassesWithNameThat(Matchers.startsWith(namePrefix));
+        return getAllClassesWithNameThat(startsWith(namePrefix));
     }
 
     private List<ValaClassDeclaration> getAllClassesWithName(String expectedName) {

@@ -29,4 +29,12 @@ public class ConstructorCompletionTest extends LightPlatformCodeInsightFixtureTe
 
         myFixture.checkResultByFile("ConstructorCompletionAfter.vala");
     }
+
+    public void testCompleteVariableTypeReferencingToClassInSameFile() {
+        myFixture.configureByFiles("VariableTypeCompletionBefore.vala");
+
+        myFixture.complete(CompletionType.BASIC, SINGLE_INVOCATION);
+
+        myFixture.checkResultByFile("VariableTypeCompletionAfter.vala");
+    }
 }

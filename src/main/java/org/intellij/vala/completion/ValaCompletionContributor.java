@@ -22,6 +22,7 @@ public class ValaCompletionContributor extends CompletionContributor {
     public ValaCompletionContributor() {
         extendForKeywords();
         extendForConstructors();
+        extendForVariables();
     }
 
     private void extendForKeywords() {
@@ -37,6 +38,11 @@ public class ValaCompletionContributor extends CompletionContributor {
 
     private void extendForConstructors() {
         extend(CompletionType.BASIC, psiElement().withSuperParent(3, psiElement(ValaTypes.OBJECT_OR_ARRAY_CREATION_EXPRESSION)),
+                completeConstructorNames());
+    }
+
+    private void extendForVariables() {
+        extend(CompletionType.BASIC, psiElement().inFile(instanceOf(ValaFile.class)),
                 completeConstructorNames());
     }
 
