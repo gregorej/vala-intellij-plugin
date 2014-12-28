@@ -196,7 +196,7 @@ destructor_declaration ::= constructor_declaration_modifiers? "~" "(" ")" block
 
 class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? "{" class_member* "}"
 {
-    methods=[getName setName getMethodDeclarations getNamespaceMemberList toString getDeclarations]
+    methods=[getName setName getMethodDeclarations getNamespaceMemberList toString getDeclarations getQName]
     stubClass="org.intellij.vala.psi.stub.ValaClassDeclarationStub"
 }
 
@@ -240,7 +240,7 @@ interface_member ::= attributes?
                        constant_declaration |
                        property_declaration )
 
-namespace_declaration ::= "namespace" symbol "{" using_directive* namespace_member* "}" {methods=[getDeclarations]}
+namespace_declaration ::= "namespace" symbol "{" using_directive* namespace_member* "}" {methods=[getDeclarations getQName]}
 struct_declaration ::= access_modifier? type_declaration_modifiers? "struct" symbol ( ":" base_types )? "{" struct_member* "}"
 struct_member ::= attributes? ( method_declaration | field_declaration | constant_declaration | property_declaration )
 
@@ -265,7 +265,7 @@ signal_declaration_modifiers ::= signal_declaration_modifier ( " " signal_declar
 signal_declaration_modifier ::= "async" | "extern" | "inline" | "abstract" | "virtual" | "override" | "new"
 
 method_declaration ::= access_modifier? member_declaration_modifier? type identifier type_parameters?
-                       "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )  {methods=[getName setName]}
+                       "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )  {methods=[getName setName getQName]}
 constant_declaration ::= access_modifier? member_declaration_modifiers? "const" type identifier inline_array_type?
                          ("=" expression )? ";"
 field_declaration ::= access_modifier? member_declaration_modifiers? type_weak identifier ( "=" expression )? ";"

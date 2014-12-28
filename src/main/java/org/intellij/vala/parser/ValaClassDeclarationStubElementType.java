@@ -6,8 +6,10 @@ import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
 import org.intellij.vala.ValaLanguage;
 import org.intellij.vala.psi.ClassNameIndex;
+import org.intellij.vala.psi.QualifiedName;
 import org.intellij.vala.psi.ValaClassDeclaration;
 import org.intellij.vala.psi.ValaTypes;
+import org.intellij.vala.psi.impl.QualifiedNameBuilder;
 import org.intellij.vala.psi.impl.ValaClassDeclarationImpl;
 import org.intellij.vala.psi.stub.ValaClassDeclarationStub;
 import org.intellij.vala.psi.stub.impl.ValaClassDeclarationStubImpl;
@@ -22,7 +24,7 @@ public class ValaClassDeclarationStubElementType extends ILightStubElementType<V
 
     @Override
     public ValaClassDeclarationStub createStub(LighterAST lighterAST, LighterASTNode lighterASTNode, StubElement parentStub) {
-        return new ValaClassDeclarationStubImpl(parentStub, "MyClass");
+        return new ValaClassDeclarationStubImpl(parentStub, QualifiedNameBuilder.nameOf("MyClass"));
     }
 
     @Override
@@ -32,7 +34,12 @@ public class ValaClassDeclarationStubElementType extends ILightStubElementType<V
 
     @Override
     public ValaClassDeclarationStub createStub(@NotNull ValaClassDeclaration classDeclaration, StubElement parent) {
-        return new ValaClassDeclarationStubImpl(parent, classDeclaration.getName());
+        return new ValaClassDeclarationStubImpl(parent, classDeclaration.getQName());
+    }
+
+    @Override
+    public void serialize(@NotNull ValaClassDeclarationStub valaNamespaceLikeStub, @NotNull StubOutputStream stubOutputStream) throws IOException {
+        valaNamespaceLikeStub.getQName().write(stubOutputStream);
     }
 
     @NotNull
@@ -41,16 +48,11 @@ public class ValaClassDeclarationStubElementType extends ILightStubElementType<V
         return "vala.classDeclaration";
     }
 
-    @Override
-    public void serialize(@NotNull ValaClassDeclarationStub valaNamespaceLikeStub, @NotNull StubOutputStream stubOutputStream) throws IOException {
-        stubOutputStream.writeName(valaNamespaceLikeStub.getName());
-    }
-
     @NotNull
     @Override
     public ValaClassDeclarationStub deserialize(@NotNull StubInputStream stubInputStream, StubElement parent) throws IOException {
-        StringRef ref = stubInputStream.readName();
-        return new ValaClassDeclarationStubImpl(parent, ref.toString());
+        QualifiedName qName = QualifiedNameBuilder.read(stubInputStream);
+        return new ValaClassDeclarationStubImpl(parent, qName);
     }
 
     @Override

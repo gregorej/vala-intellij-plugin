@@ -113,4 +113,16 @@ public class ValaPsiImplUtil {
         }
         return builder.build();
     }
+
+    public static QualifiedName getQName(ValaClassDeclaration classDeclaration) {
+        return QualifiedNameBuilder.forClassDeclaration(classDeclaration);
+    }
+
+    public static QualifiedName getQName(ValaNamespaceDeclaration classDeclaration) {
+        return QualifiedNameBuilder.forNamespaceDeclaration(classDeclaration);
+    }
+
+    public static QualifiedName getQName(ValaMethodDeclaration classDeclaration) {
+        return QualifiedNameBuilder.forMethodDeclaration(classDeclaration);
+    }
 }
