@@ -1,6 +1,7 @@
-package org.intellij.vala.psi;
+package org.intellij.vala.psi.index;
 
 import com.intellij.util.io.KeyDescriptor;
+import org.intellij.vala.psi.QualifiedName;
 import org.intellij.vala.psi.impl.QualifiedNameBuilder;
 import org.jetbrains.annotations.NotNull;
 

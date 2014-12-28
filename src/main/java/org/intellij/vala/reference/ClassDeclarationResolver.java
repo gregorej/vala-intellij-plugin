@@ -6,7 +6,7 @@ import com.google.common.collect.Iterables;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.hamcrest.Matcher;
-import org.intellij.vala.psi.ClassNameIndex;
+import org.intellij.vala.psi.index.ClassNameIndex;
 import org.intellij.vala.psi.ValaClassDeclaration;
 
 import java.util.List;

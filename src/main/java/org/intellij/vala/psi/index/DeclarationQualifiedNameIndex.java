@@ -1,8 +1,10 @@
-package org.intellij.vala.psi;
+package org.intellij.vala.psi.index;
 
 import com.intellij.psi.stubs.AbstractStubIndex;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.intellij.util.io.KeyDescriptor;
+import org.intellij.vala.psi.QualifiedName;
+import org.intellij.vala.psi.ValaDeclaration;
 import org.jetbrains.annotations.NotNull;
 
 public class DeclarationQualifiedNameIndex extends AbstractStubIndex<QualifiedName, ValaDeclaration> {

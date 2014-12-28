@@ -1,8 +1,9 @@
-package org.intellij.vala.psi;
+package org.intellij.vala.psi.index;
 
 
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
+import org.intellij.vala.psi.ValaClassDeclaration;
 import org.jetbrains.annotations.NotNull;
 
 public class ClassNameIndex extends StringStubIndexExtension<ValaClassDeclaration> {
