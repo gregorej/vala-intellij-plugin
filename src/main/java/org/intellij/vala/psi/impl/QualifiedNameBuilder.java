@@ -5,12 +5,15 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import org.intellij.vala.psi.*;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
+import static org.apache.commons.lang.StringUtils.indexOf;
 import static org.apache.commons.lang.StringUtils.join;
 
 public class QualifiedNameBuilder implements QualifiedName {
@@ -37,18 +40,23 @@ public class QualifiedNameBuilder implements QualifiedName {
     }
 
     @Override
-    public void write(StubOutputStream stubOutputStream) throws IOException {
-        stubOutputStream.writeVarInt(parts.size());
+    public void write(DataOutput stubOutputStream) throws IOException {
+        stubOutputStream.writeInt(parts.size());
         for (String part : parts) {
-            stubOutputStream.writeName(part);
+            byte [] bytes = part.getBytes();
+            stubOutputStream.writeInt(bytes.length);
+            stubOutputStream.write(bytes);
         }
     }
 
-    public static QualifiedName read(StubInputStream inputStream) throws IOException {
-        int length = inputStream.readVarInt();
+    public static QualifiedName read(DataInput inputStream) throws IOException {
+        int length = inputStream.readInt();
         QualifiedNameBuilder qName = new QualifiedNameBuilder();
         while (length-- > 0) {
-            qName.parts.add(inputStream.readName().getString());
+            int partLength = inputStream.readInt();
+            byte [] content = new byte[partLength];
+            inputStream.readFully(content);
+            qName.parts.add(new String(content));
         }
         return qName;
     }

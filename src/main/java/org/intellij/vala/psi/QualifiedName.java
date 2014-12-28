@@ -1,8 +1,7 @@
 package org.intellij.vala.psi;
 
 
-import com.intellij.psi.stubs.StubOutputStream;
-
+import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -14,5 +13,5 @@ public interface QualifiedName extends Serializable {
 
     QualifiedName append(String member);
 
-    void write(StubOutputStream stubOutputStream) throws IOException;
+    void write(DataOutput stubOutputStream) throws IOException;
 }

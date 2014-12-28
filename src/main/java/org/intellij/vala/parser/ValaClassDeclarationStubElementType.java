@@ -5,10 +5,7 @@ import com.intellij.lang.LighterASTNode;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
 import org.intellij.vala.ValaLanguage;
-import org.intellij.vala.psi.ClassNameIndex;
-import org.intellij.vala.psi.QualifiedName;
-import org.intellij.vala.psi.ValaClassDeclaration;
-import org.intellij.vala.psi.ValaTypes;
+import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.impl.QualifiedNameBuilder;
 import org.intellij.vala.psi.impl.ValaClassDeclarationImpl;
 import org.intellij.vala.psi.stub.ValaClassDeclarationStub;
@@ -58,5 +55,6 @@ public class ValaClassDeclarationStubElementType extends ILightStubElementType<V
     @Override
     public void indexStub(@NotNull ValaClassDeclarationStub valaNamespaceLikeStub, @NotNull IndexSink indexSink) {
         indexSink.occurrence(ClassNameIndex.KEY, valaNamespaceLikeStub.getName());
+        indexSink.occurrence(DeclarationQualifiedNameIndex.KEY, valaNamespaceLikeStub.getQName());
     }
 }
