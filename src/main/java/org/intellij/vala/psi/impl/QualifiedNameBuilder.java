@@ -1,8 +1,6 @@
 package org.intellij.vala.psi.impl;
 
 
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
 import org.intellij.vala.psi.*;
 
 import java.io.DataInput;
@@ -13,12 +11,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
-import static org.apache.commons.lang.StringUtils.indexOf;
 import static org.apache.commons.lang.StringUtils.join;
 
 public class QualifiedNameBuilder implements QualifiedName {
 
-    private final List<String> parts = new ArrayList<String>();
+    private final List<String> parts;
+
+    private QualifiedNameBuilder(List<String> parts) {
+        this.parts = parts;
+    }
+
+    public QualifiedNameBuilder() {
+        this(new ArrayList<String>());
+    }
 
     @Override
     public String getTail() {
@@ -47,6 +52,14 @@ public class QualifiedNameBuilder implements QualifiedName {
             stubOutputStream.writeInt(bytes.length);
             stubOutputStream.write(bytes);
         }
+    }
+
+    public static QualifiedNameBuilder from(ValaSymbol symbol) {
+        QualifiedNameBuilder builder = new QualifiedNameBuilder();
+        for (ValaSymbolPart symbolPart : symbol.getSymbolPartList()) {
+            builder.parts.add(symbolPart.getName());
+        }
+        return builder;
     }
 
     public static QualifiedName read(DataInput inputStream) throws IOException {
