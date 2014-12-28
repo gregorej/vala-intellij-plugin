@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ValaFile extends PsiFileBase implements ValaNamespaceLike, ValaDeclarationContainer {
+public class ValaFile extends PsiFileBase implements ValaDeclarationContainer {
     public ValaFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, ValaLanguage.INSTANCE);
     }
@@ -39,8 +39,7 @@ public class ValaFile extends PsiFileBase implements ValaNamespaceLike, ValaDecl
     }
 
     @NotNull
-    @Override
-    public List<ValaNamespaceMember> getNamespaceMemberList() {
+    private List<ValaNamespaceMember> getNamespaceMemberList() {
         return PsiTreeUtil.getChildrenOfTypeAsList(this, ValaNamespaceMember.class);
     }
 
