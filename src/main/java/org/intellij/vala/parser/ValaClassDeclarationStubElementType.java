@@ -15,14 +15,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class ValaClassDeclarationStubElementType extends ILightStubElementType<ValaClassDeclarationStub, ValaClassDeclaration> {
+public class ValaClassDeclarationStubElementType extends IStubElementType<ValaClassDeclarationStub, ValaClassDeclaration> {
     public ValaClassDeclarationStubElementType() {
         super("CLASS_DECLARATION", ValaLanguage.INSTANCE);
-    }
-
-    @Override
-    public ValaClassDeclarationStub createStub(LighterAST lighterAST, LighterASTNode lighterASTNode, StubElement parentStub) {
-        return new ValaClassDeclarationStubImpl(parentStub, QualifiedNameBuilder.nameOf("MyClass"));
     }
 
     @Override
