@@ -1,6 +1,7 @@
 package org.intellij.vala.psi.impl;
 
 
+import com.google.common.collect.ImmutableList;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -65,7 +66,7 @@ public class ValaPsiImplUtil {
         return methodDeclaration.getIdentifier().getText();
     }
 
-    public static PsiElement setName(ValaPsiElement valaPsiElement, String newName) {
+    public static PsiElement setName(PsiElement valaPsiElement, String newName) {
         throw new IncorrectOperationException("changing name of this element is not supported");
     }
 
@@ -87,5 +88,29 @@ public class ValaPsiImplUtil {
 
     public static List<ValaNamespaceMember> getNamespaceMemberList(ValaClassDeclaration classDeclaration) {
         return ClassDeclarationUtil.getNamespaceMemberList(classDeclaration);
+    }
+
+    public static List<ValaDeclaration> getDeclarations(ValaClassDeclaration declaration) {
+        return ClassDeclarationUtil.getDeclarations(declaration);
+    }
+
+    public static List<ValaDeclaration> getDeclarations(ValaNamespaceDeclaration valaNamespaceDeclaration) {
+        return toDeclarations(valaNamespaceDeclaration.getNamespaceMemberList());
+    }
+
+    public static List<ValaDeclaration> toDeclarations(List<ValaNamespaceMember> namespaceMembers) {
+        ImmutableList.Builder<ValaDeclaration> builder =  ImmutableList.builder();
+        for (ValaNamespaceMember member : namespaceMembers) {
+            if (member.getClassDeclaration() != null) {
+                builder.add(member.getClassDeclaration());
+            }
+            if (member.getNamespaceMember() instanceof ValaDeclaration) {
+                builder.add((ValaDeclaration) member.getNamespaceMember());
+            }
+            if (member instanceof ValaDeclaration) {
+                builder.add((ValaDeclaration) member);
+            }
+        }
+        return builder.build();
     }
 }

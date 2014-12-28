@@ -29,16 +29,38 @@ public class ValaConstructorReference extends PsiReferenceBase<ValaObjectOrArray
     @Override
     public PsiElement resolve() {
         List<ValaMemberPart> parts = myElement.getMember().getMemberPartList();
-        String className = parts.get(0).getName();
-        ValaClassDeclaration classDeclaration = resolver.resolve(className);
         if (parts.size() > 1) {
-            String constructorName = parts.get(1).getName();
-            return resolveNamedConstructor(classDeclaration, constructorName);
+            return resolveForMultiPartName(parts);
         }
-        return classDeclaration;
+        else {
+            return resolveForSinglePartName(parts);
+        }
     }
 
-    private static ValaCreationMethodDeclaration resolveNamedConstructor(ValaClassDeclaration classDeclaration, String constructorName) {
+    private PsiElement resolveForMultiPartName(List<ValaMemberPart> parts) {
+        ValaCreationMethodDeclaration namedConstructor = resolveAssumingNamedConstructor(parts);
+        if (namedConstructor != null) {
+            return namedConstructor;
+        }
+        return resolveAssumingClassNameWithFullNamespace(parts);
+    }
+
+    private PsiElement resolveForSinglePartName(List<ValaMemberPart> parts) {
+        String className = parts.get(0).getName();
+        return resolver.resolve(className);
+    }
+
+    private ValaCreationMethodDeclaration resolveAssumingNamedConstructor(List<ValaMemberPart> names) {
+        String className = names.get(0).getName();
+        ValaClassDeclaration classDeclaration = resolver.resolve(className);
+        String constructorName = names.get(1).getName();
+        if (classDeclaration != null) {
+            return getNamedConstructor(classDeclaration, constructorName);
+        }
+        return null;
+    }
+
+    private static ValaCreationMethodDeclaration getNamedConstructor(ValaClassDeclaration classDeclaration, String constructorName) {
         for (ValaClassMember member : classDeclaration.getClassMemberList()) {
             ValaCreationMethodDeclaration creationMethodDeclaration = member.getCreationMethodDeclaration();
             if (creationMethodDeclaration != null) {
@@ -49,6 +71,11 @@ public class ValaConstructorReference extends PsiReferenceBase<ValaObjectOrArray
             }
         }
         return null;
+    }
+
+    private ValaClassDeclaration resolveAssumingClassNameWithFullNamespace(List<ValaMemberPart> names) {
+        String className = names.get(names.size() - 1).getName();
+        return resolver.resolve(className);
     }
 
     @NotNull

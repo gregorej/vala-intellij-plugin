@@ -7,11 +7,12 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.intellij.vala.ValaLanguage;
 import org.intellij.vala.ValaLanguageFileType;
+import org.intellij.vala.psi.impl.ValaPsiImplUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ValaFile extends PsiFileBase implements ValaNamespaceLike {
+public class ValaFile extends PsiFileBase implements ValaNamespaceLike, ValaDeclarationContainer {
     public ValaFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, ValaLanguage.INSTANCE);
     }
@@ -41,5 +42,10 @@ public class ValaFile extends PsiFileBase implements ValaNamespaceLike {
     @Override
     public List<ValaNamespaceMember> getNamespaceMemberList() {
         return PsiTreeUtil.getChildrenOfTypeAsList(this, ValaNamespaceMember.class);
+    }
+
+    @Override
+    public List<ValaDeclaration> getDeclarations() {
+        return ValaPsiImplUtil.toDeclarations(this.getNamespaceMemberList());
     }
 }

@@ -64,6 +64,14 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
         assertThat(referencedElement, allOf(instanceOf(ValaCreationMethodDeclaration.class), isInFile(hasName(containsString("ClassWithMultipleConstructors")))));
     }
 
+    public void testResolveClassDefinitionWithFullyDeclaredNamespaceInSameFile() {
+        myFixture.configureByFiles("ResolveClassDefinitionWithFullyDeclaredNamespaceInSameFile.vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaObjectOrArrayCreationExpression.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(aClassDeclarationThat(hasName("SomeClass")), isInFile(hasName(containsString("ResolveClassDefinitionWithFullyDeclaredNamespaceInSameFile")))));
+    }
+
     private PsiElement getElementOfTypeAtCaret(Class<? extends PsiElement> elementType) {
         return getParentOfType(myFixture.getFile().findElementAt(myFixture.getCaretOffset()), elementType);
     }

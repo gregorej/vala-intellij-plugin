@@ -5,10 +5,12 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.hamcrest.CustomTypeSafeMatcher;
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.intellij.vala.reference.ResolveClassTest;
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
+import static org.hamcrest.Matchers.equalTo;
 
 public final class PsiMatchers {
 
@@ -64,8 +66,30 @@ public final class PsiMatchers {
             protected boolean matchesSafely(PsiElement psiFile) {
                 return psiFile instanceof PsiNamedElement && name.matches(((PsiNamedElement) psiFile).getName());
             }
+
+            @Override
+            protected void describeMismatchSafely(PsiElement item, Description mismatchDescription) {
+                mismatchDescription.appendText("name was ").appendValue(((PsiNamedElement) item).getName());
+            }
         };
     }
 
+    public static Matcher<? super PsiElement> hasName(String name) {
+        return hasName(equalTo(name));
+    }
 
+
+    public static Matcher<PsiElement> aClassDeclarationThat(final Matcher<? super ValaClassDeclaration> declarationMatcher) {
+        return new CustomTypeSafeMatcher<PsiElement>("a class declaration that " + declarationMatcher) {
+            @Override
+            protected boolean matchesSafely(PsiElement element) {
+                return element instanceof ValaClassDeclaration && declarationMatcher.matches(element);
+            }
+
+            @Override
+            protected void describeMismatchSafely(PsiElement item, Description mismatchDescription) {
+                declarationMatcher.describeMismatch(item, mismatchDescription);
+            }
+        };
+    }
 }

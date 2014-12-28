@@ -2,10 +2,7 @@ package org.intellij.vala.psi.impl;
 
 
 import com.google.common.collect.ImmutableList;
-import org.intellij.vala.psi.ValaClassDeclaration;
-import org.intellij.vala.psi.ValaClassMember;
-import org.intellij.vala.psi.ValaMethodDeclaration;
-import org.intellij.vala.psi.ValaNamespaceMember;
+import org.intellij.vala.psi.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -30,5 +27,9 @@ public class ClassDeclarationUtil {
     @NotNull
     public static List<ValaNamespaceMember> getNamespaceMemberList(ValaClassDeclaration valaClassDeclaration) {
         return getMembersOfType(valaClassDeclaration, ValaNamespaceMember.class);
+    }
+
+    public static List<ValaDeclaration> getDeclarations(ValaClassDeclaration declaration) {
+        return getMembersOfType(declaration, ValaDeclaration.class);
     }
 }
