@@ -7,15 +7,18 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
+import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.join;
 
 public class QualifiedNameBuilder implements QualifiedName {
 
     private final List<String> parts;
+
+    public static final QualifiedName ROOT = new QualifiedNameBuilder();
 
     private QualifiedNameBuilder(List<String> parts) {
         this.parts = parts;
@@ -39,8 +42,12 @@ public class QualifiedNameBuilder implements QualifiedName {
     }
 
     public static QualifiedName nameOf(String ... parts) {
+        return nameOf(asList(parts));
+    }
+
+    public static QualifiedName nameOf(List<String> parts) {
         QualifiedNameBuilder builder = new QualifiedNameBuilder();
-        builder.parts.addAll(Arrays.asList(parts));
+        builder.parts.addAll(parts);
         return builder;
     }
 
@@ -54,12 +61,51 @@ public class QualifiedNameBuilder implements QualifiedName {
         }
     }
 
+    @Override
+    public int length() {
+        return parts.size();
+    }
+
+    @Override
+    public QualifiedName getPrefix(int segmentCount) {
+        return new QualifiedNameBuilder(newArrayList(parts.subList(0, segmentCount)));
+    }
+
+    @Override
+    public QualifiedName append(QualifiedName name) {
+        QualifiedNameBuilder qualifiedNameBuilder = new QualifiedNameBuilder();
+        qualifiedNameBuilder.parts.addAll(parts);
+        qualifiedNameBuilder.parts.addAll(extractParts(name));
+        return qualifiedNameBuilder;
+    }
+
+    private static List<String> extractParts(QualifiedName name) {
+        List<String> parts = new ArrayList<String>(name.length());
+        for (int i = 1; i <= name.length(); i++) {
+            parts.add(name.getPrefix(i).getTail());
+        }
+        return parts;
+    }
+
     public static QualifiedNameBuilder from(ValaSymbol symbol) {
         QualifiedNameBuilder builder = new QualifiedNameBuilder();
         for (ValaSymbolPart symbolPart : symbol.getSymbolPartList()) {
             builder.parts.add(symbolPart.getName());
         }
         return builder;
+    }
+
+    public static QualifiedNameBuilder from(ValaMember member) {
+        QualifiedNameBuilder builder = new QualifiedNameBuilder();
+        for (ValaMemberPart memberPart : member.getMemberPartList()) {
+            builder.parts.add(memberPart.getName());
+        }
+        return builder;
+    }
+
+    public static QualifiedName from(ValaCreationMethodDeclaration creationMethodDeclaration) {
+        ValaClassDeclaration valaClass = getParentOfType(creationMethodDeclaration, ValaClassDeclaration.class, false);
+        return append(valaClass.getQName(), creationMethodDeclaration.getSymbol());
     }
 
     public static QualifiedName read(DataInput inputStream) throws IOException {
@@ -90,6 +136,14 @@ public class QualifiedNameBuilder implements QualifiedName {
         QualifiedName result = qualifiedName;
         for (ValaSymbolPart symbolPart : valaSymbol.getSymbolPartList()) {
             result = result.append(symbolPart.getName());
+        }
+        return result;
+    }
+
+    public static QualifiedName append(QualifiedName qualifiedName, ValaMember member) {
+        QualifiedName result = qualifiedName;
+        for (ValaMemberPart memberPart : member.getMemberPartList()) {
+            result = result.append(memberPart.getName());
         }
         return result;
     }

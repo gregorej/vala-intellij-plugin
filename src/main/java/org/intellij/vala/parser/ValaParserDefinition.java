@@ -70,6 +70,8 @@ public class ValaParserDefinition implements ParserDefinition {
     public static IElementType createElementType(String string) {
         if ("CLASS_DECLARATION".equals(string)) {
             return new ValaClassDeclarationStubElementType();
+        } else if ("CREATION_METHOD_DECLARATION".equals(string)) {
+            return new ValaCreationMethodDeclarationStubElementType();
         } else {
             return new ValaElementType(string);
         }

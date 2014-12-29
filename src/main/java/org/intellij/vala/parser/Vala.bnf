@@ -116,6 +116,7 @@
   implements("class_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
   implements("method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
+  implements("creation_method_declaration") = "org.intellij.vala.psi.ValaDeclaration"
 }
 
 vala_module ::= using_directive * namespace_member *
@@ -246,6 +247,10 @@ struct_member ::= attributes? ( method_declaration | field_declaration | constan
 
 creation_method_declaration ::= access_modifier? constructor_declaration_modifiers? symbol
                                 "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )
+                                {
+                                methods=[getQName toString]
+                                stubClass="org.intellij.vala.psi.stub.ValaCreationMethodDeclarationStub"
+                                }
 
 parameters ::= parameter ( "," parameter )*
 parameter ::= attributes? ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression )? ) )

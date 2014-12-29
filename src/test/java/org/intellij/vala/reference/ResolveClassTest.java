@@ -80,6 +80,22 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
         assertThat(referencedElement, allOf(aClassDeclarationThat(hasName("SomeClass")), isInFile(hasName(containsString("ResolveClassDefinitionInSameFileButInNestedNamespace")))));
     }
 
+    public void testResolveNamedConstructorForClassInImportedNamespace() {
+        myFixture.configureByFiles("ResolveNamedConstructorForClassInImportedNamespace.vala", "ClassWithMultipleConstructorsInNamespace.vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaObjectOrArrayCreationExpression.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(instanceOf(ValaCreationMethodDeclaration.class), isInFile(hasName(containsString("ClassWithMultipleConstructorsInNamespace")))));
+    }
+
+    public void testDoNotResolveNamedConstructorForClassInImportedNamespaceIfNamespaceIsNotUsed() {
+        myFixture.configureByFiles("FileContainingNamedConstructorReference.vala", "ClassWithMultipleConstructorsInNamespace.vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaObjectOrArrayCreationExpression.class).getReference().resolve();
+
+        assertThat(referencedElement, nullValue());
+    }
+
     private PsiElement getElementOfTypeAtCaret(Class<? extends PsiElement> elementType) {
         return getParentOfType(myFixture.getFile().findElementAt(myFixture.getCaretOffset()), elementType);
     }

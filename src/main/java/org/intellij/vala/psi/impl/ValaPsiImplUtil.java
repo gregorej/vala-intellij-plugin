@@ -72,6 +72,10 @@ public class ValaPsiImplUtil {
         return new ValaConstructorReference(objectCreationExpression);
     }
 
+    public static QualifiedName getQName(ValaCreationMethodDeclaration creationMethodDeclaration) {
+        return QualifiedNameBuilder.from(creationMethodDeclaration);
+    }
+
     public static PsiReference getReference(ValaMemberPart memberPart) {
         return null;
     }
@@ -122,5 +126,31 @@ public class ValaPsiImplUtil {
 
     public static QualifiedName getQName(ValaMethodDeclaration classDeclaration) {
         return QualifiedNameBuilder.forMethodDeclaration(classDeclaration);
+    }
+
+    public static List<String> getPartNames(ValaMember valaMember) {
+        ImmutableList.Builder<String> list = ImmutableList.builder();
+        for (ValaMemberPart part : valaMember.getMemberPartList()) {
+            list.add(part.getName());
+        }
+        return list.build();
+    }
+
+    public static List<QualifiedName> getImportedNamespacesAvailableFor(ValaPsiElement symbol) {
+        ValaFile containingFile = (ValaFile) symbol.getContainingFile();
+        ImmutableList.Builder<QualifiedName> names = ImmutableList.builder();
+        names.add(QualifiedNameBuilder.ROOT);
+        for (ValaUsingDirective directive : containingFile.getUsingDirectives()) {
+            names.addAll(toQNames(directive.getSymbolList()));
+        }
+        return names.build();
+    }
+
+    private static List<QualifiedName> toQNames(List<ValaSymbol> symbols) {
+        ImmutableList.Builder<QualifiedName> names = ImmutableList.builder();
+        for (ValaSymbol symbol : symbols) {
+            names.add(QualifiedNameBuilder.from(symbol));
+        }
+        return names.build();
     }
 }

@@ -14,4 +14,10 @@ public interface QualifiedName extends Serializable {
     QualifiedName append(String member);
 
     void write(DataOutput stubOutputStream) throws IOException;
+
+    int length();
+
+    QualifiedName getPrefix(int segmentCount);
+
+    QualifiedName append(QualifiedName name);
 }
