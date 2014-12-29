@@ -35,7 +35,7 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
     public void testResolveClassDefinitionInSameFile() {
         myFixture.configureByFiles("ResolveClassDefinitionInSameFile.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaTypeWeak.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
         assertThat(referencedElement, instanceOf(ValaClassDeclaration.class));
     }
@@ -43,7 +43,7 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
     public void testResolveClassDefinitionInAnotherFile() {
         myFixture.configureByFiles("FileContainingClassReference.vala", "FileContainingClassDefinition.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaTypeWeak.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaClassDeclaration.class), isInFile(hasName(containsString("FileContainingClassDefinition")))));
     }
@@ -70,6 +70,14 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaObjectOrArrayCreationExpression.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(aClassDeclarationThat(hasName("SomeClass")), isInFile(hasName(containsString("ResolveClassDefinitionWithFullyDeclaredNamespaceInSameFile")))));
+    }
+
+    public void testResolveClassDefinitionInSameFileButInNestedNamespace() {
+        myFixture.configureByFiles("ResolveClassDefinitionInSameFileButInNestedNamespace.vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(aClassDeclarationThat(hasName("SomeClass")), isInFile(hasName(containsString("ResolveClassDefinitionInSameFileButInNestedNamespace")))));
     }
 
     private PsiElement getElementOfTypeAtCaret(Class<? extends PsiElement> elementType) {

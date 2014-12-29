@@ -120,7 +120,7 @@
 
 vala_module ::= using_directive * namespace_member *
 symbol ::= symbol_part ( "." symbol_part )*
-symbol_part ::= "string" | "int" | ( "global::" identifier ) | identifier {methods=[getName setName]}
+symbol_part ::= "string" | "int" | ( "global::" identifier ) | identifier {methods=[getName setName getReference]}
 
 using_directive ::= "using" symbol ( "," symbol )* ";"
 namespace_member ::= attributes?
@@ -355,10 +355,10 @@ local_variable_declaration ::= local_tuple_declaration | local_variable
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression
 local_variable ::= identifier ( inline_array_type )? ( "=" expression )?
 expression_statement ::= statement_expression ";"
-type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? symbol ( type_arguments )? ( "*" )* ( "?" )? array_type* ) {methods=[getReference]}
+type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? symbol ( type_arguments )? ( "*" )* ( "?" )? array_type* ) {methods=[]}
 type_arguments ::= "<" type ( "," type )* ">"
 type_parameters ::= "<" identifier ( "," identifier )* ">"
-type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? symbol type_arguments? ( "*" )* ( "?" )? array_type* ) {methods=[getReference]}
+type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? symbol type_arguments? ( "*" )* ( "?" )? array_type* ) {methods=[]}
 array_type ::= "[" array_size? "]" ( "?" )?
 array_size ::= expression ( "," expression ) *
 inline_array_type ::= "[" integer_literal "]"

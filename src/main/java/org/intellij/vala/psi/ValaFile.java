@@ -38,6 +38,10 @@ public class ValaFile extends PsiFileBase implements ValaDeclarationContainer {
         return declarations.build();
     }
 
+    public List<ValaUsingDirective> getUsingDirectives() {
+        return PsiTreeUtil.getChildrenOfTypeAsList(this, ValaUsingDirective.class);
+    }
+
     @NotNull
     private List<ValaNamespaceMember> getNamespaceMemberList() {
         return PsiTreeUtil.getChildrenOfTypeAsList(this, ValaNamespaceMember.class);

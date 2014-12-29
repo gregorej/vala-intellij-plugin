@@ -86,7 +86,7 @@ public class QualifiedNameBuilder implements QualifiedName {
         }
     }
 
-    private static QualifiedName append(QualifiedName qualifiedName, ValaSymbol valaSymbol) {
+    public static QualifiedName append(QualifiedName qualifiedName, ValaSymbol valaSymbol) {
         QualifiedName result = qualifiedName;
         for (ValaSymbolPart symbolPart : valaSymbol.getSymbolPartList()) {
             result = result.append(symbolPart.getName());
