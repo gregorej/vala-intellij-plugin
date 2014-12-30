@@ -9,6 +9,7 @@ import org.intellij.vala.psi.impl.QualifiedNameBuilder;
 import org.intellij.vala.psi.impl.ValaClassDeclarationImpl;
 import org.intellij.vala.psi.index.ClassNameIndex;
 import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
+import org.intellij.vala.psi.index.DeclarationsInNamespaceIndex;
 import org.intellij.vala.psi.stub.ValaClassDeclarationStub;
 import org.intellij.vala.psi.stub.impl.ValaClassDeclarationStubImpl;
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +52,9 @@ public class ValaClassDeclarationStubElementType extends IStubElementType<ValaCl
     @Override
     public void indexStub(@NotNull ValaClassDeclarationStub valaNamespaceLikeStub, @NotNull IndexSink indexSink) {
         indexSink.occurrence(ClassNameIndex.KEY, valaNamespaceLikeStub.getName());
-        indexSink.occurrence(DeclarationQualifiedNameIndex.KEY, valaNamespaceLikeStub.getQName());
+        final QualifiedName qualifiedName = valaNamespaceLikeStub.getQName();
+        final QualifiedName namespaceQualifiedName = qualifiedName.getPrefix(qualifiedName.length() - 1);
+        indexSink.occurrence(DeclarationQualifiedNameIndex.KEY, qualifiedName);
+        indexSink.occurrence(DeclarationsInNamespaceIndex.KEY, namespaceQualifiedName);
     }
 }

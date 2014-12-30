@@ -136,7 +136,7 @@ public class ValaPsiImplUtil {
         return list.build();
     }
 
-    public static List<QualifiedName> getImportedNamespacesAvailableFor(ValaPsiElement symbol) {
+    public static List<QualifiedName> getImportedNamespacesAvailableFor(PsiElement symbol) {
         ValaFile containingFile = (ValaFile) symbol.getContainingFile();
         ImmutableList.Builder<QualifiedName> names = ImmutableList.builder();
         names.add(QualifiedNameBuilder.ROOT);

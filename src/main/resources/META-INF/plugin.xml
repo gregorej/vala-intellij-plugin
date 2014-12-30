@@ -27,6 +27,7 @@
         <stubElementTypeHolder class="org.intellij.vala.psi.ValaTypes"/>
         <stubIndex implementation="org.intellij.vala.psi.index.ClassNameIndex"/>
         <stubIndex implementation="org.intellij.vala.psi.index.DeclarationQualifiedNameIndex"/>
+        <stubIndex implementation="org.intellij.vala.psi.index.DeclarationsInNamespaceIndex"/>
     </extensions>
 
     <application-components>

@@ -1,13 +1,15 @@
 package org.intellij.vala.completion;
 
+import com.google.common.collect.ImmutableList;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ProcessingContext;
-import org.intellij.vala.psi.ValaClassDeclaration;
-import org.intellij.vala.psi.ValaFile;
-import org.intellij.vala.psi.ValaTypes;
-import org.intellij.vala.reference.ClassDeclarationResolver;
+import org.intellij.vala.psi.*;
+import org.intellij.vala.psi.impl.ValaPsiImplUtil;
+import org.intellij.vala.psi.index.DeclarationsInNamespaceIndex;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -50,21 +52,31 @@ public class ValaCompletionContributor extends CompletionContributor {
         return new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet result) {
-                final Project project = parameters.getOriginalFile().getProject();
                 final String classNamePrefix = parameters.getOriginalPosition().getText();
-                final List<ValaClassDeclaration> declarations = getAllClassesWithNameStartingWith(project, classNamePrefix);
+                final List<ValaDeclaration> declarations = getAllClassesWithNameStartingWith(parameters.getOriginalPosition(), classNamePrefix);
                 addResultsForClasses(declarations, result);
             }
         };
     }
 
-    private List<ValaClassDeclaration> getAllClassesWithNameStartingWith(Project project, String namePrefix) {
-        return new ClassDeclarationResolver(project).getAllClassesWithNameStartingWith(namePrefix);
+    private List<ValaDeclaration> getAllClassesWithNameStartingWith(PsiElement psiElement, String namePrefix) {
+        final Project project = psiElement.getProject();
+        GlobalSearchScope globalSearchScope = GlobalSearchScope.projectScope(project);
+        DeclarationsInNamespaceIndex index = DeclarationsInNamespaceIndex.getInstance();
+        ImmutableList.Builder<ValaDeclaration> declarations = ImmutableList.builder();
+        for (QualifiedName importedName : ValaPsiImplUtil.getImportedNamespacesAvailableFor(psiElement)) {
+            for (ValaDeclaration foundDeclaration: index.get(importedName, project, globalSearchScope)) {
+                if (foundDeclaration.getQName().getTail().startsWith(namePrefix)) {
+                    declarations.add(foundDeclaration);
+                }
+            }
+        }
+        return declarations.build();
     }
 
-    private static void addResultsForClasses(Iterable<ValaClassDeclaration> classes, CompletionResultSet resultSet) {
-        for (ValaClassDeclaration declaration : classes) {
-            resultSet.addElement(LookupElementBuilder.create(declaration.getName()));
+    private static void addResultsForClasses(Iterable<ValaDeclaration> classes, CompletionResultSet resultSet) {
+        for (ValaDeclaration declaration : classes) {
+            resultSet.addElement(LookupElementBuilder.create(declaration.getQName().getTail()));
         }
     }
 }
