@@ -73,7 +73,7 @@
     KEY_OUT="out"
     KEY_INTERFACE="interface"
     KEY_STRUCT="struct"
-    KEY_STRUCT="params"
+    KEY_PARAMS="params"
     KEY_ENSURES="ensures"
     KEY_REQUIRES="requires"
     KEY_ASYNC="async"
