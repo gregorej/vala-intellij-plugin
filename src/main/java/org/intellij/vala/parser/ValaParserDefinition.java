@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public class ValaParserDefinition implements ParserDefinition {
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
 
-    public static final TokenSet COMMENTS = TokenSet.EMPTY;
+    public static final TokenSet COMMENTS = TokenSet.create(ValaTypes.BLOCK_COMMENT, ValaTypes.LINE_COMMENT);
 
     public static final TokenSet STRINGS = TokenSet.create(ValaTypes.STRING);
 

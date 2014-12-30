@@ -116,7 +116,7 @@
   implements("class_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
   implements("method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
-  implements("creation_method_declaration") = "org.intellij.vala.psi.ValaDeclaration"\
+  implements("creation_method_declaration") = "org.intellij.vala.psi.ValaDeclaration"
 }
 
 vala_module ::= using_directive * namespace_member *

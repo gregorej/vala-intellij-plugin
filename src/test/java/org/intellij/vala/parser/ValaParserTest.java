@@ -53,4 +53,12 @@ public class ValaParserTest extends ParsingTestCase {
     public void testSimpleClassDefinitionWithNamedConstructor() {
         doTest(true);
     }
+
+    public void testBlockComment() {
+        doTest(true);
+    }
+
+    public void testLineComment() {
+        doTest(true);
+    }
 }

@@ -26,6 +26,7 @@ public class ValidFilesParserTest extends ParsingTestCase {
                 .add("SingleMethodCall")
                 .add("SingleLambdaExpression")
                 .add("SingleObjectPropertyAssignment")
+                .add("BlockComment")
                 .build();
     }
 
