@@ -139,8 +139,8 @@
 
     identifier="regexp:[A-Za-z_][A-Za-z0-9_]*"
     string="regexp:\"([^\"\\]|\\\"|\\\'|\\)*\""
-    real_literal="regexp:\d+\.\d+" //FIXME
-    number="regexp:\d+"
+    real_literal="regexp:-?\d+\.\d+"
+    integer_literal="regexp:-?\d+"
     line_comment="regexp://.*"
     block_comment="regexp:/\*(.|\n)*\*/"
     character_literal="regexp:\'[A-Za-z0-9]\'"
@@ -413,5 +413,4 @@ type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? symbol ty
 array_type ::= "[" array_size? "]" ( "?" )?
 array_size ::= expression ( "," expression ) *
 inline_array_type ::= "[" integer_literal "]"
-integer_literal ::= number
 

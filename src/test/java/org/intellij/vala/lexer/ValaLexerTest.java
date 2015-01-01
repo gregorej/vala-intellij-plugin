@@ -31,7 +31,15 @@ public class ValaLexerTest {
     public void shouldDetectInteger() throws IOException {
         valaLexer.start("2");
 
-        assertThat(valaLexer.getTokenType(), is(ValaTypes.NUMBER));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.INTEGER_LITERAL));
+    }
+
+    @Test
+    public void shouldDetectNegativeInteger() throws IOException {
+        valaLexer.start("-16");
+
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.INTEGER_LITERAL));
+        assertThat(valaLexer.getTokenText(), is(equalTo("-16")));
     }
 
     @Test
@@ -54,7 +62,7 @@ public class ValaLexerTest {
         valaLexer.advance();
         valaLexer.advance();
 
-        assertThat(valaLexer.getTokenType(), is(ValaTypes.NUMBER));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.INTEGER_LITERAL));
     }
 
     @Test
@@ -71,7 +79,7 @@ public class ValaLexerTest {
         valaLexer.advance();
         valaLexer.advance();
 
-        assertThat(valaLexer.getTokenType(), is(ValaTypes.NUMBER));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.INTEGER_LITERAL));
     }
 
     @Test
@@ -87,6 +95,22 @@ public class ValaLexerTest {
 
         assertThat(valaLexer.getTokenType(), is(ValaTypes.IDENTIFIER));
         assertThat(valaLexer.getTokenText(), is(equalTo("some_identifier")));
+    }
+
+    @Test
+    public void shouldParseFloatNumbers() throws IOException {
+        valaLexer.start("0.2234");
+
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.REAL_LITERAL));
+        assertThat(valaLexer.getTokenText(), is(equalTo("0.2234")));
+    }
+
+    @Test
+    public void shouldParseNegativeFloatNumbers() throws IOException {
+        valaLexer.start("-31.4");
+
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.REAL_LITERAL));
+        assertThat(valaLexer.getTokenText(), is(equalTo("-31.4")));
     }
 
 }
