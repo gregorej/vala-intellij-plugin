@@ -25,4 +25,8 @@ public class ValaInvalidParserTest extends ParsingTestCase {
     public void testSyntaxErrorInClassDeclarationRecovery() {
         doTest(true);
     }
+
+    public void testSyntaxErrorInMethodRecovery() {
+        doTest(true);
+    }
 }

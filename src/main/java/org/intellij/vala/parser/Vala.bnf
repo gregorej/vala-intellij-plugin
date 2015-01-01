@@ -358,6 +358,10 @@ statement ::= block
               | local_variable_declarations
               | expression_statement
               | do_statement
+{recoverWhile=statement_recovery}
+private statement_recovery ::= !("{"|"}"|";"|statement_recovering_keyword|comment|literal|identifier)
+private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"
+private comment ::= line_comment | block_comment
 
 if_statement ::= "if" "(" expression ")" embedded_statement ( "else" embedded_statement )?  {pin=1}
 embedded_statement ::= block | embedded_statement_without_block
