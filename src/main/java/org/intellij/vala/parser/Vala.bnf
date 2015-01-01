@@ -269,12 +269,12 @@ delegate_declaration ::= access_modifier? delegate_declaration_modifiers? type s
 delegate_declaration_modifiers ::= delegate_declaration_modifier ( " " delegate_declaration_modifier )*
 delegate_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "abstract" | "virtual" | "override"
 signal_declaration ::= access_modifier? signal_declaration_modifiers? "signal" type identifier
-                       "(" parameters? ")" ( ";" | block )
+                       "(" parameters? ")" ( ";" | block ) {pin=3}
 signal_declaration_modifiers ::= signal_declaration_modifier ( " " signal_declaration_modifier )*
 signal_declaration_modifier ::= "async" | "extern" | "inline" | "abstract" | "virtual" | "override" | "new"
 
 method_declaration ::= access_modifier? member_declaration_modifier? type identifier type_parameters?
-                       "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )  {methods=[getName setName getQName]}
+                       "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )  {methods=[getName setName getQName] pin=6}
 constant_declaration ::= access_modifier? member_declaration_modifiers? "const" type identifier inline_array_type?
                          ("=" expression )? ";" {pin=3}
 field_declaration ::= access_modifier? member_declaration_modifiers? type_weak identifier ( "=" expression )? ";"
@@ -284,7 +284,7 @@ property_declaration ::= access_modifier? property_declaration_modifiers? type_w
 
 property_declaration_part ::= ( "default" "=" expression ";" ) | property_accessor
 property_accessor ::= attributes? access_modifier? ( property_get_accessor | property_set_construct_accessor )
-property_get_accessor ::= "get" ( ";" | block )
+property_get_accessor ::= "get" ( ";" | block ) {pin=1}
 property_set_construct_accessor ::= ( "set" "construct" | "construct" "set" ) ( ";" | block )
 property_declaration_modifiers ::= property_declaration_modifier ( " " property_declaration_modifier )*
 property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "abstract" | "virtual" | "override" | "new"
@@ -292,7 +292,7 @@ property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "ab
 tuple ::= "(" expression ( "," expression )* ")"
 this_access ::= "this"
 base_access ::= "base"
-object_or_array_creation_expression ::= "new" member ( object_creation_expression | array_creation_expression ) {methods=[getReference]}
+object_or_array_creation_expression ::= "new" member ( object_creation_expression | array_creation_expression ) {methods=[getReference] pin=1}
 object_creation_expression ::= "(" ( arguments )? ")" ( object_initializer )?
 object_initializer ::= "{" member_initializer ( "," member_initializer )? "}"
 member_initializer ::= identifier "=" expression
@@ -361,7 +361,7 @@ delete_statement ::= "delete" expression ";" {pin=1}
 
 local_variable_declarations ::= ( "var" | type ) local_variable_declaration ( "," local_variable_declaration )*
 local_variable_declaration ::= local_tuple_declaration | local_variable
-local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression
+local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression {pin=5}
 local_variable ::= identifier ( inline_array_type )? ( "=" expression )?
 expression_statement ::= statement_expression ";"
 type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? symbol ( type_arguments )? ( "*" )* ( "?" )? array_type* ) {methods=[]}
