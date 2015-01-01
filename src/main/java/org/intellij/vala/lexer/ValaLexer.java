@@ -10,6 +10,11 @@ import static org.intellij.vala.psi.ValaTypes.*;
 public class ValaLexer extends LookAheadLexer {
 
     public static final TokenSet KEYWORDS = TokenSet.create(
+            KEY_TRUE,
+            KEY_FALSE,
+            KEY_NULL,
+            KEY_IS,
+            KEY_AS,
             KEY_NAMESPACE,
             KEY_USING,
             KEY_CLASS,

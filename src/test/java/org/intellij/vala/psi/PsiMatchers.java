@@ -9,6 +9,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.intellij.vala.reference.ResolveClassTest;
 
+import static com.intellij.psi.impl.DebugUtil.psiToString;
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -38,6 +39,11 @@ public final class PsiMatchers {
             @Override
             protected boolean matchesSafely(PsiElement element) {
                 return !PsiTreeUtil.hasErrorElements(element);
+            }
+
+            @Override
+            protected void describeMismatchSafely(PsiElement item, Description mismatchDescription) {
+                mismatchDescription.appendText(psiToString(item, true, true));
             }
         };
     }
