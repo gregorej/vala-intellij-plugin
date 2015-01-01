@@ -166,8 +166,8 @@ primary_expression ::= ( literal | initializer | tuple | template | this_access 
                        simple_name )
                        ( member_access | pointer_member_access | method_call | element_access |
                          post_increment_expression | post_decrement_expression )*
-sizeof_expression ::= "sizeof" "(" type ")"
-typeof_expression ::= "typeof" "(" type ")"
+sizeof_expression ::= "sizeof" "(" type ")" {pin=1}
+typeof_expression ::= "typeof" "(" type ")" {pin=1}
 simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference getName setName]}
 
 literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal
@@ -190,15 +190,16 @@ method_call ::= "(" arguments? ")" object_initializer?
 member_declaration_modifiers ::= member_declaration_modifier ( " " member_declaration_modifier )*
 member_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override" | "new"
 
-constructor_declaration ::= constructor_declaration_modifiers? "construct" block
+constructor_declaration ::= constructor_declaration_modifiers? "construct" block {pin=2}
 constructor_declaration_modifiers ::= constructor_declaration_modifier ( " " constructor_declaration_modifier )*
 constructor_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override"
 
-destructor_declaration ::= constructor_declaration_modifiers? "~" "(" ")" block
+destructor_declaration ::= constructor_declaration_modifiers? "~" "(" ")" block {pin=3}
 
 class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? "{" class_member* "}"
 {
     methods=[getName setName getMethodDeclarations getNamespaceMemberList toString getDeclarations getQName]
+    pin=3
     stubClass="org.intellij.vala.psi.stub.ValaClassDeclarationStub"
 }
 
@@ -217,15 +218,17 @@ class_member ::= attributes?
                    constructor_declaration |
                    creation_method_declaration |
                    destructor_declaration )
+{recoverWhile=class_member_recovery}
+private class_member_recovery ::= !(";"|"class"|"enum"|access_modifier|"}"|identifier)
 
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
 type_declaration_modifier ::= "abstract" | "extern" | "static"
 enum_declaration ::= access_modifier? type_declaration_modifiers? "enum" symbol
-                     "{" enumvalues ( ";" ( method_declaration | constant_declaration )* )? "}"
+                     "{" enumvalues ( ";" ( method_declaration | constant_declaration )* )? "}" {pin=3}
 enumvalues ::= enumvalue ( "," enumvalue )*
 enumvalue ::= attributes? identifier ( "=" expression )?
 errordomain_declaration ::= access_modifier? type_declaration_modifiers? "errordomain" symbol
-                            "{" errorcodes ( ";" method_declaration* )? "}"
+                            "{" errorcodes ( ";" method_declaration* )? "}" {pin=3}
 errorcodes ::= errorcode ( "," errorcode )*
 errorcode ::= attributes? identifier ("=" expression)?
 
@@ -242,8 +245,8 @@ interface_member ::= attributes?
                        constant_declaration |
                        property_declaration )
 
-namespace_declaration ::= "namespace" symbol "{" using_directive* namespace_member* "}" {methods=[getDeclarations getQName]}
-struct_declaration ::= access_modifier? type_declaration_modifiers? "struct" symbol ( ":" base_types )? "{" struct_member* "}"
+namespace_declaration ::= "namespace" symbol "{" using_directive* namespace_member* "}" {methods=[getDeclarations getQName] pin=1}
+struct_declaration ::= access_modifier? type_declaration_modifiers? "struct" symbol ( ":" base_types )? "{" struct_member* "}" {pin=3}
 struct_member ::= attributes? ( method_declaration | field_declaration | constant_declaration | property_declaration )
 
 creation_method_declaration ::= access_modifier? constructor_declaration_modifiers? symbol
@@ -273,11 +276,11 @@ signal_declaration_modifier ::= "async" | "extern" | "inline" | "abstract" | "vi
 method_declaration ::= access_modifier? member_declaration_modifier? type identifier type_parameters?
                        "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )  {methods=[getName setName getQName]}
 constant_declaration ::= access_modifier? member_declaration_modifiers? "const" type identifier inline_array_type?
-                         ("=" expression )? ";"
+                         ("=" expression )? ";" {pin=3}
 field_declaration ::= access_modifier? member_declaration_modifiers? type_weak identifier ( "=" expression )? ";"
 
 property_declaration ::= access_modifier? property_declaration_modifiers? type_weak identifier
-                         "{" property_declaration_part* "}"
+                         "{" property_declaration_part* "}" {pin=5}
 
 property_declaration_part ::= ( "default" "=" expression ";" ) | property_accessor
 property_accessor ::= attributes? access_modifier? ( property_get_accessor | property_set_construct_accessor )
@@ -318,7 +321,7 @@ statement ::= block
               | expression_statement
               | do_statement
 
-if_statement ::= "if" "(" expression ")" embedded_statement ( "else" embedded_statement )?
+if_statement ::= "if" "(" expression ")" embedded_statement ( "else" embedded_statement )?  {pin=1}
 embedded_statement ::= block | embedded_statement_without_block
 embedded_statement_without_block ::= ";"
                                     | if_statement
@@ -336,25 +339,25 @@ embedded_statement_without_block ::= ";"
                                     | delete_statement
                                     | expression_statement
 
-switch_statement ::= "switch" "(" expression ")" "{" switch_section* "}"
+switch_statement ::= "switch" "(" expression ")" "{" switch_section* "}" {pin=1}
 switch_section ::= ( ("case" expression) | "default" ) ":" embedded_statement_without_block*
 while_statement ::= "while" "(" expression ")" embedded_statement
-do_statement ::= "do" embedded_statement "while" "(" expression ")" ";"
-for_statement ::= "for" "("  for_initializer  ";"  expression  ";"  for_iterator  ")" embedded_statement
+do_statement ::= "do" embedded_statement "while" "(" expression ")" ";" {pin=1}
+for_statement ::= "for" "("  for_initializer  ";"  expression  ";"  for_iterator  ")" embedded_statement {pin=1}
 for_initializer ::= local_variable_declarations | ( statement_expression ( "," statement_expression )* )
 for_iterator ::= statement_expression ( "," statement_expression )*
 statement_expression ::= expression
-foreach_statement ::= "foreach" "(" ( "var" | type) identifier "in" expression ")" embedded_statement
+foreach_statement ::= "foreach" "(" ( "var" | type) identifier "in" expression ")" embedded_statement {pin=1}
 break_statement ::= "break" ";"
 continue_statement ::= "continue" ";"
 return_statement ::= "return" ( expression )? ";"
-yield_statement ::= "yield" ( expression_statement | "return" expression )? ";"
-throw_statement ::= "throw" expression ";"
-try_statement ::= "try" block catch_clause* finally_clause?
-catch_clause ::= "catch" ( "(" type_weak identifier ")" )? block
-finally_clause ::= "finally" block
-lock_statement ::= "lock" "(" expression ")" embedded_statement
-delete_statement ::= "delete" expression ";"
+yield_statement ::= "yield" ( expression_statement | "return" expression )? ";" {pin=1}
+throw_statement ::= "throw" expression ";" {pin=1}
+try_statement ::= "try" block catch_clause* finally_clause? {pin=1}
+catch_clause ::= "catch" ( "(" type_weak identifier ")" )? block {pin=1}
+finally_clause ::= "finally" block {pin=1}
+lock_statement ::= "lock" "(" expression ")" embedded_statement {pin=1}
+delete_statement ::= "delete" expression ";" {pin=1}
 
 local_variable_declarations ::= ( "var" | type ) local_variable_declaration ( "," local_variable_declaration )*
 local_variable_declaration ::= local_tuple_declaration | local_variable
