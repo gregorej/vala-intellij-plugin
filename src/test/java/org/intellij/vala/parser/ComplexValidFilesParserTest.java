@@ -11,23 +11,16 @@ import java.util.Collection;
 import static org.intellij.vala.psi.PsiMatchers.hasNoErrors;
 import static org.junit.Assert.assertThat;
 
-public class ValidFilesParserTest extends ParsingTestCase {
+public class ComplexValidFilesParserTest extends ParsingTestCase {
 
-    public ValidFilesParserTest() {
-        super("valid", "vala", new ValaParserDefinition());
+    public ComplexValidFilesParserTest() {
+        super("complex", "vala", new ValaParserDefinition());
     }
 
     @Parameterized.Parameters
     public static Collection<String> files() {
         return ImmutableList.<String>builder()
-                .add("EmptyClassInNamespace")
-                .add("GtkHelloWorld")
-                .add("SingleObjectCreation")
-                .add("SingleMethodCall")
-                .add("SingleLambdaExpression")
-                .add("SingleObjectPropertyAssignment")
-                .add("BlockComment")
-                .add("Switch")
+                .add("SearchDialog")
                 .build();
     }
 

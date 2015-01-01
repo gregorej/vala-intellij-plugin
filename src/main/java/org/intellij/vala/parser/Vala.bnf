@@ -29,6 +29,7 @@
     OP_LAMBDA="=>"
     COMA=","
     SEMICOLON=";"
+    COLON=":"
     LEFT_CURLY="{"
     RIGHT_CURLY="}"
     LEFT_SQUARE="["
@@ -336,7 +337,7 @@ embedded_statement_without_block ::= ";"
                                     | expression_statement
 
 switch_statement ::= "switch" "(" expression ")" "{" switch_section* "}"
-switch_section ::= ( "case" | "default" ) expression ":"
+switch_section ::= ( ("case" expression) | "default" ) ":" embedded_statement_without_block*
 while_statement ::= "while" "(" expression ")" embedded_statement
 do_statement ::= "do" embedded_statement "while" "(" expression ")" ";"
 for_statement ::= "for" "("  for_initializer  ";"  expression  ";"  for_iterator  ")" embedded_statement
