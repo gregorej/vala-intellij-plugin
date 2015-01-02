@@ -11,8 +11,10 @@ import org.intellij.vala.psi.ValaMethodDeclaration;
 
 import java.util.Collection;
 
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.intellij.vala.psi.PsiMatchers.hasName;
 import static org.junit.Assert.assertThat;
 
 public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase {
@@ -28,7 +30,20 @@ public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase 
     public void testSimpleMethodUsage() {
         Collection<UsageInfo> foundUsages = myFixture.testFindUsages("SimpleMethod.vala");
 
-        assertThat(foundUsages, contains(resolvesTo(instanceOf(ValaMethodDeclaration.class))));
+        assertThat(foundUsages, contains(resolvesTo(methodDeclaration("some_method"))));
+    }
+
+    public void testTwoMethodUsages() {
+        Collection<UsageInfo> foundUsages = myFixture.testFindUsages("TwoMethodUsages.vala");
+
+        assertThat(foundUsages, contains(
+                resolvesTo(methodDeclaration("some_method")),
+                resolvesTo(methodDeclaration("some_method"))
+        ));
+    }
+
+    private static Matcher<PsiElement> methodDeclaration(String name) {
+        return allOf(instanceOf(ValaMethodDeclaration.class), hasName(name));
     }
 
     private static Matcher<UsageInfo> resolvesTo(final Matcher<? super PsiElement> resolutionTarget) {

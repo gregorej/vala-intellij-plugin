@@ -1,8 +1,8 @@
 
-void someMethod() {
+void some_method() {
 
 }
 
 int main(string [] args) {
-	som<caret>eMethod ();
+	som<caret>e_method ();
 }
