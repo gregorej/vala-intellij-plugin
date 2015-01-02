@@ -20,6 +20,7 @@
         <lang.syntaxHighlighterFactory key="Vala"
                                        implementationClass="org.intellij.vala.highlighting.ValaSyntaxHighlighterFactory"/>
         <lang.braceMatcher language="Vala" implementationClass="org.intellij.vala.braces.ValaBraceMatcher"/>
+        <lang.findUsagesProvider language="Vala" implementationClass="org.intellij.vala.usage.ValaFindUsagesProvider"/>
         <createFromTemplateHandler order="first"
                                    implementation="org.intellij.vala.actions.ValaCreateFromTemplateHandler"/>
         <completion.contributor language="Vala"
