@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 
 import static org.intellij.vala.psi.impl.ValaPsiImplUtil.getImportedNamespacesAvailableFor;
 
@@ -31,7 +32,8 @@ public class ValaConstructorReference extends PsiReferenceBase<ValaObjectOrArray
     }
 
     private static TextRange calculateRange(ValaObjectOrArrayCreationExpression expression) {
-        ValaMemberPart memberPart = expression.getMember().getMemberPartList().get(0);
+        final List<ValaMemberPart> memberPartList = expression.getMember().getMemberPartList();
+        ValaMemberPart memberPart = memberPartList.get(memberPartList.size() - 1);
         int offset = memberPart.getTextOffset() - expression.getTextOffset();
         return new TextRange(offset, offset + memberPart.getName().length());
     }

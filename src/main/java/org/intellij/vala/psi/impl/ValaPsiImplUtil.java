@@ -14,6 +14,8 @@ import org.intellij.vala.reference.method.ValaMethodReference;
 
 import java.util.List;
 
+import static org.intellij.vala.psi.impl.ValaPsiElementUtil.getLastPart;
+
 public class ValaPsiImplUtil {
 
     public static PsiReference getReference(ValaMethodCall methodCall) {
@@ -57,7 +59,11 @@ public class ValaPsiImplUtil {
     }
 
     public static String getName(ValaCreationMethodDeclaration creationMethodDeclaration) {
-        return creationMethodDeclaration.getSymbol().getText();
+        return getLastPart(creationMethodDeclaration.getSymbol()).getText();
+    }
+
+    public static int getTextOffset(ValaCreationMethodDeclaration creationMethodDeclaration) {
+        return getLastPart(creationMethodDeclaration.getSymbol()).getTextOffset();
     }
 
     public static String getName(ValaSimpleName simpleName) {

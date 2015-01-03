@@ -49,6 +49,13 @@ public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase 
                 resolvesTo(constructor("FooClass"))));
     }
 
+    public void testNamedConstructorUsage() {
+        Collection<UsageInfo> foundUsages = myFixture.testFindUsages("NamedConstructorUsage.vala");
+
+        assertThat(foundUsages, hasSize(1));
+        assertThat(foundUsages, contains(resolvesTo(constructor("with_beer"))));
+    }
+
     private static Matcher<PsiElement> constructor(String name) {
         return allOf(instanceOf(ValaCreationMethodDeclaration.class), hasName(name));
     }

@@ -290,7 +290,7 @@ struct_member ::= attributes? ( method_declaration | field_declaration | constan
 creation_method_declaration ::= access_modifier? constructor_declaration_modifiers? symbol
                                 "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )
                                 {
-                                methods=[getQName toString getName setName]
+                                methods=[getQName toString getName setName getTextOffset]
                                 stubClass="org.intellij.vala.psi.stub.ValaCreationMethodDeclarationStub"
                                 }
 
