@@ -56,6 +56,10 @@ public class ValaPsiImplUtil {
         return memberPart.getIdentifier().getText();
     }
 
+    public static String getName(ValaCreationMethodDeclaration creationMethodDeclaration) {
+        return creationMethodDeclaration.getSymbol().getText();
+    }
+
     public static String getName(ValaSimpleName simpleName) {
         return simpleName.getIdentifier().getText();
     }

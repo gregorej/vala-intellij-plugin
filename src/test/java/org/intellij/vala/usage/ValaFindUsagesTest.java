@@ -7,13 +7,12 @@ import com.intellij.usageView.UsageInfo;
 import org.hamcrest.CustomTypeSafeMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.intellij.vala.psi.ValaCreationMethodDeclaration;
 import org.intellij.vala.psi.ValaMethodDeclaration;
 
 import java.util.Collection;
 
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 import static org.intellij.vala.psi.PsiMatchers.hasName;
 import static org.junit.Assert.assertThat;
 
@@ -41,6 +40,19 @@ public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase 
                 resolvesTo(methodDeclaration("some_method"))
         ));
     }
+
+    public void testTwoConstructorUsages() {
+        Collection<UsageInfo> foundUsages = myFixture.testFindUsages("TwoConstructorUsages.vala");
+
+        assertThat(foundUsages, contains(
+                resolvesTo(constructor("FooClass")),
+                resolvesTo(constructor("FooClass"))));
+    }
+
+    private static Matcher<PsiElement> constructor(String name) {
+        return allOf(instanceOf(ValaCreationMethodDeclaration.class), hasName(name));
+    }
+
 
     private static Matcher<PsiElement> methodDeclaration(String name) {
         return allOf(instanceOf(ValaMethodDeclaration.class), hasName(name));
