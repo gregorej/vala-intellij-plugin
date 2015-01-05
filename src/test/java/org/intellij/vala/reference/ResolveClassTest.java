@@ -2,26 +2,15 @@ package org.intellij.vala.reference;
 
 
 import com.intellij.psi.PsiElement;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import org.intellij.vala.psi.*;
 
-import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
 import static org.hamcrest.Matchers.*;
 import static org.intellij.vala.psi.PsiMatchers.*;
 import static org.junit.Assert.assertThat;
 
-public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
+public class ResolveClassTest extends ValaReferenceTestBase {
 
     public static final boolean NOT_STRICT = false;
-
-    @Override
-    protected String getTestDataPath() {
-        return "src/test/resources/org/intellij/vala/reference/test";
-    }
-
-    protected boolean isWriteActionRequired() {
-        return false;
-    }
 
     public void testDetectingElementAtCaret() {
         myFixture.configureByFiles("ResolveClassDefinitionInSameFile.vala");
@@ -94,10 +83,6 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
         assertThat(referencedElement, nullValue());
-    }
-
-    private PsiElement getElementOfTypeAtCaret(Class<? extends PsiElement> elementType) {
-        return getParentOfType(myFixture.getFile().findElementAt(myFixture.getCaretOffset()), elementType);
     }
 
 }
