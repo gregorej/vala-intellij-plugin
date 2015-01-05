@@ -113,4 +113,13 @@ public class ValaLexerTest {
         assertThat(valaLexer.getTokenText(), is(equalTo("-31.4")));
     }
 
+    @Test
+    public void shouldDetectVerbatimString() throws IOException {
+        final String verbatimString = "\"\"\"some\n\"text\"\"\"\"";
+        valaLexer.start(verbatimString);
+
+        assertThat(valaLexer.getTokenText(), is(equalTo(verbatimString)));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.VERBATIM_STRING_LITERAL));
+    }
+
 }

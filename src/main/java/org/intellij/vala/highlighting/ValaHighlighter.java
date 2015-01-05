@@ -31,7 +31,7 @@ public class ValaHighlighter extends SyntaxHighlighterBase {
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
         if (ValaLexer.KEYWORDS.contains(tokenType)) return pack(KEYWORD);
-        if (tokenType == ValaTypes.STRING) return pack(STRING);
+        if (tokenType == ValaTypes.STRING || tokenType == ValaTypes.VERBATIM_STRING_LITERAL) return pack(STRING);
         if (tokenType == ValaTypes.INTEGER_LITERAL || tokenType == ValaTypes.REAL_LITERAL) return pack(NUMBER);
         if (tokenType == ValaTypes.LINE_COMMENT) return pack(LINE_COMMENT);
         if (tokenType == ValaTypes.BLOCK_COMMENT) return pack(BLOCK_COMMENT);

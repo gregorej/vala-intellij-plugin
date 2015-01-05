@@ -62,6 +62,10 @@ public class ValaParserTest extends ParsingTestCase {
         doTest(true);
     }
 
+    public void testVerbatimString() {
+        doTest(true);
+    }
+
     public void testSwitch() {
         doTest(true);
     }
