@@ -2,7 +2,7 @@
     <id>org.gregorej.intellij.vala</id>
     <name>Vala support plugin</name>
     <version>0.0.2</version>
-    <vendor email="grzegorz.dyk@gmail.com" url="http://www.yourcompany.com">Grzegorz Dyk</vendor>
+    <vendor email="grzegorz.dyk@gmail.com" url="https://github.com/gregorej/vala-intellij-plugin">Grzegorz Dyk</vendor>
 
     <description>Support for Vala programming language</description>
 
