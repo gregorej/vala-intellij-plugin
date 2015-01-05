@@ -60,7 +60,6 @@ public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase 
         return allOf(instanceOf(ValaCreationMethodDeclaration.class), hasName(name));
     }
 
-
     private static Matcher<PsiElement> methodDeclaration(String name) {
         return allOf(instanceOf(ValaMethodDeclaration.class), hasName(name));
     }

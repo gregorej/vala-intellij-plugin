@@ -19,23 +19,16 @@ import java.util.List;
 
 import static org.intellij.vala.psi.impl.ValaPsiImplUtil.getImportedNamespacesAvailableFor;
 
-public class ValaConstructorReference extends PsiReferenceBase<ValaObjectOrArrayCreationExpression> {
+public class ValaConstructorReference extends PsiReferenceBase<ValaMemberPart> {
 
     private Project project;
     private GlobalSearchScope scope;
 
-    public ValaConstructorReference(ValaObjectOrArrayCreationExpression element) {
-        super(element, calculateRange(element));
+    public ValaConstructorReference(ValaMemberPart element) {
+        super(element, new TextRange(0, element.getTextLength()));
         project = element.getProject();
         scope = GlobalSearchScope.projectScope(project);
 
-    }
-
-    private static TextRange calculateRange(ValaObjectOrArrayCreationExpression expression) {
-        final List<ValaMemberPart> memberPartList = expression.getMember().getMemberPartList();
-        ValaMemberPart memberPart = memberPartList.get(memberPartList.size() - 1);
-        int offset = memberPart.getTextOffset() - expression.getTextOffset();
-        return new TextRange(offset, offset + memberPart.getName().length());
     }
 
     @Nullable
@@ -51,7 +44,7 @@ public class ValaConstructorReference extends PsiReferenceBase<ValaObjectOrArray
     }
 
     private PsiElement resolveWithRoot(QualifiedName rootName) {
-        QualifiedName originalQualifiedName = rootName.append(QualifiedNameBuilder.from(myElement.getMember()));
+        QualifiedName originalQualifiedName = rootName.append(QualifiedNameBuilder.from((ValaMember) myElement.getParent()));
         QualifiedName maybeDefaultConstructorQualifiedName = originalQualifiedName.append(originalQualifiedName.getTail());
         ValaDeclaration defaultConstructor = resolveFirst(maybeDefaultConstructorQualifiedName);
         if (defaultConstructor != null) {

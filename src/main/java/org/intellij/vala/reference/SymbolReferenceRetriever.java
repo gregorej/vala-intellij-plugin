@@ -17,13 +17,13 @@ public class SymbolReferenceRetriever {
         if (symbol == null) {
             return null;
         }
-        if (isPartOfTypeDefinition(symbol)) {
+        if (isPartOfVariableDeclaration(symbol)) {
             return new ValaTypeReference(symbol, textRange);
         }
         return null;
     }
 
-    private static boolean isPartOfTypeDefinition(ValaSymbol symbol) {
+    private static boolean isPartOfVariableDeclaration(ValaSymbol symbol) {
         return getParentOfType(symbol, ValaTypeWeak.class) != null || getParentOfType(symbol, ValaType.class) != null;
     }
 }

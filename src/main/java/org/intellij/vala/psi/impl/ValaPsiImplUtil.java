@@ -9,7 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.reference.SymbolReferenceRetriever;
-import org.intellij.vala.reference.ValaConstructorReference;
+import org.intellij.vala.reference.ValaMemberPartReferenceFactory;
 import org.intellij.vala.reference.method.ValaMethodReference;
 
 import java.util.List;
@@ -78,16 +78,12 @@ public class ValaPsiImplUtil {
         throw new IncorrectOperationException("changing name of this element is not supported");
     }
 
-    public static PsiReference getReference(ValaObjectOrArrayCreationExpression objectCreationExpression) {
-        return new ValaConstructorReference(objectCreationExpression);
-    }
-
     public static QualifiedName getQName(ValaCreationMethodDeclaration creationMethodDeclaration) {
         return QualifiedNameBuilder.from(creationMethodDeclaration);
     }
 
     public static PsiReference getReference(ValaMemberPart memberPart) {
-        return null;
+        return ValaMemberPartReferenceFactory.INSTANCE.create(memberPart);
     }
 
     public static List<ValaMethodDeclaration> getMethodDeclarations(ValaClassDeclaration classDeclaration) {

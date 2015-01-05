@@ -51,7 +51,7 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
     public void testResolveClassDefaultConstructorInAnotherFile() {
         myFixture.configureByFiles("FileContainingDefaultClassContructorReference.vala", "FileContainingClassDefinition.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaObjectOrArrayCreationExpression.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaClassDeclaration.class), isInFile(hasName(containsString("FileContainingClassDefinition")))));
     }
@@ -59,7 +59,7 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
     public void testResolveNamedConstructorInAnotherFile() {
         myFixture.configureByFiles("FileContainingNamedConstructorReference.vala", "ClassWithMultipleConstructors.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaObjectOrArrayCreationExpression.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaCreationMethodDeclaration.class), isInFile(hasName(containsString("ClassWithMultipleConstructors")))));
     }
@@ -67,7 +67,7 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
     public void testResolveClassDefinitionWithFullyDeclaredNamespaceInSameFile() {
         myFixture.configureByFiles("ResolveClassDefinitionWithFullyDeclaredNamespaceInSameFile.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaObjectOrArrayCreationExpression.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(aClassDeclarationThat(hasName("SomeClass")), isInFile(hasName(containsString("ResolveClassDefinitionWithFullyDeclaredNamespaceInSameFile")))));
     }
@@ -83,7 +83,7 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
     public void testResolveNamedConstructorForClassInImportedNamespace() {
         myFixture.configureByFiles("ResolveNamedConstructorForClassInImportedNamespace.vala", "ClassWithMultipleConstructorsInNamespace.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaObjectOrArrayCreationExpression.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaCreationMethodDeclaration.class), isInFile(hasName(containsString("ClassWithMultipleConstructorsInNamespace")))));
     }
@@ -91,7 +91,7 @@ public class ResolveClassTest extends LightPlatformCodeInsightFixtureTestCase {
     public void testDoNotResolveNamedConstructorForClassInImportedNamespaceIfNamespaceIsNotUsed() {
         myFixture.configureByFiles("FileContainingNamedConstructorReference.vala", "ClassWithMultipleConstructorsInNamespace.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaObjectOrArrayCreationExpression.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
         assertThat(referencedElement, nullValue());
     }

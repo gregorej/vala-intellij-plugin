@@ -330,7 +330,7 @@ property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "ab
 tuple ::= "(" expression ( "," expression )* ")"
 this_access ::= "this"
 base_access ::= "base"
-object_or_array_creation_expression ::= "new" member ( object_creation_expression | array_creation_expression ) {methods=[getReference] pin=1}
+object_or_array_creation_expression ::= "new" member ( object_creation_expression | array_creation_expression ) {pin=1}
 object_creation_expression ::= "(" ( arguments )? ")" ( object_initializer )?
 object_initializer ::= "{" member_initializer ( "," member_initializer )? "}"
 member_initializer ::= identifier "=" expression
