@@ -3,12 +3,13 @@ package org.intellij.vala.reference;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.intellij.vala.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static org.intellij.vala.reference.ValaFieldReference.resolveAsThisClassFieldReference;
 
 public class ValaVariableReference extends PsiReferenceBase<PsiNamedElement> {
 
@@ -19,6 +20,14 @@ public class ValaVariableReference extends PsiReferenceBase<PsiNamedElement> {
     @Nullable
     @Override
     public PsiElement resolve() {
+        PsiElement localVariable = resolveAsLocalVariable(myElement);
+        if (localVariable != null) {
+            return localVariable;
+        }
+        return resolveAsThisClassFieldReference(myElement);
+    }
+
+    private static PsiElement resolveAsLocalVariable(PsiNamedElement myElement) {
         ValaBlock block = PsiTreeUtil.getParentOfType(myElement, ValaBlock.class);
         if (block == null) {
             return null;// should not happen in valid Vala file
@@ -42,8 +51,6 @@ public class ValaVariableReference extends PsiReferenceBase<PsiNamedElement> {
         }
         return null;
     }
-
-
 
     @NotNull
     @Override

@@ -20,7 +20,7 @@ public class ValaSimpleNameReferenceFactory {
         return null;
     }
 
-    private boolean isVariableReference(ValaSimpleName simpleName) {
+    private static boolean isVariableReference(ValaSimpleName simpleName) {
         return !isMethodCall(simpleName);
     }
 }

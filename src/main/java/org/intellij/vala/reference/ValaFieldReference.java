@@ -3,9 +3,7 @@ package org.intellij.vala.reference;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.util.PsiTreeUtil;
 import org.intellij.vala.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +19,10 @@ public class ValaFieldReference extends PsiReferenceBase<PsiNamedElement> {
     @Nullable
     @Override
     public PsiElement resolve() {
+        return resolveAsThisClassFieldReference(myElement);
+    }
+
+    public static PsiElement resolveAsThisClassFieldReference(PsiNamedElement myElement) {
         ValaDeclarationContainer containingClass = getParentOfType(myElement, ValaDeclarationContainer.class, false);
         if (containingClass == null) {
             return null;
