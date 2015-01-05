@@ -17,7 +17,8 @@ public class ClassDeclarationUtil {
     private static <T> List<T> getMembersOfType(ValaClassDeclaration classDeclaration, Class<T> expectedType) {
         ImmutableList.Builder<T> declarations = ImmutableList.builder();
         for (ValaClassMember member : classDeclaration.getClassMemberList()) {
-            if (expectedType.isAssignableFrom(member.getNamespaceMember().getClass())) {
+            ValaNamespaceMember namespaceMember = member.getNamespaceMember();
+            if (namespaceMember !=null && expectedType.isAssignableFrom(namespaceMember.getClass())) {
                 declarations.add((T) member.getNamespaceMember());
             }
         }

@@ -7,8 +7,8 @@ class ClassWithMethod {
 }
 
 int main(string [] args) {
-	var obj = new ClassWithMethod();
-
+	var k = 3, obj = new ClassWithMethod();
+	var l = 0;
 	o<caret>bj.execute ();
 
 	return 3;

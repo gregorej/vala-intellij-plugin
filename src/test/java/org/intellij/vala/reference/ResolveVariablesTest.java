@@ -19,4 +19,12 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
 
         assertThat(referencedElement, allOf(instanceOf(ValaLocalVariable.class), hasName("obj")));
     }
+
+    public void testReferenceToVariableFromInsideExpression() {
+        myFixture.configureByFiles("ReferenceToVariableFromInsideExpression.vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaSimpleName.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(instanceOf(ValaLocalVariable.class), hasName("factor")));
+    }
 }
