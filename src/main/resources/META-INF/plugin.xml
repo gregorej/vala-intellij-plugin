@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>org.gregorej.intellij.vala</id>
     <name>Vala support plugin</name>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <vendor email="grzegorz.dyk@gmail.com" url="http://www.yourcompany.com">Grzegorz Dyk</vendor>
 
     <description>Support for Vala programming language</description>
