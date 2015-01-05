@@ -54,6 +54,10 @@ public class ValaPsiImplUtil {
         return localVariable.getIdentifier().getText();
     }
 
+    public static String getName(ValaFieldDeclaration fieldDeclaration) {
+        return fieldDeclaration.getIdentifier().getText();
+    }
+
     public static int getTextOffset(ValaCreationMethodDeclaration creationMethodDeclaration) {
         return getLastPart(creationMethodDeclaration.getSymbol()).getTextOffset();
     }
@@ -124,6 +128,10 @@ public class ValaPsiImplUtil {
 
     public static QualifiedName getQName(ValaMethodDeclaration classDeclaration) {
         return QualifiedNameBuilder.forMethodDeclaration(classDeclaration);
+    }
+
+    public static QualifiedName getQName(ValaFieldDeclaration fieldDeclaration) {
+        return QualifiedNameBuilder.forFieldDeclaration(fieldDeclaration);
     }
 
     public static List<String> getPartNames(ValaMember valaMember) {

@@ -156,7 +156,7 @@
   implements("class_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
   implements("method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
-  implements("creation_method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
+  implements("creation_method_declaration|field_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
   implements("local_variable") = "com.intellij.psi.PsiNamedElement"
 }
 
@@ -317,7 +317,7 @@ method_declaration ::= access_modifier? member_declaration_modifier? type identi
                        "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )  {methods=[getName setName getQName] pin=6}
 constant_declaration ::= access_modifier? member_declaration_modifiers? "const" type identifier inline_array_type?
                          ("=" expression )? ";" {pin=3}
-field_declaration ::= access_modifier? member_declaration_modifiers? type_weak identifier ( "=" expression )? ";"
+field_declaration ::= access_modifier? member_declaration_modifiers? type_weak identifier ( "=" expression )? ";" {methods=[getName setName getQName]}
 
 property_declaration ::= access_modifier? property_declaration_modifiers? type_weak identifier
                          "{" property_declaration_part* "}" {pin=5}

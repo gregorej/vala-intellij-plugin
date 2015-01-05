@@ -15,6 +15,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
+        <annotator language="Vala" implementationClass="org.intellij.vala.ValaAnnotator"/>
         <fileTypeFactory implementation="org.intellij.vala.ValaFileTypeFactory"/>
         <lang.parserDefinition language="Vala" implementationClass="org.intellij.vala.parser.ValaParserDefinition"/>
         <lang.syntaxHighlighterFactory key="Vala"

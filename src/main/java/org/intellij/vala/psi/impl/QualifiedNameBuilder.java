@@ -181,4 +181,15 @@ public class QualifiedNameBuilder implements QualifiedName {
     public String toString() {
         return join(parts, ".");
     }
+
+    public static QualifiedName forFieldDeclaration(ValaFieldDeclaration fieldDeclaration) {
+        ValaDeclaration container = getParentOfType(fieldDeclaration.getParent(), ValaDeclaration.class, false);
+        QualifiedName qName;
+        if (container == null) {
+            qName = new QualifiedNameBuilder();
+        } else {
+            qName = container.getQName();
+        }
+        return qName.append(fieldDeclaration.getName());
+    }
 }
