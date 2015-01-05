@@ -5,7 +5,7 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
 
-public class ValaReferenceTestBase extends LightPlatformCodeInsightFixtureTestCase {
+public abstract class ValaReferenceTestBase extends LightPlatformCodeInsightFixtureTestCase {
 
     @Override
     protected String getTestDataPath() {
