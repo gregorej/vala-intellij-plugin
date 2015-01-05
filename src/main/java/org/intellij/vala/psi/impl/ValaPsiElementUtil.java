@@ -1,6 +1,8 @@
 package org.intellij.vala.psi.impl;
 
 
+import org.intellij.vala.psi.ValaPrimaryExpression;
+import org.intellij.vala.psi.ValaSimpleName;
 import org.intellij.vala.psi.ValaSymbol;
 import org.intellij.vala.psi.ValaSymbolPart;
 
@@ -15,4 +17,8 @@ public class ValaPsiElementUtil {
     }
 
 
+    public static boolean isMethodCall(ValaSimpleName simpleName) {
+        ValaPrimaryExpression parent = (ValaPrimaryExpression) simpleName.getParent();
+        return !parent.getMethodCallList().isEmpty() && parent.getMemberAccessList().isEmpty();
+    }
 }

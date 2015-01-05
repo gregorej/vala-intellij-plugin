@@ -156,6 +156,7 @@
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
   implements("method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
   implements("creation_method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
+  implements("local_variable") = "com.intellij.psi.PsiNamedElement"
 }
 
 vala_module ::= using_directive * namespace_member *
@@ -404,7 +405,7 @@ delete_statement ::= "delete" expression ";" {pin=1}
 local_variable_declarations ::= ( "var" | type ) local_variable_declaration ( "," local_variable_declaration )*
 local_variable_declaration ::= local_tuple_declaration | local_variable
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression {pin=5}
-local_variable ::= identifier ( inline_array_type )? ( "=" expression )?
+local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {methods=[getName setName]}
 expression_statement ::= statement_expression ";"
 type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? symbol ( type_arguments )? ( "*" )* ( "?" )? array_type* ) {methods=[]}
 type_arguments ::= "<" type ( "," type )* ">"

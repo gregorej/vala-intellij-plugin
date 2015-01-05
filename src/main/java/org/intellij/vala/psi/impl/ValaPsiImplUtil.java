@@ -10,7 +10,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.reference.SymbolReferenceRetriever;
 import org.intellij.vala.reference.ValaMemberPartReferenceFactory;
-import org.intellij.vala.reference.method.ValaMethodReference;
+import org.intellij.vala.reference.ValaSimpleNameReferenceFactory;
 
 import java.util.List;
 
@@ -18,20 +18,8 @@ import static org.intellij.vala.psi.impl.ValaPsiElementUtil.getLastPart;
 
 public class ValaPsiImplUtil {
 
-    public static PsiReference getReference(ValaMethodCall methodCall) {
-        return null;
-    }
-
     public static PsiReference getReference(ValaSimpleName simpleName) {
-        if (isPartOfMethodCall(simpleName)) {
-            return new ValaMethodReference(simpleName);
-        }
-        return null;
-    }
-
-    private static boolean isPartOfMethodCall(ValaSimpleName simpleName) {
-        ValaPrimaryExpression parent = (ValaPrimaryExpression) simpleName.getParent();
-        return !parent.getMethodCallList().isEmpty();
+        return ValaSimpleNameReferenceFactory.INSTANCE.create(simpleName);
     }
 
     public static PsiReference getReference(ValaSymbolPart part) {
@@ -60,6 +48,10 @@ public class ValaPsiImplUtil {
 
     public static String getName(ValaCreationMethodDeclaration creationMethodDeclaration) {
         return getLastPart(creationMethodDeclaration.getSymbol()).getText();
+    }
+
+    public static String getName(ValaLocalVariable localVariable) {
+        return localVariable.getIdentifier().getText();
     }
 
     public static int getTextOffset(ValaCreationMethodDeclaration creationMethodDeclaration) {
