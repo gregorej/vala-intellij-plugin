@@ -70,6 +70,10 @@ public class ValaPsiImplUtil {
         return methodDeclaration.getIdentifier().getText();
     }
 
+    public static String getName(ValaParameter parameter) {
+        return parameter.getIdentifier().getText();
+    }
+
     public static PsiElement setName(PsiElement valaPsiElement, String newName) {
         throw new IncorrectOperationException("changing name of this element is not supported");
     }

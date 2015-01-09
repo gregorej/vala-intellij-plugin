@@ -157,7 +157,7 @@
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
   implements("method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
   implements("creation_method_declaration|field_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
-  implements("local_variable") = "com.intellij.psi.PsiNamedElement"
+  implements("local_variable|parameter") = "com.intellij.psi.PsiNamedElement"
 }
 
 vala_module ::= using_directive * namespace_member *
@@ -297,7 +297,7 @@ creation_method_declaration ::= access_modifier? constructor_declaration_modifie
                                 }
 
 parameters ::= parameter ( "," parameter )*
-parameter ::= attributes? ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression )? ) )
+parameter ::= attributes? ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression )? ) ) {methods=[getName setName]}
 
 
 throws_declaration ::= "throws" type ( "," type )*

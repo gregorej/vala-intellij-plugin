@@ -2,10 +2,7 @@ package org.intellij.vala.reference;
 
 
 import com.intellij.psi.PsiElement;
-import org.intellij.vala.psi.ValaFieldDeclaration;
-import org.intellij.vala.psi.ValaLocalVariable;
-import org.intellij.vala.psi.ValaMemberPart;
-import org.intellij.vala.psi.ValaSimpleName;
+import org.intellij.vala.psi.*;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
@@ -44,5 +41,13 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaSimpleName.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("status")));
+    }
+
+    public void testReferenceToMethodArgument() {
+        myFixture.configureByFiles("ReferenceToMethodArgument.vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaSimpleName.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(instanceOf(ValaParameter.class), hasName("name")));
     }
 }

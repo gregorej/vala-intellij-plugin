@@ -24,7 +24,11 @@ public class ValaVariableReference extends PsiReferenceBase<PsiNamedElement> {
         if (localVariable != null) {
             return localVariable;
         }
-        return resolveAsThisClassFieldReference(myElement);
+        PsiElement classField = resolveAsThisClassFieldReference(myElement);
+        if (classField != null) {
+            return classField;
+        }
+        return resolveAsMethodArgument(myElement);
     }
 
     private static PsiElement resolveAsLocalVariable(PsiNamedElement myElement) {
@@ -47,6 +51,19 @@ public class ValaVariableReference extends PsiReferenceBase<PsiNamedElement> {
                         }
                     }
                 }
+            }
+        }
+        return null;
+    }
+
+    private static PsiElement resolveAsMethodArgument(PsiNamedElement referenceElement) {
+        ValaMethodDeclaration methodDeclaration = PsiTreeUtil.getParentOfType(referenceElement, ValaMethodDeclaration.class, false);
+        if (methodDeclaration == null) {
+            return null;
+        }
+        for (ValaParameter parameter : methodDeclaration.getParameters().getParameterList()) {
+            if (parameter.getName().equals(referenceElement.getName())) {
+                return parameter;
             }
         }
         return null;
