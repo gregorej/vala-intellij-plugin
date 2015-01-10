@@ -50,4 +50,12 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
 
         assertThat(referencedElement, allOf(instanceOf(ValaParameter.class), hasName("name")));
     }
+
+    public void testReferenceToVariableFromCallParameter() {
+        myFixture.configureByFiles("ReferenceToVariableFromCallParameter.vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaSimpleName.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(instanceOf(ValaParameter.class), hasName("name")));
+    }
 }
