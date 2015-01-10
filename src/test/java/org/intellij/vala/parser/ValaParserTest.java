@@ -58,6 +58,10 @@ public class ValaParserTest extends ParsingTestCase {
         doTest(true);
     }
 
+    public void testBlockCommentInsideClass() {
+        doTest(true);
+    }
+
     public void testLineComment() {
         doTest(true);
     }
