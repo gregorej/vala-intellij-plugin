@@ -67,7 +67,7 @@ public final class PsiMatchers {
     }
 
     public static Matcher<? super PsiElement> hasName(final Matcher<String> name) {
-        return new CustomTypeSafeMatcher<PsiElement>("file with name " + name) {
+        return new CustomTypeSafeMatcher<PsiElement>("element with name " + name) {
             @Override
             protected boolean matchesSafely(PsiElement psiFile) {
                 return psiFile instanceof PsiNamedElement && name.matches(((PsiNamedElement) psiFile).getName());

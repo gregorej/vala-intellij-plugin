@@ -58,4 +58,12 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
 
         assertThat(referencedElement, allOf(instanceOf(ValaParameter.class), hasName("name")));
     }
+
+    public void testReferenceToFieldInExplicitObject() {
+        myFixture.configureByFiles("ReferenceToFieldInExplicitObject.vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("field")));
+    }
 }
