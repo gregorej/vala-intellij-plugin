@@ -16,7 +16,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.List;
 
 public class ValaFoldingBuilder extends CustomFoldingBuilder {
@@ -28,63 +27,40 @@ public class ValaFoldingBuilder extends CustomFoldingBuilder {
         if (!(root instanceof ValaFile)) return;
 
         final ValaFile valaFile = (ValaFile)root;
-        //final TextRange fileHeaderRange = foldFileHeader(descriptors, valaFile, document); // 1. File header
-        //foldConsequentStatements(descriptors, valaFile, DartImportOrExportStatement.class);// 2. Import and export statements
-        //foldConsequentStatements(descriptors, valaFile, DartPartStatement.class);          // 3. Part statements
+
         foldComments(descriptors, root);
-        foldStatements(descriptors, root);                                            // 5. Class body
-        foldNamespaceBodies(descriptors, root);                                            // 5. Class body
-        foldClassBodies(descriptors, valaFile);                                            // 5. Class body
-        foldFunctionBodies(descriptors, root);                                        // 6. Function body
-        //foldTypeArguments(descriptors, psiElements);                                       // 7. Type arguments
+        foldStatements(descriptors, root);
+        
+        foldNamespaceBodies(descriptors, root);
+        foldClassBodies(descriptors, valaFile);
+        foldFunctionBodies(descriptors, root);
     }
 
     public String getLanguagePlaceholderText(@NotNull ASTNode node, @NotNull TextRange range) {
         final IElementType elementType = node.getElementType();
         final PsiElement psiElement = node.getPsi();
 
-        if(psiElement instanceof ValaStatement)  // 1. All statements
+        if(psiElement instanceof ValaStatement)
             return "{...}";
-//
-//        if (psiElement instanceof DartFile) return "/.../";                              // 1.   File header
-//        if (psiElement instanceof DartImportOrExportStatement) return "...";             // 2.   Import and export statements
-//        if (psiElement instanceof DartPartStatement) return "...";                       // 3.   Part statements
-//        if (elementType == DartTokenTypesSets.MULTI_LINE_DOC_COMMENT) return "/**...*/"; // 4.1. Multiline doc comments
+
         if (elementType == ValaTypes.BLOCK_COMMENT) {
             String comment = psiElement.getText();
             System.out.print(comment);
             return "/*...*/";
         }
-//        if (elementType == DartTokenTypesSets.SINGLE_LINE_DOC_COMMENT) return "///...";  // 4.3. Consequent single line doc comments
-//        if (elementType == DartTokenTypesSets.SINGLE_LINE_COMMENT) return "//...";       // 4.4. Consequent single line comments
-        if (psiElement instanceof ValaNamespaceDeclaration)                                // 4.   Namespace bodies
+
+        if (psiElement instanceof ValaNamespaceDeclaration)
             return "{...}";
         if (psiElement instanceof ValaClassBody)
-            return "{...}";                                                                // 5.   Class body
+            return "{...}";
         if (psiElement instanceof ValaMethodDeclaration ||
-                psiElement instanceof ValaCreationMethodDeclaration) return "{...}";       // 6.   Method or creation method body
+                psiElement instanceof ValaCreationMethodDeclaration) return "{...}";
 
         return "...";
     }
 
     public boolean isRegionCollapsedByDefault(@NotNull final ASTNode node) {
-        /*final IElementType elementType = node.getElementType();
-        final PsiElement psiElement = node.getPsi();
-        final CodeFoldingSettings settings = CodeFoldingSettings.getInstance();
-        final DartCodeFoldingSettings dartSettings = DartCodeFoldingSettings.getInstance();
-
-        if (psiElement instanceof DartFile) return settings.COLLAPSE_FILE_HEADER;                        // 1. File header
-        if (psiElement instanceof DartImportOrExportStatement) return settings.COLLAPSE_IMPORTS;         // 2. Import and export statements
-        if (psiElement instanceof DartPartStatement) return dartSettings.isCollapseParts();              // 3. Part statements
-
-        if (elementType == DartTokenTypesSets.MULTI_LINE_DOC_COMMENT ||                                  // 4.1. Multiline doc comments
-                elementType ==
-                        DartTokenTypesSets.SINGLE_LINE_DOC_COMMENT) {                                                // 4.3. Consequent single line doc comments
-            return settings.COLLAPSE_DOC_COMMENTS;                                                         // 4.2 and 4.4 never collapsed by default
-        }
-        //                                                                                                  5. Class body never collapsed by default
-        if (psiElement instanceof DartFunctionBody) return settings.COLLAPSE_METHODS;                    // 6. Function body
-        if (psiElement instanceof DartTypeArguments) return dartSettings.isCollapseGenericParameters();  // 7. Type arguments*/
+        //TODO: get this data from settings
 
         return false;
     }
