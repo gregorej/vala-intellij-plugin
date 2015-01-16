@@ -236,7 +236,7 @@ constructor_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "
 
 destructor_declaration ::= constructor_declaration_modifiers? "~" "(" ")" block {pin=3}
 
-class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? "{" class_member* "}"
+class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? class_body
 {
     methods=[getName setName getMethodDeclarations getNamespaceMemberList toString getDeclarations getQName]
     pin=3
@@ -245,6 +245,7 @@ class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbo
 
 base_types ::= type ( "," type )*
 
+class_body ::= "{"  class_member* "}";
 class_member ::= attributes?
                  ( class_declaration |
                    struct_declaration |
@@ -362,7 +363,7 @@ statement ::= block
               | do_statement
 {recoverWhile=statement_recovery}
 private statement_recovery ::= !("{"|"}"|";"|statement_recovering_keyword|comment|literal|identifier)
-private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"
+private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"|"try"
 private comment ::= line_comment | block_comment
 
 if_statement ::= "if" "(" expression ")" embedded_statement ( "else" embedded_statement )?  {pin=1}
