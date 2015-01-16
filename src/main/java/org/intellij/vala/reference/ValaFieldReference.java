@@ -5,12 +5,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
-import org.intellij.vala.psi.*;
-import org.intellij.vala.psi.impl.LocalVariableUtil;
+import org.intellij.vala.psi.ValaDeclaration;
+import org.intellij.vala.psi.ValaDeclarationContainer;
+import org.intellij.vala.psi.ValaFieldDeclaration;
+import org.intellij.vala.psi.ValaLocalVariable;
+import org.intellij.vala.psi.impl.ValaPsiElementUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
+import static org.intellij.vala.psi.impl.LocalVariableUtil.getTypeReference;
 
 
 public class ValaFieldReference extends PsiReferenceBase<PsiNamedElement> {
@@ -70,10 +74,16 @@ public class ValaFieldReference extends PsiReferenceBase<PsiNamedElement> {
         }
         PsiElement resolved = parentRef.resolve();
         if (resolved != null) {
-            if (resolved instanceof ValaLocalVariable) {
-                return (ValaDeclaration) LocalVariableUtil.getTypeReference((ValaLocalVariable) resolved).resolve();
-            }
-            return null;
+            return findTypeDeclaration(resolved);
+        }
+        return null;
+    }
+
+    private static ValaDeclaration findTypeDeclaration(PsiElement resolved) {
+        if (resolved instanceof ValaLocalVariable) {
+            return (ValaDeclaration) getTypeReference((ValaLocalVariable) resolved).resolve();
+        } else if (resolved instanceof ValaFieldDeclaration) {
+            return (ValaDeclaration) ValaPsiElementUtil.getTypeReference((ValaFieldDeclaration) resolved).resolve();
         }
         return null;
     }
