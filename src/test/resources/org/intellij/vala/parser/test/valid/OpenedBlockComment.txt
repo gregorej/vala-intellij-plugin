@@ -1,0 +1,2 @@
+FILE(0,39)
+  PsiComment(block_comment)('/*\nopened block comment should be valid')(0,39)
