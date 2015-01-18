@@ -44,8 +44,6 @@ public class ValaFoldingBuilder extends CustomFoldingBuilder {
             return "{...}";
 
         if (elementType == ValaTypes.BLOCK_COMMENT) {
-            String comment = psiElement.getText();
-            System.out.print(comment);
             return "/*...*/";
         }
 
@@ -139,10 +137,13 @@ public class ValaFoldingBuilder extends CustomFoldingBuilder {
             switch (componentType) {
                 case CLASS:
                     ValaClassDeclaration valaClass = (ValaClassDeclaration)valaToken;
-                    final List<ValaClassMember> classMembers = valaClass.getClassBody().getClassMemberList();
-                    if (!classMembers.isEmpty()) {
-                        for ( ValaClassMember classMember: classMembers) {
-                            foldMethod(descriptors, classMember);
+                    final ValaClassBody classBlock = valaClass.getClassBody();
+                    if(classBlock != null) {
+                        final List<ValaClassMember> classMembers = classBlock.getClassMemberList();
+                        if (!classMembers.isEmpty()) {
+                            for ( ValaClassMember classMember: classMembers) {
+                                foldMethod(descriptors, classMember);
+                            }
                         }
                     }
                     break;
