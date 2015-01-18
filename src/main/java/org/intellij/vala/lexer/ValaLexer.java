@@ -19,8 +19,6 @@ public class ValaLexer extends LookAheadLexer {
             KEY_USING,
             KEY_CLASS,
             KEY_REF,
-            KEY_VOID,
-            KEY_INT,
             KEY_PROTECTED,
             KEY_PUBLIC,
             KEY_INTERNAL,
@@ -75,8 +73,34 @@ public class ValaLexer extends LookAheadLexer {
             KEY_UNOWNED,
             KEY_WEAK,
             KEY_ERRORDOMAIN,
-            KEY_ENUM,
-            KEY_STRING);
+            KEY_ENUM);
+
+    public static final TokenSet BUILT_IN_TYPES = TokenSet.create(
+            TYPE_STRING,
+            TYPE_VOID,
+            TYPE_FLOAT,
+            TYPE_DOUBLE,
+            TYPE_SIZE_T,
+            TYPE_SSIZE_T,
+            TYPE_CHAR,
+            TYPE_UCHAR,
+            TYPE_UNICHAR,
+            TYPE_INT,
+            TYPE_UINT,
+            TYPE_INT8,
+            TYPE_UINT8,
+            TYPE_INT16,
+            TYPE_UINT16,
+            TYPE_INT32,
+            TYPE_UINT32,
+            TYPE_INT64,
+            TYPE_UINT64,
+            TYPE_LONG,
+            TYPE_ULONG,
+            TYPE_SHORT,
+            TYPE_USHORT,
+            TYPE_BOOL
+    );
 
     public ValaLexer() {
         super(new FlexAdapter(new _ValaLexer()));

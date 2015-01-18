@@ -77,4 +77,8 @@ public class ValaParserTest extends ParsingTestCase {
     public void testSwitch() {
         doTest(true);
     }
+
+    public void testClassWithMultipleEmptyMethodsReturningDifferentTypes() {
+        doTest(true);
+    }
 }
