@@ -36,6 +36,7 @@
     OP_SUB="-"
     OP_MUL="*"
     OP_AND="&&"
+    OP_LOR ="||"
     OP_NOT="!"
     OP_BIN_NOT="~"
     OP_REF="&"
@@ -388,7 +389,8 @@ switch_statement ::= "switch" "(" expression ")" "{" switch_section* "}" {pin=1}
 switch_section ::= ( ("case" expression) | "default" ) ":" embedded_statement_without_block*
 while_statement ::= "while" "(" expression ")" embedded_statement
 do_statement ::= "do" embedded_statement "while" "(" expression ")" ";" {pin=1}
-for_statement ::= "for" "("  for_initializer  ";"  expression  ";"  for_iterator  ")" embedded_statement {pin=1}
+for_statement ::= "for" for_loop_parts_in_braces embedded_statement {pin=1}
+for_loop_parts_in_braces ::= "("  for_initializer  ";"  expression  ";"  for_iterator  ")"
 for_initializer ::= local_variable_declarations | ( statement_expression ( "," statement_expression )* )
 for_iterator ::= statement_expression ( "," statement_expression )*
 statement_expression ::= expression
@@ -404,10 +406,11 @@ finally_clause ::= "finally" block {pin=1}
 lock_statement ::= "lock" "(" expression ")" embedded_statement {pin=1}
 delete_statement ::= "delete" expression ";" {pin=1}
 
-local_variable_declarations ::= ( "var" | type ) local_variable_declaration ( "," local_variable_declaration )*
+local_variable_declarations ::= ("var" | type) local_variable_declaration ( "," local_variable_declaration )*
 local_variable_declaration ::= local_tuple_declaration | local_variable
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression {pin=5}
-local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {methods=[getName setName]}
+local_variable ::= identifier ( inline_array_type )? ( "=" expression )? ";" {methods=[getName setName]}
+
 expression_statement ::= statement_expression ";"
 type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? symbol ( type_arguments )? ( "*" )* ( "?" )? array_type* ) {methods=[]}
 type_arguments ::= "<" type ( "," type )* ">"
