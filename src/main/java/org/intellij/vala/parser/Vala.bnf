@@ -262,7 +262,7 @@ constructor_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "
 
 destructor_declaration ::= constructor_declaration_modifiers? "~" "(" ")" block {pin=3}
 
-class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? "{" class_member* "}"
+class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? class_body
 {
     methods=[getName setName getMethodDeclarations getNamespaceMemberList toString getDeclarations getQName]
     pin=3
@@ -271,6 +271,7 @@ class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbo
 
 base_types ::= type ( "," type )*
 
+class_body ::= "{"  class_member* "}";
 class_member ::= attributes?
                  ( class_declaration |
                    struct_declaration |
