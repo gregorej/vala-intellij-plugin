@@ -388,7 +388,7 @@ statement ::= block
               | do_statement
 {recoverWhile=statement_recovery}
 private statement_recovery ::= !("{"|"}"|";"|statement_recovering_keyword|comment|literal|identifier|built_in_type)
-private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"
+private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"|"try"
 private comment ::= line_comment | block_comment
 
 if_statement ::= "if" "(" expression ")" embedded_statement ( "else" embedded_statement )?  {pin=1}
