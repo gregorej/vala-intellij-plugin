@@ -71,8 +71,6 @@
     KEY_USING="using"
     KEY_CLASS="class"
     KEY_REF="ref"
-    KEY_VOID="void"
-    KEY_INT="int"
     KEY_PROTECTED="protected"
     KEY_PUBLIC="public"
     KEY_INTERNAL="internal"
@@ -128,7 +126,30 @@
     KEY_WEAK="weak"
     KEY_ERRORDOMAIN="errordomain"
     KEY_ENUM="enum"
-    KEY_STRING="string"
+    TYPE_VOID="void"
+    TYPE_STRING="string"
+    TYPE_CHAR="char"
+    TYPE_UCHAR="uchar"
+    TYPE_SHORT="short"
+    TYPE_USHORT="ushort"
+    TYPE_INT="int"
+    TYPE_UINT="uint"
+    TYPE_LONG="long"
+    TYPE_ULONG="ulong"
+    TYPE_SIZE_T="size_t"
+    TYPE_SSIZE_T="ssize_t"
+    TYPE_INT8="int8"
+    TYPE_UINT8="uint8"
+    TYPE_INT16="int16"
+    TYPE_UINT16="uint16"
+    TYPE_INT32="int32"
+    TYPE_UINT32="uint32"
+    TYPE_INT64="int64"
+    TYPE_UINT64="uint64"
+    TYPE_UNICHAR="unichar"
+    TYPE_FLOAT="float"
+    TYPE_DOUBLE="double"
+    TYPE_BOOL="bool"
     CAST_OWNED="(owned)"
     CAST_VOID="(void)"
     CAST_DYNAMIC="(dynamic)"
@@ -162,7 +183,12 @@
 
 vala_module ::= using_directive * namespace_member *
 symbol ::= symbol_part ( "." symbol_part )*
-symbol_part ::= "string" | "int" | ( "global::" identifier ) | identifier {methods=[getName setName getReference]}
+symbol_part ::= built_in_type | ( "global::" identifier ) | identifier {methods=[getName setName getReference]}
+
+private built_in_type ::= integral_type | floating_point_type | "bool" | "string" | "void"
+private integral_type ::= "char" | "uchar" | "short" | "ushort" | "long" | "ulong" | "size_t" | "ssize_t" | int_type
+private floating_point_type ::= "float" | "double"
+private int_type ::= "int" | "uint" | "int8" | "uint8" | "int16" | "uint16" | "int32" | "uint32" | "int64" | "uint64"
 
 using_directive ::= "using" symbol ( "," symbol )* ";"
 namespace_member ::= attributes?
@@ -260,7 +286,7 @@ class_member ::= attributes?
                    creation_method_declaration |
                    destructor_declaration )
 {recoverWhile=class_member_recovery}
-private class_member_recovery ::= !(";"|"class"|"enum"|access_modifier|"}"|identifier)
+private class_member_recovery ::= !(";"|"class"|"enum"|access_modifier|"}"|identifier|built_in_type)
 
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
 type_declaration_modifier ::= "abstract" | "extern" | "static"
@@ -362,7 +388,7 @@ statement ::= block
               | expression_statement
               | do_statement
 {recoverWhile=statement_recovery}
-private statement_recovery ::= !("{"|"}"|";"|statement_recovering_keyword|comment|literal|identifier)
+private statement_recovery ::= !("{"|"}"|";"|statement_recovering_keyword|comment|literal|identifier|built_in_type)
 private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"|"try"
 private comment ::= line_comment | block_comment
 
