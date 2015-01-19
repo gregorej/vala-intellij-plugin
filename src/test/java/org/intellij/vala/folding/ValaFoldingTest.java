@@ -24,4 +24,12 @@ public class ValaFoldingTest extends LightPlatformCodeInsightFixtureTestCase {
     public void testNamespace() {
         doTest();
     }
+
+    public void testStatementsExpressions() {
+        doTest();
+    }
+
+    public void testBlockComments() {
+        doTest();
+    }
 }
