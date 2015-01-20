@@ -3,10 +3,10 @@ package org.intellij.vala.reference;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import org.intellij.vala.psi.ValaMember;
-import org.intellij.vala.psi.ValaMemberPart;
-import org.intellij.vala.psi.ValaObjectOrArrayCreationExpression;
-import org.intellij.vala.psi.ValaPrimaryExpression;
+import org.intellij.vala.psi.*;
+import org.intellij.vala.reference.method.ValaMethodReference;
+
+import java.util.List;
 
 public class ValaMemberPartReferenceFactory {
 
@@ -19,10 +19,31 @@ public class ValaMemberPartReferenceFactory {
             return new ValaConstructorReference(memberPart);
         } else if (isThisClassFieldAccess(memberPart)) {
             return new ValaFieldReference(memberPart);
+        } else if (isMethodCall(memberPart)) {
+            return resolveAsMethodReference(memberPart);
         } else {
             return resolveAsObjectFieldReference(memberPart);
         }
 
+    }
+
+    private static PsiReference resolveAsMethodReference(ValaMemberPart memberPart) {
+        PsiElement precedingReference = getPrecedingReference(memberPart);
+        if (precedingReference != null) {
+            return new ValaMethodReference(precedingReference, memberPart);
+        }
+        return null;
+    }
+
+    private static boolean isMethodCall(ValaMemberPart memberPart) {
+        ValaMemberAccess memberAccess = (ValaMemberAccess) memberPart.getParent().getParent();
+        if (memberAccess.getParent() instanceof ValaPrimaryExpression) {
+            ValaPrimaryExpression primaryExpression = (ValaPrimaryExpression) memberAccess.getParent();
+            final List<ValaChainAccessPart> accessPart = primaryExpression.getChainAccessPartList();
+            int index = accessPart.indexOf(memberAccess);
+            return index < accessPart.size() - 1 && accessPart.get(index + 1) instanceof ValaMethodCall;
+        }
+        return false;
     }
 
     private static PsiReference resolveAsObjectFieldReference(ValaMemberPart memberPart) {
