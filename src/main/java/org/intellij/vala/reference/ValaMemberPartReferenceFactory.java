@@ -66,14 +66,19 @@ public class ValaMemberPartReferenceFactory {
     }
 
     private static PsiElement getPrecedingReference(ValaMemberPart memberPart) {
-        ValaMember member = (ValaMember) memberPart.getParent();
-        int partIndex = member.getMemberPartList().indexOf(memberPart);
-        if (partIndex > 0) {
-            return member.getMemberPartList().get(partIndex - 1);
+        if (memberPart.getPrevious() != null) {
+            memberPart.getPrevious();
         }
+        ValaMember member = (ValaMember) memberPart.getParent();
         PsiElement maybePrimaryExpression = member.getParent().getParent();
         if (maybePrimaryExpression instanceof ValaPrimaryExpression) {
-            return ((ValaPrimaryExpression) maybePrimaryExpression).getSimpleName();
+            final ValaPrimaryExpression primaryExpression = (ValaPrimaryExpression) maybePrimaryExpression;
+            ValaMemberAccess memberAccess = (ValaMemberAccess) member.getParent();
+            ValaChainAccessPart previous = memberAccess.getPrevious();
+            if (previous != null) {
+                return previous;
+            }
+            return primaryExpression.getSimpleName();
         }
         return null;
     }

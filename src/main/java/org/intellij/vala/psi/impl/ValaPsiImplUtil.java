@@ -11,6 +11,7 @@ import org.intellij.vala.psi.*;
 import org.intellij.vala.reference.SymbolReferenceRetriever;
 import org.intellij.vala.reference.ValaMemberPartReferenceFactory;
 import org.intellij.vala.reference.ValaSimpleNameReferenceFactory;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -138,12 +139,30 @@ public class ValaPsiImplUtil {
         return QualifiedNameBuilder.forFieldDeclaration(fieldDeclaration);
     }
 
-    public static List<String> getPartNames(ValaMember valaMember) {
-        ImmutableList.Builder<String> list = ImmutableList.builder();
-        for (ValaMemberPart part : valaMember.getMemberPartList()) {
-            list.add(part.getName());
+    @Nullable
+    public static ValaMemberPart getPrevious(ValaMemberPart part) {
+        ValaMember parent = (ValaMember) part.getParent();
+        final List<ValaMemberPart> memberPartList = parent.getMemberPartList();
+        int myIndex = memberPartList.indexOf(part);
+        if (myIndex > 0) {
+            return memberPartList.get(myIndex - 1);
         }
-        return list.build();
+        return null;
+    }
+
+    @Nullable
+    public static ValaChainAccessPart getPrevious(ValaChainAccessPart part) {
+        final PsiElement parent = part.getParent();
+        if (!(parent instanceof ValaPrimaryExpression)) {
+            return null;
+        }
+        ValaPrimaryExpression primaryExpression = (ValaPrimaryExpression) parent;
+        final List<ValaChainAccessPart> chainAccessList = primaryExpression.getChainAccessPartList();
+        int myIndex = chainAccessList.indexOf(part);
+        if (myIndex > 0) {
+            return chainAccessList.get(myIndex - 1);
+        }
+        return null;
     }
 
     public static List<QualifiedName> getImportedNamespacesAvailableFor(PsiElement symbol) {

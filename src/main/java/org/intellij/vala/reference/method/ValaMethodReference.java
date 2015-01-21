@@ -9,11 +9,12 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.intellij.vala.psi.ValaDeclaration;
 import org.intellij.vala.psi.ValaDeclarationContainer;
+import org.intellij.vala.psi.ValaMethodCall;
 import org.intellij.vala.psi.ValaMethodDeclaration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static org.intellij.vala.psi.impl.ValaPsiElementUtil.findTypeDeclaration;
+import static org.intellij.vala.psi.impl.ValaPsiElementUtil.*;
 
 public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
 
@@ -69,6 +70,13 @@ public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
     }
 
     private ValaDeclaration resolveObjectType() {
+        if (objectVariable instanceof ValaMethodCall) {
+            ValaMethodDeclaration methodDeclaration = getMethodDeclaration((ValaMethodCall) objectVariable);
+            if (methodDeclaration == null) {
+                return null;
+            }
+            return getReturningTypeDeclaration(methodDeclaration);
+        }
         PsiReference parentRef = objectVariable.getReference();
         if (parentRef == null) {
             return null;
