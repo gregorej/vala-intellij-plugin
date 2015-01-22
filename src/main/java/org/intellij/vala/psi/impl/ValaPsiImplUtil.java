@@ -139,6 +139,10 @@ public class ValaPsiImplUtil {
         return QualifiedNameBuilder.forFieldDeclaration(fieldDeclaration);
     }
 
+    public static ValaMethodDeclaration getMethodDeclaration(ValaMethodCall methodCall) {
+        return ValaPsiElementUtil.getMethodDeclaration(methodCall);
+    }
+
     @Nullable
     public static ValaMemberPart getPrevious(ValaMemberPart part) {
         ValaMember parent = (ValaMember) part.getParent();

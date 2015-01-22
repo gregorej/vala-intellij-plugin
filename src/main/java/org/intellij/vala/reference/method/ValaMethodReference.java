@@ -18,21 +18,21 @@ import static org.intellij.vala.psi.impl.ValaPsiElementUtil.*;
 
 public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
 
-    private PsiElement objectVariable;
+    private PsiElement objectReference;
 
     public ValaMethodReference(PsiNamedElement element) {
         this(null, element);
     }
 
-    public ValaMethodReference(PsiElement objectVariable, PsiNamedElement element) {
+    public ValaMethodReference(PsiElement objectReference, PsiNamedElement element) {
         super(element, new TextRange(0, element.getName().length()));
-        this.objectVariable = objectVariable;
+        this.objectReference = objectReference;
     }
 
     @Nullable
     @Override
     public PsiElement resolve() {
-        if (objectVariable != null) {
+        if (objectReference != null) {
             return resolveAsOtherObjectMethodCallReference();
         }
         return resolveInContainingClass();
@@ -70,14 +70,14 @@ public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
     }
 
     private ValaDeclaration resolveObjectType() {
-        if (objectVariable instanceof ValaMethodCall) {
-            ValaMethodDeclaration methodDeclaration = getMethodDeclaration((ValaMethodCall) objectVariable);
+        if (objectReference instanceof ValaMethodCall) {
+            ValaMethodDeclaration methodDeclaration = ((ValaMethodCall) objectReference).getMethodDeclaration();
             if (methodDeclaration == null) {
                 return null;
             }
             return getReturningTypeDeclaration(methodDeclaration);
         }
-        PsiReference parentRef = objectVariable.getReference();
+        PsiReference parentRef = objectReference.getReference();
         if (parentRef == null) {
             return null;
         }

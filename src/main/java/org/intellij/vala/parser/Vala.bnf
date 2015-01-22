@@ -253,7 +253,7 @@ lambda_expression ::= lambda_expression_params "=>" lambda_expression_body
 lambda_expression_body ::= expression | block
 
 yield_expression ::= "yield" ( base_access "." )? member method_call
-method_call ::= "(" arguments? ")" object_initializer?
+method_call ::= "(" arguments? ")" object_initializer? {methods=[getMethodDeclaration]}
 
 member_declaration_modifiers ::= member_declaration_modifier ( " " member_declaration_modifier )*
 member_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override" | "new"
