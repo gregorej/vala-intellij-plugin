@@ -26,7 +26,7 @@ public class ValaPsiElementUtil {
     }
 
     public static PsiReference getTypeReference(ValaFieldDeclaration fieldDeclaration) {
-        ValaSymbol symbol = fieldDeclaration.getTypeWeak().getSymbol();
+        ValaSymbol symbol = fieldDeclaration.getTypeWeak().getTypeBase().getSymbol();
         if (symbol != null) {
             List<ValaSymbolPart> parts = symbol.getSymbolPartList();
             return parts.get(parts.size() - 1).getReference();
@@ -90,7 +90,11 @@ public class ValaPsiElementUtil {
 
     @Nullable
     private static ValaTypeDeclaration getTypeDeclaration(@NotNull ValaType type) {
-        ValaSymbol symbol = type.getSymbol();
+        ValaTypeBase base = type.getTypeBase();
+        if (base == null) {
+            return null;
+        }
+        ValaSymbol symbol = base.getSymbol();
         if (symbol == null) {
             return null;
         }

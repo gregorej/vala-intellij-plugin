@@ -187,9 +187,9 @@
 
 vala_module ::= using_directive * namespace_member *
 symbol ::= symbol_part ( "." symbol_part )*
-symbol_part ::= built_in_type | ( "global::" identifier ) | identifier {methods=[getName setName getReference]}
+symbol_part ::= ( "global::" identifier ) | identifier {methods=[getName setName getReference]}
 
-private built_in_type ::= integral_type | floating_point_type | "bool" | "string" | "void"
+built_in_type ::= integral_type | floating_point_type | "bool" | "string" | "void"
 private integral_type ::= "char" | "uchar" | "short" | "ushort" | "long" | "ulong" | "size_t" | "ssize_t" | int_type
 private floating_point_type ::= "float" | "double"
 private int_type ::= "int" | "uint" | "int8" | "uint8" | "int16" | "uint16" | "int32" | "uint32" | "int64" | "uint64"
@@ -233,7 +233,7 @@ unary_expression ::= ( unary_operator unary_expression ) |
                      primary_expression
 primary_expression ::= ( literal | initializer | tuple | template | this_access | base_access |
                        object_or_array_creation_expression | yield_expression | sizeof_expression | typeof_expression |
-                       simple_name ) chain_access_part*
+                       simple_name | built_in_type ) chain_access_part*
 
 chain_access_part ::= member_access | pointer_member_access | method_call | element_access | post_increment_expression | post_decrement_expression {methods=[getPrevious]}
 
@@ -331,7 +331,7 @@ parameters ::= parameter ( "," parameter )*
 parameter ::= attributes? ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression )? ) ) {methods=[getName setName]}
 
 
-throws_declaration ::= "throws" type ( "," type )*
+throws_declaration ::= "throws" reference_type ( "," reference_type )*
 requires ::= "requires" "(" expression ")" requires?
 ensures ::= "ensures" "(" expression ")" ensures?
 
@@ -439,10 +439,11 @@ local_variable_declaration ::= local_tuple_declaration | local_variable
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression {pin=5}
 local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {methods=[getName setName]}
 expression_statement ::= statement_expression ";"
-type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? symbol ( type_arguments )? ( "*" )* ( "?" )? array_type* ) {methods=[]}
+type_base ::= (symbol (type_arguments)? ) | built_in_type
+type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? type_base ( "*" )* ( "?" )? array_type* ) {methods=[]}
 type_arguments ::= "<" type ( "," type )* ">"
 type_parameters ::= "<" identifier ( "," identifier )* ">"
-type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? symbol type_arguments? ( "*" )* ( "?" )? array_type* ) {methods=[]}
+type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? type_base ( "*" )* ( "?" )? array_type* ) {methods=[]}
 array_type ::= "[" array_size? "]" ( "?" )?
 array_size ::= expression ( "," expression ) *
 inline_array_type ::= "[" integer_literal "]"

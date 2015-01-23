@@ -89,4 +89,8 @@ public class ValaParserTest extends ParsingTestCase {
     public void testIfStatementWithComplexCondition() {
         doTest(true);
     }
+
+    public void testBasicTypesStaticMethodInvocation() {
+        doTest(true);
+    }
 }

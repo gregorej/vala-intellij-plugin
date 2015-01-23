@@ -2,9 +2,7 @@ package org.intellij.vala.psi.impl;
 
 
 import com.intellij.psi.PsiReference;
-import org.intellij.vala.psi.ValaLocalVariable;
-import org.intellij.vala.psi.ValaLocalVariableDeclarations;
-import org.intellij.vala.psi.ValaSymbolPart;
+import org.intellij.vala.psi.*;
 
 import java.util.List;
 
@@ -18,7 +16,7 @@ public class LocalVariableUtil {
             return null;
         }
         if (declarations.getType() != null) {
-            List<ValaSymbolPart> parts = declarations.getType().getSymbol().getSymbolPartList();
+            List<ValaSymbolPart> parts = declarations.getType().getTypeBase().getSymbol().getSymbolPartList();
             return parts.get(parts.size() - 1).getReference();
         }
         return null;
