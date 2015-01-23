@@ -24,7 +24,7 @@ public class ValaParserDefinition implements ParserDefinition {
 
     public static final TokenSet COMMENTS = TokenSet.create(ValaTypes.BLOCK_COMMENT, ValaTypes.LINE_COMMENT);
 
-    public static final TokenSet STRINGS = TokenSet.create(ValaTypes.STRING);
+    public static final TokenSet STRINGS = TokenSet.create(ValaTypes.STRING_LITERAL);
 
     @NotNull
     @Override

@@ -24,7 +24,7 @@ public class ValaLexerTest {
         String content = "\"blah\"";
         valaLexer.start(content);
 
-        assertThat(valaLexer.getTokenType(), is(ValaTypes.STRING));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.STRING_LITERAL));
     }
 
     @Test

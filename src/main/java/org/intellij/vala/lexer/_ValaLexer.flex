@@ -30,7 +30,7 @@ WHITE_SPACE=({LINE_WS}|{EOL})+
 
 IDENTIFIER=[A-Za-z_][A-Za-z0-9_]*
 VERBATIM_STRING_LITERAL=\"\"\"(.|\n|\r)*\"\"\"
-STRING=\"([^\"\\]|\\\"|\\'|\\)*\"
+STRING_LITERAL=\"([^\"\\]|\\\"|\\'|\\)*\"
 REAL_LITERAL=-?[0-9]+\.[0-9]+
 INTEGER_LITERAL=-?[0-9]+
 LINE_COMMENT="//".*
@@ -190,7 +190,7 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
 
   {IDENTIFIER}                   { return IDENTIFIER; }
   {VERBATIM_STRING_LITERAL}      { return VERBATIM_STRING_LITERAL; }
-  {STRING}                       { return STRING; }
+  {STRING_LITERAL}               { return STRING_LITERAL; }
   {REAL_LITERAL}                 { return REAL_LITERAL; }
   {INTEGER_LITERAL}              { return INTEGER_LITERAL; }
   {LINE_COMMENT}                 { return LINE_COMMENT; }

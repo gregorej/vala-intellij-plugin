@@ -163,7 +163,7 @@
 
     identifier="regexp:[A-Za-z_][A-Za-z0-9_]*"
     verbatim_string_literal="regexp:\"\"\"(.|\n|\r)*\"\"\""
-    string="regexp:\"([^\"\\]|\\\"|\\\'|\\)*\""
+    string_literal="regexp:\"([^\"\\]|\\\"|\\\'|\\)*\""
     real_literal="regexp:-?\d+\.\d+"
     integer_literal="regexp:-?\d+"
     line_comment="regexp://.*"
@@ -242,7 +242,6 @@ typeof_expression ::= "typeof" "(" type ")" {pin=1}
 simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference getName setName]}
 
 literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal
-private string_literal ::= string
 member_access ::= "." member
 member ::= member_part ( "." member_part )*
 member_part ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getName setName getReference getPrevious]}
