@@ -31,12 +31,15 @@
     OP_AND_ASGN="&="
     OP_LSHIFT_ASGN="<<="
     OP_RSHIFT_ASGN=">>="
-    OP_OR="|"
+    OP_BIT_OR="|"
     OP_ADD="+"
     OP_SUB="-"
     OP_MUL="*"
     OP_AND="&&"
+    OP_OR="||"
     OP_NOT="!"
+    OP_COND="?"
+    OP_COALESCE="??"
     OP_BIN_NOT="~"
     OP_REF="&"
     OP_LAMBDA="=>"
@@ -214,12 +217,12 @@ assignment_operator ::= "=" | "+=" | "-=" | "|=" | "&=" | "^=" | "/=" | "*=" | "
 expression ::= lambda_expression | ( conditional_expression ( assignment_operator expression )? )
 conditional_expression ::= coalescing_expression ( "?" expression ":" expression )?
 coalescing_expression ::= conditional_or_expression ( "??" coalescing_expression )?
-conditional_or_expression ::= conditional_and_expression ( "||" conditional_and_expression )?
-conditional_and_expression ::= in_expression ( "&&" in_expression )?
+conditional_or_expression ::= conditional_and_expression ( "||" conditional_and_expression )*
+conditional_and_expression ::= in_expression ( "&&" in_expression )*
 in_expression ::= inclusive_or_expression ( "in" inclusive_or_expression )?
-inclusive_or_expression ::= exclusive_or_expression ( "|" exclusive_or_expression )?
-exclusive_or_expression ::= and_expression ( "^" and_expression )?
-and_expression ::= equality_expression ( "&" equality_expression )?
+inclusive_or_expression ::= exclusive_or_expression ( "|" exclusive_or_expression )*
+exclusive_or_expression ::= and_expression ( "^" and_expression )*
+and_expression ::= equality_expression ( "&" equality_expression )*
 equality_expression ::= relational_expression ( ( "==" | "!=" ) relational_expression )*
 relational_expression ::= shift_expression ( (( "<" | "<=" | ">" | ">=" ) shift_expression ) |( "is" type ) | ( "as" type ) )*
 shift_expression ::= additive_expression ( ( "<<" | ">>" ) additive_expression )*

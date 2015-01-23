@@ -53,12 +53,15 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
   "&="                           { return OP_AND_ASGN; }
   "<<="                          { return OP_LSHIFT_ASGN; }
   ">>="                          { return OP_RSHIFT_ASGN; }
-  "|"                            { return OP_OR; }
+  "|"                            { return OP_BIT_OR; }
   "+"                            { return OP_ADD; }
   "-"                            { return OP_SUB; }
   "*"                            { return OP_MUL; }
   "&&"                           { return OP_AND; }
+  "||"                           { return OP_OR; }
   "!"                            { return OP_NOT; }
+  "?"                            { return OP_COND; }
+  "??"                           { return OP_COALESCE; }
   "~"                            { return OP_BIN_NOT; }
   "&"                            { return OP_REF; }
   "=>"                           { return OP_LAMBDA; }

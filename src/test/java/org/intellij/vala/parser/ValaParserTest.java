@@ -85,4 +85,8 @@ public class ValaParserTest extends ParsingTestCase {
     public void testClassWithMultipleEmptyMethodsReturningDifferentTypes() {
         doTest(true);
     }
+
+    public void testIfStatementWithComplexCondition() {
+        doTest(true);
+    }
 }
