@@ -1,6 +1,7 @@
 package org.intellij.vala.reference;
 
 import com.intellij.testFramework.ParsingTestCase;
+import org.intellij.vala.parser.AbstractValaParserTest;
 import org.intellij.vala.parser.ValaParserDefinition;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.inference.ExpressionTypeInference;
@@ -8,25 +9,10 @@ import org.intellij.vala.psi.inference.ExpressionTypeInference;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class TypeInferenceTest extends ParsingTestCase {
+public class TypeInferenceTest extends AbstractValaParserTest {
 
     public TypeInferenceTest() {
-        super("inference", "vala", new ValaParserDefinition());
-    }
-
-    @Override
-    protected String getTestDataPath() {
-        return "src/test/resources/org/intellij/vala/parser/test";
-    }
-
-    @Override
-    protected boolean skipSpaces() {
-        return false;
-    }
-
-    @Override
-    protected boolean includeRanges() {
-        return true;
+        super("inference");
     }
 
     public void testInferFromVariableReference() {

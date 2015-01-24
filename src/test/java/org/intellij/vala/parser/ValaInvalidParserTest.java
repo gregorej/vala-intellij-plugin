@@ -2,24 +2,9 @@ package org.intellij.vala.parser;
 
 import com.intellij.testFramework.ParsingTestCase;
 
-public class ValaInvalidParserTest extends ParsingTestCase {
+public class ValaInvalidParserTest extends AbstractValaParserTest {
     public ValaInvalidParserTest() {
-        super("invalid", "vala", new ValaParserDefinition());
-    }
-
-    @Override
-    protected String getTestDataPath() {
-        return "src/test/resources/org/intellij/vala/parser/test";
-    }
-
-    @Override
-    protected boolean skipSpaces() {
-        return false;
-    }
-
-    @Override
-    protected boolean includeRanges() {
-        return true;
+        super("invalid");
     }
 
     public void testSyntaxErrorInClassDeclarationRecovery() {

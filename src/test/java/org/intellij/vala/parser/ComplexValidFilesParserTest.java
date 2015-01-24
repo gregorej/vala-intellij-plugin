@@ -11,10 +11,10 @@ import java.util.Collection;
 import static org.intellij.vala.psi.PsiMatchers.hasNoErrors;
 import static org.junit.Assert.assertThat;
 
-public class ComplexValidFilesParserTest extends ParsingTestCase {
+public class ComplexValidFilesParserTest extends AbstractValaParserTest {
 
     public ComplexValidFilesParserTest() {
-        super("complex", "vala", new ValaParserDefinition());
+        super("complex");
     }
 
     @Parameterized.Parameters
@@ -22,21 +22,6 @@ public class ComplexValidFilesParserTest extends ParsingTestCase {
         return ImmutableList.<String>builder()
                 .add("SearchDialog")
                 .build();
-    }
-
-    @Override
-    protected boolean includeRanges() {
-        return true;
-    }
-
-    @Override
-    protected boolean skipSpaces() {
-        return false;
-    }
-
-    @Override
-    protected String getTestDataPath() {
-        return "src/test/resources/org/intellij/vala/parser/test";
     }
 
     public void testShouldHaveNoErrors() throws IOException {
