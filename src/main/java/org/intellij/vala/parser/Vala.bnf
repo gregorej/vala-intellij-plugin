@@ -180,7 +180,7 @@
   implements("simple_name|symbol_part|member_part") = "com.intellij.psi.PsiNamedElement"
   implements("class_declaration") = "org.intellij.vala.psi.ValaTypeDeclaration, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
-  implements("method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
+  implements("method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
   implements("creation_method_declaration|field_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
   implements("local_variable|parameter") = "com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
   implements("method_call|literal")="org.intellij.vala.psi.HasTypeDescriptor"
@@ -346,7 +346,7 @@ signal_declaration_modifiers ::= signal_declaration_modifier ( " " signal_declar
 signal_declaration_modifier ::= "async" | "extern" | "inline" | "abstract" | "virtual" | "override" | "new"
 
 method_declaration ::= access_modifier? member_declaration_modifier? type identifier type_parameters?
-                       "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )  {methods=[getName setName getQName] pin=6}
+                       "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )  {methods=[getName setName getQName getTypeDescriptor] pin=6}
 constant_declaration ::= access_modifier? member_declaration_modifiers? "const" type identifier inline_array_type?
                          ("=" expression )? ";" {pin=3}
 field_declaration ::= access_modifier? member_declaration_modifiers? type_weak identifier ( "=" expression )? ";" {methods=[getName setName getQName]}

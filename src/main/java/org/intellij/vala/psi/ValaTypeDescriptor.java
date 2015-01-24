@@ -9,6 +9,7 @@ import java.util.Map;
 public class ValaTypeDescriptor {
 
     public static final ValaTypeDescriptor CHARACTER = BasicTypeDescriptor.forType(ValaTypes.TYPE_CHAR);
+    public static final ValaTypeDescriptor LONG = BasicTypeDescriptor.forType(ValaTypes.TYPE_LONG);
     private final ValaType type;
     private QualifiedName qualifiedName;
 

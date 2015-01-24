@@ -6,6 +6,8 @@ import org.intellij.vala.parser.ValaParserDefinition;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.inference.ExpressionTypeInference;
 
+import java.io.IOException;
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -18,6 +20,11 @@ public class TypeInferenceTest extends AbstractValaParserTest {
     public void testInferFromVariableReference() {
         final String code = "int main(string [] args) { int a = 0; var inferred = a} ";
         assertThat(inferredType(code), is(ValaTypeDescriptor.INTEGER));
+    }
+
+    public void testInferTypeFromMethodCall() throws IOException {
+        String text = loadFile(getTestName(false) + "." + myFileExt);
+        assertThat(inferredType(text), is(ValaTypeDescriptor.LONG));
     }
 
     private ValaTypeDescriptor inferredType(String code) {
@@ -46,7 +53,11 @@ public class TypeInferenceTest extends AbstractValaParserTest {
     }
 
     private static ValaMethodDeclaration getMainMethod(ValaFile file) {
-        return (ValaMethodDeclaration) file.getDeclarations().get(0);
-
+        for (ValaDeclaration declaration : file.getDeclarations()) {
+            if (declaration instanceof ValaMethodDeclaration && ((ValaMethodDeclaration) declaration).getName().equals("main")) {
+                return (ValaMethodDeclaration) declaration;
+            }
+        }
+        return null;
     }
 }

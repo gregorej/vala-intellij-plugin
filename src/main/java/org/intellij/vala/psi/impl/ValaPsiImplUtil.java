@@ -198,6 +198,10 @@ public class ValaPsiImplUtil {
         if (declaration == null) {
             return null;
         }
+        return getTypeDescriptor(declaration);
+    }
+
+    public static ValaTypeDescriptor getTypeDescriptor(ValaMethodDeclaration declaration) {
         return ValaTypeDescriptor.forType(declaration.getType());
     }
 
