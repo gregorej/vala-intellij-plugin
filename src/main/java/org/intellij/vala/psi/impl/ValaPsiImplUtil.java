@@ -169,6 +169,45 @@ public class ValaPsiImplUtil {
         return null;
     }
 
+    public static ValaTypeDescriptor getDescriptor(ValaType type) {
+        return ValaTypeDescriptor.forType(type);
+    }
+
+    public static ValaTypeDescriptor getTypeDescriptor(ValaParameter parameter) {
+        if (parameter.getType() == null) {
+            return null;
+        }
+        return ValaTypeDescriptor.forType(parameter.getType());
+    }
+
+    public static ValaTypeDescriptor getTypeDescriptor(ValaLocalVariableDeclaration valaLocalVariableDeclaration) {
+        ValaLocalVariableDeclarations declarations = (ValaLocalVariableDeclarations) valaLocalVariableDeclaration.getParent();
+        ValaType type = declarations.getType();
+        if (type != null) {
+            return type.getDescriptor();
+        }
+        return null;
+    }
+
+    public static ValaTypeDescriptor getTypeDescriptor(ValaLocalVariable valaLocalVariable) {
+        return getTypeDescriptor((ValaLocalVariableDeclaration) valaLocalVariable.getParent());
+    }
+
+    public static ValaTypeDescriptor getTypeDescriptor(ValaMethodCall valaMethodCall) {
+        ValaMethodDeclaration declaration = ValaPsiElementUtil.getMethodDeclaration(valaMethodCall);
+        if (declaration == null) {
+            return null;
+        }
+        return ValaTypeDescriptor.forType(declaration.getType());
+    }
+
+    @Nullable
+    public static ValaTypeDescriptor getTypeDescriptor(ValaLiteral literal) {
+        if (literal.getCharacterLiteral() != null) return ValaTypeDescriptor.CHARACTER;
+        if (literal.getStringLiteral() != null) return ValaTypeDescriptor.STRING;
+        return null;
+    }
+
     public static List<QualifiedName> getImportedNamespacesAvailableFor(PsiElement symbol) {
         ValaFile containingFile = (ValaFile) symbol.getContainingFile();
         ImmutableList.Builder<QualifiedName> names = ImmutableList.builder();

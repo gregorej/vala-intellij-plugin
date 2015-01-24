@@ -182,7 +182,8 @@
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
   implements("method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
   implements("creation_method_declaration|field_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
-  implements("local_variable|parameter") = "com.intellij.psi.PsiNamedElement"
+  implements("local_variable|parameter") = "com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
+  implements("method_call|literal")="org.intellij.vala.psi.HasTypeDescriptor"
 }
 
 vala_module ::= using_directive * namespace_member *
@@ -241,7 +242,7 @@ sizeof_expression ::= "sizeof" "(" type ")" {pin=1}
 typeof_expression ::= "typeof" "(" type ")" {pin=1}
 simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference getName setName]}
 
-literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal
+literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal {methods=[getTypeDescriptor]}
 member_access ::= "." member
 member ::= member_part ( "." member_part )*
 member_part ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getName setName getReference getPrevious]}
@@ -255,7 +256,7 @@ lambda_expression ::= lambda_expression_params "=>" lambda_expression_body
 lambda_expression_body ::= expression | block
 
 yield_expression ::= "yield" ( base_access "." )? member method_call
-method_call ::= "(" arguments? ")" object_initializer? {methods=[getMethodDeclaration]}
+method_call ::= "(" arguments? ")" object_initializer? {methods=[getMethodDeclaration getTypeDescriptor]}
 
 member_declaration_modifiers ::= member_declaration_modifier ( " " member_declaration_modifier )*
 member_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override" | "new"
@@ -328,7 +329,7 @@ creation_method_declaration ::= access_modifier? constructor_declaration_modifie
                                 }
 
 parameters ::= parameter ( "," parameter )*
-parameter ::= attributes? ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression )? ) ) {methods=[getName setName]}
+parameter ::= attributes? ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression )? ) ) {methods=[getName setName getTypeDescriptor]}
 
 
 throws_declaration ::= "throws" reference_type ( "," reference_type )*
@@ -435,12 +436,12 @@ lock_statement ::= "lock" "(" expression ")" embedded_statement {pin=1}
 delete_statement ::= "delete" expression ";" {pin=1}
 
 local_variable_declarations ::= ( "var" | type ) local_variable_declaration ( "," local_variable_declaration )*
-local_variable_declaration ::= local_tuple_declaration | local_variable
+local_variable_declaration ::= local_tuple_declaration | local_variable {methods=[getTypeDescriptor]}
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression {pin=5}
-local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {methods=[getName setName]}
+local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {methods=[getName setName getTypeDescriptor]}
 expression_statement ::= statement_expression ";"
 type_base ::= (symbol (type_arguments)? ) | built_in_type
-type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? type_base ( "*" )* ( "?" )? array_type* ) {methods=[]}
+type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? type_base ( "*" )* ( "?" )? array_type* ) {methods=[getDescriptor]}
 type_arguments ::= "<" type ( "," type )* ">"
 type_parameters ::= "<" identifier ( "," identifier )* ">"
 type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? type_base ( "*" )* ( "?" )? array_type* ) {methods=[]}
