@@ -93,4 +93,8 @@ public class ValaParserTest extends ParsingTestCase {
     public void testBasicTypesStaticMethodInvocation() {
         doTest(true);
     }
+
+    public void testIfStatementWithMixedOperators() {
+        doTest(true);
+    }
 }
