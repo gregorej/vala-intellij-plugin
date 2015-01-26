@@ -21,7 +21,20 @@ public class ValaTypeDescriptor {
     }
 
     private ValaTypeDescriptor() {
-        this(null);
+        this((ValaType) null);
+    }
+
+    private ValaTypeDescriptor(QualifiedName qualifiedName) {
+        this((ValaType) null);
+        this.qualifiedName = qualifiedName;
+    }
+
+    public QualifiedName getQualifiedName() {
+        return qualifiedName;
+    }
+
+    public static ValaTypeDescriptor forQualifiedName(QualifiedName qualifiedName) {
+        return new ValaTypeDescriptor(qualifiedName);
     }
 
     public static ValaTypeDescriptor forType(ValaType type) {

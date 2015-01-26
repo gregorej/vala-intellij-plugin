@@ -9,6 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.reference.SymbolReferenceRetriever;
+import org.intellij.vala.reference.ValaConstructorReference;
 import org.intellij.vala.reference.ValaMemberPartReferenceFactory;
 import org.intellij.vala.reference.ValaSimpleNameReferenceFactory;
 import org.jetbrains.annotations.Nullable;
@@ -187,6 +188,11 @@ public class ValaPsiImplUtil {
             return type.getDescriptor();
         }
         return null;
+    }
+
+    public static ValaTypeDescriptor getTypeDescriptor(ValaObjectOrArrayCreationExpression objectOrArrayCreationExpression) {
+        ValaMember member = objectOrArrayCreationExpression.getMember();
+        return ValaTypeDescriptor.forQualifiedName(QualifiedNameBuilder.from(member));
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaLocalVariable valaLocalVariable) {
