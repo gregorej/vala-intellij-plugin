@@ -3,5 +3,5 @@ long count() {
 }
 
 int main(string [] args) {
-	var inferred = count();
+	var inferred = cou<caret>nt();
 }

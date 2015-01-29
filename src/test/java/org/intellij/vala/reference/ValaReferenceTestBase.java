@@ -16,7 +16,7 @@ public abstract class ValaReferenceTestBase extends LightPlatformCodeInsightFixt
         return false;
     }
 
-    protected PsiElement getElementOfTypeAtCaret(Class<? extends PsiElement> elementType) {
+    protected <T extends PsiElement> T getElementOfTypeAtCaret(Class<T> elementType) {
         return getParentOfType(myFixture.getFile().findElementAt(myFixture.getCaretOffset()), elementType);
     }
 }
