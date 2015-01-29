@@ -442,7 +442,7 @@ local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expressio
 local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {methods=[getName setName getTypeDescriptor]}
 expression_statement ::= statement_expression ";"
 type_base ::= (symbol (type_arguments)? ) | built_in_type
-type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? type_base ( "*" )* ( "?" )? array_type* ) {methods=[getDescriptor]}
+type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? type_base ( "*" )* ( "?" )? array_type* ) {methods=[getTypeDescriptor]}
 type_arguments ::= "<" type ( "," type )* ">"
 type_parameters ::= "<" identifier ( "," identifier )* ">"
 type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? type_base ( "*" )* ( "?" )? array_type* ) {methods=[]}

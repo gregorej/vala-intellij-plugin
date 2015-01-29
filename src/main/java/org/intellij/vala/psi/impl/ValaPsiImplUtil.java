@@ -170,7 +170,7 @@ public class ValaPsiImplUtil {
         return null;
     }
 
-    public static ValaTypeDescriptor getDescriptor(ValaType type) {
+    public static ValaTypeDescriptor getTypeDescriptor(ValaType type) {
         return ValaTypeDescriptor.forType(type);
     }
 
@@ -185,7 +185,7 @@ public class ValaPsiImplUtil {
         ValaLocalVariableDeclarations declarations = (ValaLocalVariableDeclarations) valaLocalVariableDeclaration.getParent();
         ValaType type = declarations.getType();
         if (type != null) {
-            return type.getDescriptor();
+            return type.getTypeDescriptor();
         }
         return null;
     }

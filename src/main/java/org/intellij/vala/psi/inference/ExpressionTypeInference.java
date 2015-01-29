@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.impl.ValaPsiElementUtil;
-import org.intellij.vala.psi.impl.ValaPsiImplUtil;
 
 import static org.intellij.vala.psi.impl.ValaPsiImplUtil.getTypeDescriptor;
 
