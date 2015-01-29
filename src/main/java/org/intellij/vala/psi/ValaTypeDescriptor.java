@@ -10,22 +10,22 @@ public class ValaTypeDescriptor {
 
     public static final ValaTypeDescriptor CHARACTER = BasicTypeDescriptor.forType(ValaTypes.TYPE_CHAR);
     public static final ValaTypeDescriptor LONG = BasicTypeDescriptor.forType(ValaTypes.TYPE_LONG);
-    private final ValaType type;
+    private final ValaTypeBase type;
     private QualifiedName qualifiedName;
 
     public static final ValaTypeDescriptor INTEGER = BasicTypeDescriptor.forType(ValaTypes.TYPE_INT);
     public static final ValaTypeDescriptor STRING = BasicTypeDescriptor.forType(ValaTypes.TYPE_STRING);
 
-    private ValaTypeDescriptor(ValaType type) {
+    private ValaTypeDescriptor(ValaTypeBase type) {
         this.type = type;
     }
 
     private ValaTypeDescriptor() {
-        this((ValaType) null);
+        this((ValaTypeBase) null);
     }
 
     private ValaTypeDescriptor(QualifiedName qualifiedName) {
-        this((ValaType) null);
+        this((ValaTypeBase) null);
         this.qualifiedName = qualifiedName;
     }
 
@@ -41,7 +41,14 @@ public class ValaTypeDescriptor {
         if (type.getArrayTypeList().isEmpty() && type.getTypeBase() != null && type.getTypeBase().getBuiltInType() != null) {
             return BasicTypeDescriptor.forType(type.getTypeBase().getBuiltInType());
         }
-        return new ValaTypeDescriptor(type);
+        return new ValaTypeDescriptor(type.getTypeBase());
+    }
+
+    public static ValaTypeDescriptor forType(ValaTypeWeak type) {
+        if (type.getArrayTypeList().isEmpty() && type.getTypeBase() != null && type.getTypeBase().getBuiltInType() != null) {
+            return BasicTypeDescriptor.forType(type.getTypeBase().getBuiltInType());
+        }
+        return new ValaTypeDescriptor(type.getTypeBase());
     }
 
     public boolean sameAs(ValaTypeDescriptor otherTypeDescriptor) {

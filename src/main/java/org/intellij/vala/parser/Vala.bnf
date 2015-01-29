@@ -181,9 +181,10 @@
   implements("class_declaration") = "org.intellij.vala.psi.ValaTypeDeclaration, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
   implements("method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
-  implements("creation_method_declaration|field_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
+  implements("creation_method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
+  implements("field_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
   implements("local_variable|parameter") = "com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
-  implements("method_call|literal")="org.intellij.vala.psi.HasTypeDescriptor"
+  implements("method_call|literal|chain_access_part")="org.intellij.vala.psi.HasTypeDescriptor"
 }
 
 vala_module ::= using_directive * namespace_member *
@@ -236,14 +237,14 @@ primary_expression ::= ( literal | initializer | tuple | template | this_access 
                        object_or_array_creation_expression | yield_expression | sizeof_expression | typeof_expression |
                        simple_name | built_in_type ) chain_access_part*
 
-chain_access_part ::= member_access | pointer_member_access | method_call | element_access | post_increment_expression | post_decrement_expression {methods=[getPrevious]}
+chain_access_part ::= member_access | pointer_member_access | method_call | element_access | post_increment_expression | post_decrement_expression {methods=[getPrevious getTypeDescriptor]}
 
 sizeof_expression ::= "sizeof" "(" type ")" {pin=1}
 typeof_expression ::= "typeof" "(" type ")" {pin=1}
 simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference getName setName]}
 
 literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal {methods=[getTypeDescriptor]}
-member_access ::= "." member
+member_access ::= "." member {methods=[getTypeDescriptor]}
 member ::= member_part ( "." member_part )*
 member_part ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getName setName getReference getPrevious]}
 template ::= '@"' ( expression "," )* '"'
@@ -349,7 +350,7 @@ method_declaration ::= access_modifier? member_declaration_modifier? type identi
                        "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )  {methods=[getName setName getQName getTypeDescriptor] pin=6}
 constant_declaration ::= access_modifier? member_declaration_modifiers? "const" type identifier inline_array_type?
                          ("=" expression )? ";" {pin=3}
-field_declaration ::= access_modifier? member_declaration_modifiers? type_weak identifier ( "=" expression )? ";" {methods=[getName setName getQName]}
+field_declaration ::= access_modifier? member_declaration_modifiers? type_weak identifier ( "=" expression )? ";" {methods=[getName setName getQName getTypeDescriptor]}
 
 property_declaration ::= access_modifier? property_declaration_modifiers? type_weak identifier
                          "{" property_declaration_part* "}" {pin=5}

@@ -38,6 +38,11 @@ public class TypeInferenceTest extends ValaReferenceTestBase {
         assertThat(inferredType().getQualifiedName(), is(equalTo(nameOf("MyClass"))));
     }
 
+    public void testInferFromOtherClassFieldReference() throws IOException {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+        assertThat(inferredType(), is(ValaTypeDescriptor.INTEGER));
+    }
+
     private ValaTypeDescriptor inferredType() {
         ValaExpression expression = getElementOfTypeAtCaret(ValaExpression.class);
         return ExpressionTypeInference.inferType(expression);

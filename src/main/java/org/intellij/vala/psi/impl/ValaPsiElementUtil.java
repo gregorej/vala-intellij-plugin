@@ -114,6 +114,16 @@ public class ValaPsiElementUtil {
         return valaMemberParts.get(valaMemberParts.size() - 1);
     }
 
+    @Nullable
+    public static ValaChainAccessPart getLastPart(ValaPrimaryExpression valaPrimaryExpression) {
+        List<ValaChainAccessPart> parts = valaPrimaryExpression.getChainAccessPartList();
+        int size = parts.size();
+        if (size == 0) {
+            return null;
+        }
+        return parts.get(size - 1);
+    }
+
     private static ValaMethodDeclaration getValaMethodDeclaration(ValaPrimaryExpression parent) {
         PsiElement resolvedElement = resolveReference(parent.getSimpleName());
         if (resolvedElement instanceof ValaMethodDeclaration) {

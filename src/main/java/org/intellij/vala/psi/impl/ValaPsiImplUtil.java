@@ -203,6 +203,10 @@ public class ValaPsiImplUtil {
         return getTypeDescriptor((ValaLocalVariableDeclaration) valaLocalVariable.getParent());
     }
 
+    public static ValaTypeDescriptor getTypeDescriptor(ValaFieldDeclaration fieldDeclaration) {
+        return ValaTypeDescriptor.forType(fieldDeclaration.getTypeWeak());
+    }
+
     public static ValaTypeDescriptor getTypeDescriptor(ValaMethodCall valaMethodCall) {
         ValaMethodDeclaration declaration = ValaPsiElementUtil.getMethodDeclaration(valaMethodCall);
         if (declaration == null) {
@@ -238,5 +242,28 @@ public class ValaPsiImplUtil {
             names.add(QualifiedNameBuilder.from(symbol));
         }
         return names.build();
+    }
+
+    public static ValaTypeDescriptor getTypeDescriptor(ValaMemberAccess memberAccess) {
+        ValaMemberPart lastMemberPart = getLastPart(memberAccess.getMember());
+        PsiReference reference = lastMemberPart.getReference();
+        if (reference == null) {
+            return null;
+        }
+        PsiElement resolvedElement = reference.resolve();
+        if (resolvedElement instanceof HasTypeDescriptor) {
+            return ((HasTypeDescriptor) resolvedElement).getTypeDescriptor();
+        }
+        return null;
+    }
+
+    public static ValaTypeDescriptor getTypeDescriptor(ValaChainAccessPart accessPart) {
+        if (accessPart instanceof ValaMemberAccess) {
+            return getTypeDescriptor((ValaMemberAccess) accessPart);
+        }
+        else if (accessPart instanceof ValaMethodCall) {
+            return getTypeDescriptor((ValaMethodCall) accessPart);
+        }
+        return null;
     }
 }

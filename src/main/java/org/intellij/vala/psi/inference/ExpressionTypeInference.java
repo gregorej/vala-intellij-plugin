@@ -4,7 +4,10 @@ package org.intellij.vala.psi.inference;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import org.intellij.vala.psi.*;
+import org.intellij.vala.psi.impl.ValaPsiElementUtil;
 import org.intellij.vala.psi.impl.ValaPsiImplUtil;
+
+import static org.intellij.vala.psi.impl.ValaPsiImplUtil.getTypeDescriptor;
 
 public class ExpressionTypeInference {
 
@@ -12,7 +15,7 @@ public class ExpressionTypeInference {
         if (valaExpression instanceof ValaPrimaryExpression) {
             return inferType((ValaPrimaryExpression) valaExpression);
         } else if (valaExpression instanceof ValaObjectOrArrayCreationExpression) {
-            return ValaPsiImplUtil.getTypeDescriptor((ValaObjectOrArrayCreationExpression) valaExpression);
+            return getTypeDescriptor((ValaObjectOrArrayCreationExpression) valaExpression);
         }
         return null;
     }
@@ -22,7 +25,12 @@ public class ExpressionTypeInference {
             return primaryExpression.getLiteral().getTypeDescriptor();
         }
         if (primaryExpression.getSimpleName() != null) {
-            return inferType(primaryExpression.getSimpleName());
+            ValaChainAccessPart lastPart = ValaPsiElementUtil.getLastPart(primaryExpression);
+            if (lastPart == null) {
+                return inferType(primaryExpression.getSimpleName());
+            } else {
+                return lastPart.getTypeDescriptor();
+            }
         }
         return null;
     }
