@@ -71,6 +71,7 @@ public class ValaConstructorReference extends PsiReferenceBase<ValaMemberPart> {
         return resolveFirst(maybeNamedConstructorQualifiedName);
     }
 
+    @Nullable
     private ValaDeclaration resolveFirst(QualifiedName maybeClassQualifiedName) {
         return Iterables.getFirst(resolve(maybeClassQualifiedName), null);
     }

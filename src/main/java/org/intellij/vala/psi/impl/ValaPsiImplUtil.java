@@ -8,6 +8,7 @@ import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.intellij.vala.psi.*;
+import org.intellij.vala.psi.inference.ExpressionTypeInference;
 import org.intellij.vala.reference.SymbolReferenceRetriever;
 import org.intellij.vala.reference.ValaConstructorReference;
 import org.intellij.vala.reference.ValaMemberPartReferenceFactory;
@@ -200,6 +201,9 @@ public class ValaPsiImplUtil {
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaLocalVariable valaLocalVariable) {
+        if (valaLocalVariable.getExpression() != null) {
+            return ExpressionTypeInference.inferType(valaLocalVariable.getExpression());
+        }
         return getTypeDescriptor((ValaLocalVariableDeclaration) valaLocalVariable.getParent());
     }
 
@@ -223,6 +227,7 @@ public class ValaPsiImplUtil {
     public static ValaTypeDescriptor getTypeDescriptor(ValaLiteral literal) {
         if (literal.getCharacterLiteral() != null) return ValaTypeDescriptor.CHARACTER;
         if (literal.getStringLiteral() != null) return ValaTypeDescriptor.STRING;
+        if (literal.getIntegerLiteral() != null) return ValaTypeDescriptor.INTEGER;
         return null;
     }
 
