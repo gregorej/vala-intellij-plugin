@@ -51,6 +51,10 @@ public class ValaTypeDescriptor {
         return new ValaTypeDescriptor(type.getTypeBase());
     }
 
+    public static ValaTypeDescriptor forType(ValaBuiltInType type) {
+        return BasicTypeDescriptor.forType(type);
+    }
+
     public boolean sameAs(ValaTypeDescriptor otherTypeDescriptor) {
         if (otherTypeDescriptor == this) return true;
         if (otherTypeDescriptor.qualifiedName.equals(this.qualifiedName)) return true;

@@ -1,24 +1,25 @@
 package org.intellij.vala.reference.method;
 
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.intellij.vala.psi.ValaDeclaration;
-import org.intellij.vala.psi.ValaDeclarationContainer;
-import org.intellij.vala.psi.ValaMethodCall;
-import org.intellij.vala.psi.ValaMethodDeclaration;
+import org.intellij.vala.psi.*;
+import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static org.intellij.vala.psi.impl.ValaPsiElementUtil.*;
+import static com.google.common.collect.Iterables.getFirst;
 
 public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
 
     private PsiElement objectReference;
+    private Project project;
+    private GlobalSearchScope scope;
 
     public ValaMethodReference(PsiNamedElement element) {
         this(null, element);
@@ -27,6 +28,8 @@ public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
     public ValaMethodReference(PsiElement objectReference, PsiNamedElement element) {
         super(element, new TextRange(0, element.getName().length()));
         this.objectReference = objectReference;
+        this.project = element.getProject();
+        scope = GlobalSearchScope.projectScope(project);
     }
 
     @Nullable
@@ -70,20 +73,18 @@ public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
     }
 
     private ValaDeclaration resolveObjectType() {
-        if (objectReference instanceof ValaMethodCall) {
-            ValaMethodDeclaration methodDeclaration = ((ValaMethodCall) objectReference).getMethodDeclaration();
-            if (methodDeclaration == null) {
+        final DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
+        if (objectReference instanceof HasTypeDescriptor) {
+            ValaTypeDescriptor descriptor = ((HasTypeDescriptor) objectReference).getTypeDescriptor();
+            if (descriptor != null) {
+                QualifiedName qualifiedName = descriptor.getQualifiedName();
+                if (qualifiedName == null) {
+                    return null;
+                }
+                return getFirst(index.get(qualifiedName, project, scope), null);
+            } else {
                 return null;
             }
-            return getReturningTypeDeclaration(methodDeclaration);
-        }
-        PsiReference parentRef = objectReference.getReference();
-        if (parentRef == null) {
-            return null;
-        }
-        PsiElement resolved = parentRef.resolve();
-        if (resolved != null) {
-            return findTypeDeclaration(resolved);
         }
         return null;
     }

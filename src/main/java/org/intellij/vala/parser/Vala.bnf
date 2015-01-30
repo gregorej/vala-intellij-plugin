@@ -177,13 +177,13 @@
   extends("method_call|member_access")=chain_access_part
   extends(".*statement|local_variable_declarations|block")=statement
   extends("namespace_declaration|interface_declaration|struct_declaration|enum_declaration|errordomain_declaration|method_declaration|field_declaration|constant_declaration")=namespace_member
-  implements("simple_name|symbol_part|member_part") = "com.intellij.psi.PsiNamedElement"
+  implements("symbol_part|member_part") = "com.intellij.psi.PsiNamedElement"
   implements("class_declaration") = "org.intellij.vala.psi.ValaTypeDeclaration, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
   implements("method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
   implements("creation_method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
   implements("field_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
-  implements("local_variable|parameter") = "com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
+  implements("local_variable|parameter|simple_name") = "com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
   implements("method_call|literal|chain_access_part")="org.intellij.vala.psi.HasTypeDescriptor"
 }
 
@@ -241,7 +241,7 @@ chain_access_part ::= member_access | pointer_member_access | method_call | elem
 
 sizeof_expression ::= "sizeof" "(" type ")" {pin=1}
 typeof_expression ::= "typeof" "(" type ")" {pin=1}
-simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference getName setName]}
+simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference getName setName getTypeDescriptor]}
 
 literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal {methods=[getTypeDescriptor]}
 member_access ::= "." member {methods=[getTypeDescriptor]}

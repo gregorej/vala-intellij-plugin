@@ -9,10 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.inference.ExpressionTypeInference;
-import org.intellij.vala.reference.SymbolReferenceRetriever;
-import org.intellij.vala.reference.ValaConstructorReference;
-import org.intellij.vala.reference.ValaMemberPartReferenceFactory;
-import org.intellij.vala.reference.ValaSimpleNameReferenceFactory;
+import org.intellij.vala.reference.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -172,7 +169,22 @@ public class ValaPsiImplUtil {
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaType type) {
-        return ValaTypeDescriptor.forType(type);
+        if (type.getTypeBase() == null) {
+            return null;
+        }
+        ValaTypeBase typeBase = type.getTypeBase();
+        return getTypeDescriptor(typeBase);
+    }
+
+    private static ValaTypeDescriptor getTypeDescriptor(ValaTypeBase typeBase) {
+        if (typeBase.getBuiltInType() != null) {
+            return ValaTypeDescriptor.forType(typeBase.getBuiltInType());
+        }
+        PsiElement referenced = new ValaTypeReference(typeBase.getSymbol(), typeBase.getTextRange()).resolve();
+        if (referenced instanceof ValaDeclaration) {
+            return ValaTypeDescriptor.forQualifiedName(((ValaDeclaration) referenced).getQName());
+        }
+        return null;
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaParameter parameter) {
@@ -220,7 +232,19 @@ public class ValaPsiImplUtil {
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaMethodDeclaration declaration) {
-        return ValaTypeDescriptor.forType(declaration.getType());
+        return getTypeDescriptor(declaration.getType());
+    }
+
+    @Nullable
+    public static ValaTypeDescriptor getTypeDescriptor(ValaSimpleName simpleName) {
+        PsiReference reference = simpleName.getReference();
+        if (reference != null) {
+            PsiElement resolved = reference.resolve();
+            if (resolved instanceof HasTypeDescriptor) {
+                return ((HasTypeDescriptor) resolved).getTypeDescriptor();
+            }
+        }
+        return null;
     }
 
     @Nullable
