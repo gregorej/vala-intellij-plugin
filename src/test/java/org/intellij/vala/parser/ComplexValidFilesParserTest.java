@@ -21,6 +21,8 @@ public class ComplexValidFilesParserTest extends AbstractValaParserTest {
     public static Collection<String> files() {
         return ImmutableList.<String>builder()
                 .add("SearchDialog")
+                .add("Mixins")
+                .add("DemoService")
                 .build();
     }
 

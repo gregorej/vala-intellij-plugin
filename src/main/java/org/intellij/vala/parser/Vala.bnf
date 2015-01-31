@@ -257,6 +257,8 @@ template ::= '@"' ( expression "," )* '"'
 
 // get_unary_operator
 unary_operator ::= "+" | "-" | "!" | "~" | "++" | "--" | "*" | "&" | "(owned)" | "(void)" | "(dynamic)" | "(!)"
+post_increment_expression ::= "++";
+post_decrement_expression ::= "--";
 
 lambda_expression_params ::= identifier | ( "(" ( identifier ( "," identifier )* )? ")" )
 lambda_expression ::= lambda_expression_params "=>" lambda_expression_body
@@ -362,9 +364,10 @@ property_declaration ::= access_modifier? property_declaration_modifiers? type_w
                          "{" property_declaration_part* "}" {pin=5}
 
 property_declaration_part ::= ( "default" "=" expression ";" ) | property_accessor
-property_accessor ::= attributes? access_modifier? ( property_get_accessor | property_set_construct_accessor )
+property_accessor ::= attributes? access_modifier? ( property_get_accessor | property_set_construct_accessor | property_set_accessor)
 property_get_accessor ::= "get" ( ";" | block ) {pin=1}
 property_set_construct_accessor ::= ( "set" "construct" | "construct" "set" ) ( ";" | block )
+property_set_accessor ::=  "set" ( ";" | block )
 property_declaration_modifiers ::= property_declaration_modifier ( " " property_declaration_modifier )*
 property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "abstract" | "virtual" | "override" | "new"
 
