@@ -78,12 +78,9 @@ public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
             ValaTypeDescriptor descriptor = ((HasTypeDescriptor) objectReference).getTypeDescriptor();
             if (descriptor != null) {
                 QualifiedName qualifiedName = descriptor.getQualifiedName();
-                if (qualifiedName == null) {
-                    return null;
+                if (qualifiedName != null) {
+                    return getFirst(index.get(qualifiedName, project, scope), null);
                 }
-                return getFirst(index.get(qualifiedName, project, scope), null);
-            } else {
-                return null;
             }
         }
         return null;

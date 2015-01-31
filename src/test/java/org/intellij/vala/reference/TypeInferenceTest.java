@@ -51,6 +51,21 @@ public class TypeInferenceTest extends ValaReferenceTestBase {
         assertThat(inferredType(), is(ValaTypeDescriptor.INTEGER));
     }
 
+    public void testInferFromSizeof() throws IOException {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+        assertThat(inferredType(), is(ValaTypeDescriptor.LONG));
+    }
+
+    public void testInferFromMultiplication() throws IOException {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+        assertThat(inferredType(), is(ValaTypeDescriptor.DOUBLE));
+    }
+
+    public void testInferFromConditionalExpression() throws IOException {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+        assertThat(inferredType(), is(ValaTypeDescriptor.DOUBLE));
+    }
+
     public void testMethodReferenceOnInferredObjectType() throws IOException {
         myFixture.configureByFiles(getTestName(false) + ".vala");
 

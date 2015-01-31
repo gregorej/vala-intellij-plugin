@@ -10,6 +10,8 @@ public class ValaTypeDescriptor {
 
     public static final ValaTypeDescriptor CHARACTER = BasicTypeDescriptor.forType(ValaTypes.TYPE_CHAR);
     public static final ValaTypeDescriptor LONG = BasicTypeDescriptor.forType(ValaTypes.TYPE_LONG);
+    public static final ValaTypeDescriptor DOUBLE = BasicTypeDescriptor.forType(ValaTypes.TYPE_DOUBLE);
+    public static final ValaTypeDescriptor BOOL = BasicTypeDescriptor.forType(ValaTypes.TYPE_BOOL);
     private final ValaTypeBase type;
     private QualifiedName qualifiedName;
 
@@ -91,5 +93,8 @@ public class ValaTypeDescriptor {
             return BASIC_TYPE_ELEMENT_TO_DESCRIPTOR.get(basicTypeElement.toString());
         }
 
+    }
+
+    public static class ValaTypeTypeDescriptor extends ValaTypeDescriptor {
     }
 }

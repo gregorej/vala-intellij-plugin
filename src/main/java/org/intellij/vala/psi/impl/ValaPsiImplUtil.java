@@ -252,6 +252,7 @@ public class ValaPsiImplUtil {
         if (literal.getCharacterLiteral() != null) return ValaTypeDescriptor.CHARACTER;
         if (literal.getStringLiteral() != null) return ValaTypeDescriptor.STRING;
         if (literal.getIntegerLiteral() != null) return ValaTypeDescriptor.INTEGER;
+        if (literal.getRealLiteral() != null) return ValaTypeDescriptor.DOUBLE;
         return null;
     }
 
