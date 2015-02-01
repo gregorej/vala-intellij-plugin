@@ -66,6 +66,11 @@ public class TypeInferenceTest extends ValaReferenceTestBase {
         assertThat(inferredType(), is(ValaTypeDescriptor.DOUBLE));
     }
 
+    public void testInferFromCoalescingExpression() throws IOException {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+        assertThat(inferredType().getQualifiedName(), is(equalTo(nameOf("MyClass"))));
+    }
+
     public void testMethodReferenceOnInferredObjectType() throws IOException {
         myFixture.configureByFiles(getTestName(false) + ".vala");
 

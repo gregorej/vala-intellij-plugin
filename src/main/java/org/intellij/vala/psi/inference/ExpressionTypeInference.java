@@ -29,8 +29,23 @@ public class ExpressionTypeInference {
             return inferType((ValaUnaryExpression) valaExpression);
         } else if (valaExpression instanceof ValaConditionalExpression) {
             return inferType((ValaConditionalExpression) valaExpression);
+        } else if (isBooleanTypeExpression(valaExpression)) {
+            return ValaTypeDescriptor.BOOL;
+        } else if (valaExpression instanceof ValaShiftExpression) {
+            return inferType((ValaShiftExpression) valaExpression);
+        } else if (valaExpression instanceof ValaTypeofExpression) {
+            return inferType((ValaTypeofExpression) valaExpression);
+        } else if (valaExpression instanceof ValaCoalescingExpression) {
+            return inferType((ValaCoalescingExpression) valaExpression);
         }
         return null;
+    }
+
+    private static boolean isBooleanTypeExpression(ValaExpression valaExpression) {
+        return valaExpression instanceof ValaRelationalExpression
+                || valaExpression instanceof ValaConditionalAndExpression
+                || valaExpression instanceof ValaConditionalOrExpression
+                || valaExpression instanceof ValaEqualityExpression;
     }
 
     public static ValaTypeDescriptor inferType(ValaPrimaryExpression primaryExpression) {
@@ -48,12 +63,8 @@ public class ExpressionTypeInference {
         return null;
     }
 
-    public static ValaTypeDescriptor inferType(ValaShiftOperator op, ValaTypeDescriptor left, ValaTypeDescriptor right) {
-        return left;
-    }
-
-    public static ValaTypeDescriptor inferType(ValaMultiplicativeOperator op, ValaTypeDescriptor left, ValaTypeDescriptor right) {
-        return inferTypeForNumericTypes(left, right);
+    private static ValaTypeDescriptor inferType(ValaShiftExpression shiftExpression) {
+        return inferType(shiftExpression.getExpression());
     }
 
     private static ValaTypeDescriptor inferTypeForNumericTypes(ValaTypeDescriptor left, ValaTypeDescriptor right) {
@@ -62,24 +73,12 @@ public class ExpressionTypeInference {
         return left;
     }
 
-    public static ValaTypeDescriptor inferType(ValaAdditiveOperator op, ValaTypeDescriptor left, ValaTypeDescriptor right) {
-        return inferTypeForNumericTypes(left, right);
-    }
-
-    public static ValaTypeDescriptor inferType(ValaEqualityOperator op, ValaTypeDescriptor left, ValaTypeDescriptor right) {
-        return ValaTypeDescriptor.BOOL;
-    }
-
-    public static ValaTypeDescriptor inferType(ValaRelationalOperator op, ValaTypeDescriptor left, ValaTypeDescriptor right) {
-        return ValaTypeDescriptor.BOOL;
-    }
-
-    public static ValaTypeDescriptor inferType(ValaBinaryOperator op, ValaTypeDescriptor left, ValaTypeDescriptor right) {
-        return ValaTypeDescriptor.BOOL;
-    }
-
     public static ValaTypeDescriptor inferType(ValaMultiplicativeExpression multiplicativeExpression) {
         return inferTypeFromBinaryNumericExpression(multiplicativeExpression.getExpression(), multiplicativeExpression.getExpressionList());
+    }
+
+    public static ValaTypeDescriptor inferType(ValaCoalescingExpression coalescingExpression) {
+        return inferType(coalescingExpression.getExpression());
     }
 
     public static ValaTypeDescriptor inferType(ValaAdditiveExpression additiveExpression) {
