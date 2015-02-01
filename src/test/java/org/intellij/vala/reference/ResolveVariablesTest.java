@@ -6,6 +6,7 @@ import org.intellij.vala.psi.*;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.nullValue;
 import static org.intellij.vala.psi.PsiMatchers.hasName;
 import static org.junit.Assert.assertThat;
 
@@ -73,5 +74,13 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("next")));
+    }
+
+    public void testReferenceToNonExistentVariable() {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaSimpleName.class).getReference().resolve();
+
+        assertThat(referencedElement, nullValue());
     }
 }

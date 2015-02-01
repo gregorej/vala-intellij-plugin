@@ -61,7 +61,11 @@ public class ValaVariableReference extends PsiReferenceBase<PsiNamedElement> {
         if (methodDeclaration == null) {
             return null;
         }
-        for (ValaParameter parameter : methodDeclaration.getParameters().getParameterList()) {
+        final ValaParameters parameters = methodDeclaration.getParameters();
+        if (parameters == null) {
+            return null;
+        }
+        for (ValaParameter parameter : parameters.getParameterList()) {
             if (parameter.getName().equals(referenceElement.getName())) {
                 return parameter;
             }
