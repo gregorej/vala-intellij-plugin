@@ -344,7 +344,7 @@ parameters ::= parameter ( "," parameter )*
 parameter ::= attributes? ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression )? ) ) {methods=[getName setName getTypeDescriptor]}
 
 
-throws_declaration ::= "throws" reference_type ( "," reference_type )*
+throws_declaration ::= "throws" symbol ( "," symbol )*
 requires ::= "requires" "(" expression ")" requires?
 ensures ::= "ensures" "(" expression ")" ensures?
 
