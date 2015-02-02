@@ -30,7 +30,7 @@ public class ExpressionTypeInference {
         } else if (valaExpression instanceof ValaConditionalExpression) {
             return inferType((ValaConditionalExpression) valaExpression);
         } else if (isBooleanTypeExpression(valaExpression)) {
-            return ValaTypeDescriptor.BOOL;
+            return BasicTypeDescriptor.BOOL;
         } else if (valaExpression instanceof ValaShiftExpression) {
             return inferType((ValaShiftExpression) valaExpression);
         } else if (valaExpression instanceof ValaTypeofExpression) {
@@ -68,8 +68,8 @@ public class ExpressionTypeInference {
     }
 
     private static ValaTypeDescriptor inferTypeForNumericTypes(ValaTypeDescriptor left, ValaTypeDescriptor right) {
-        if (left == ValaTypeDescriptor.DOUBLE || right == ValaTypeDescriptor.DOUBLE) return ValaTypeDescriptor.DOUBLE;
-        if (left == ValaTypeDescriptor.LONG || right == ValaTypeDescriptor.LONG) return ValaTypeDescriptor.LONG;
+        if (left == BasicTypeDescriptor.DOUBLE || right == BasicTypeDescriptor.DOUBLE) return BasicTypeDescriptor.DOUBLE;
+        if (left == BasicTypeDescriptor.LONG || right == BasicTypeDescriptor.LONG) return BasicTypeDescriptor.LONG;
         return left;
     }
 
@@ -117,11 +117,11 @@ public class ExpressionTypeInference {
     }
 
     public static ValaTypeDescriptor inferType(ValaSizeofExpression sizeofExpression) {
-        return ValaTypeDescriptor.LONG;
+        return BasicTypeDescriptor.LONG;
     }
 
     public static ValaTypeDescriptor inferType(ValaTypeofExpression typeofExpression) {
-        return new ValaTypeDescriptor.ValaTypeTypeDescriptor();
+        return new ValaTypeTypeDescriptor();
     }
 
     public static ValaTypeDescriptor inferType(ValaSimpleName valaSimpleName) {

@@ -178,11 +178,11 @@ public class ValaPsiImplUtil {
 
     private static ValaTypeDescriptor getTypeDescriptor(ValaTypeBase typeBase) {
         if (typeBase.getBuiltInType() != null) {
-            return ValaTypeDescriptor.forType(typeBase.getBuiltInType());
+            return ReferenceTypeDescriptor.forType(typeBase.getBuiltInType());
         }
         PsiElement referenced = new ValaTypeReference(typeBase.getSymbol(), typeBase.getTextRange()).resolve();
         if (referenced instanceof ValaDeclaration) {
-            return ValaTypeDescriptor.forQualifiedName(((ValaDeclaration) referenced).getQName());
+            return ReferenceTypeDescriptor.forQualifiedName(((ValaDeclaration) referenced).getQName());
         }
         return null;
     }
@@ -191,7 +191,7 @@ public class ValaPsiImplUtil {
         if (parameter.getType() == null) {
             return null;
         }
-        return ValaTypeDescriptor.forType(parameter.getType());
+        return ReferenceTypeDescriptor.forType(parameter.getType());
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaLocalVariableDeclaration valaLocalVariableDeclaration) {
@@ -207,7 +207,7 @@ public class ValaPsiImplUtil {
         ValaMember member = objectOrArrayCreationExpression.getMember();
         PsiElement referenced = new ValaConstructorReference(ValaPsiElementUtil.getLastPart(member)).resolve();
         if (referenced instanceof ValaClassDeclaration) {
-            return ValaTypeDescriptor.forQualifiedName(((ValaClassDeclaration) referenced).getQName());
+            return ReferenceTypeDescriptor.forQualifiedName(((ValaClassDeclaration) referenced).getQName());
         }
         return null;
     }
@@ -220,7 +220,7 @@ public class ValaPsiImplUtil {
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaFieldDeclaration fieldDeclaration) {
-        return ValaTypeDescriptor.forType(fieldDeclaration.getTypeWeak());
+        return ReferenceTypeDescriptor.forType(fieldDeclaration.getTypeWeak());
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaMethodCall valaMethodCall) {
@@ -249,10 +249,10 @@ public class ValaPsiImplUtil {
 
     @Nullable
     public static ValaTypeDescriptor getTypeDescriptor(ValaLiteral literal) {
-        if (literal.getCharacterLiteral() != null) return ValaTypeDescriptor.CHARACTER;
-        if (literal.getStringLiteral() != null) return ValaTypeDescriptor.STRING;
-        if (literal.getIntegerLiteral() != null) return ValaTypeDescriptor.INTEGER;
-        if (literal.getRealLiteral() != null) return ValaTypeDescriptor.DOUBLE;
+        if (literal.getCharacterLiteral() != null) return BasicTypeDescriptor.CHARACTER;
+        if (literal.getStringLiteral() != null) return BasicTypeDescriptor.STRING;
+        if (literal.getIntegerLiteral() != null) return BasicTypeDescriptor.INTEGER;
+        if (literal.getRealLiteral() != null) return BasicTypeDescriptor.DOUBLE;
         return null;
     }
 
