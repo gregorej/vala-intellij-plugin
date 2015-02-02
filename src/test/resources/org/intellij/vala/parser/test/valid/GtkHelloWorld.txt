@@ -28,6 +28,8 @@ FILE(0,519)
               PsiElement(string)('string')(22,28)
           ValaArrayTypeImpl(ARRAY_TYPE)(28,30)
             PsiElement([)('[')(28,29)
+            ValaArraySizeImpl(ARRAY_SIZE)(29,29)
+              <empty list>
             PsiElement(])(']')(29,30)
         PsiWhiteSpace(' ')(30,31)
         PsiElement(identifier)('args')(31,35)

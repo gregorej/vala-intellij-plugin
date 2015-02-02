@@ -80,4 +80,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testIfStatementWithMixedOperators() {
         doTest(true);
     }
+
+    public void testArrays() {
+        doTest(true);
+    }
 }

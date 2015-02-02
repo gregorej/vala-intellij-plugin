@@ -176,7 +176,7 @@
 
   extends("expression")=argument
   extends(".*expression")=expression
-  extends("method_call|member_access|pointer_member_access")=chain_access_part
+  extends("method_call|member_access|pointer_member_access|element_access")=chain_access_part
   extends(".*statement|local_variable_declarations|block")=statement
   extends("namespace_declaration|interface_declaration|struct_declaration|enum_declaration|errordomain_declaration|method_declaration|field_declaration|constant_declaration")=namespace_member
   implements("symbol_part|member_part") = "com.intellij.psi.PsiNamedElement"
@@ -247,6 +247,7 @@ primary_expression ::= ( literal | initializer | tuple | template | this_access 
 
 chain_access_part ::= member_access | pointer_member_access | method_call | element_access | post_increment_expression | post_decrement_expression {methods=[getPrevious getTypeDescriptor]}
 
+element_access ::= "[" array_size "]"
 sizeof_expression ::= "sizeof" "(" type ")" {pin=1}
 typeof_expression ::= "typeof" "(" type ")" {pin=1}
 simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference getName setName getTypeDescriptor]}
@@ -379,7 +380,7 @@ property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "ab
 tuple ::= "(" expression ( "," expression )* ")"
 this_access ::= "this"
 base_access ::= "base"
-object_or_array_creation_expression ::= "new" member ( object_creation_expression | array_creation_expression ) {pin=1}
+object_or_array_creation_expression ::= "new" (member | built_in_type) ( object_creation_expression | array_creation_expression ) {pin=1}
 object_creation_expression ::= "(" ( arguments )? ")" ( object_initializer )?
 object_initializer ::= "{" member_initializer ( "," member_initializer )? "}"
 member_initializer ::= identifier "=" expression
@@ -455,12 +456,12 @@ local_variable_declaration ::= local_tuple_declaration | local_variable {methods
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression {pin=5}
 local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {methods=[getName setName getTypeDescriptor]}
 expression_statement ::= statement_expression ";"
-type_base ::= (symbol (type_arguments)? ) | built_in_type
+type_base ::= (symbol type_arguments? ) | built_in_type
 type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? type_base ( "*" )* ( "?" )? array_type* ) {methods=[getTypeDescriptor]}
 type_arguments ::= "<" type ( "," type )* ">"
 type_parameters ::= "<" identifier ( "," identifier )* ">"
 type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? type_base ( "*" )* ( "?" )? array_type* ) {methods=[]}
-array_type ::= "[" array_size? "]" ( "?" )?
-array_size ::= expression ( "," expression ) *
+array_type ::= "[" array_size "]" ( "?" )?
+array_size ::= expression? ( "," expression? ) *
 inline_array_type ::= "[" integer_literal "]"
 
