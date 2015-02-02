@@ -63,6 +63,8 @@ FILE(0,117)
           PsiWhiteSpace(' ')(69,70)
           ValaArrayTypeImpl(ARRAY_TYPE)(70,72)
             PsiElement([)('[')(70,71)
+            ValaArraySizeImpl(ARRAY_SIZE)(71,71)
+              <empty list>
             PsiElement(])(']')(71,72)
         PsiWhiteSpace(' ')(72,73)
         PsiElement(identifier)('args')(73,77)

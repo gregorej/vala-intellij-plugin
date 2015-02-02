@@ -180,7 +180,7 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
   "(dynamic)"                    { return CAST_DYNAMIC; }
   "(!)"                          { return CAST_NON_NULL; }
   "\""                           { return QUOTE; }
-  "@\""                          { return TEMPLATE_STRING_OPEN; }
+  "@"                            { return TEMPLATE_STRING_OPEN; }
   "..."                          { return VARARGS; }
   "."                            { return DOT; }
   "->"                           { return ARROW; }

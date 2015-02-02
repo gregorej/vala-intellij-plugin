@@ -24,6 +24,7 @@ public class ComplexValidFilesParserTest extends AbstractValaParserTest {
                 .add("Mixins")
                 .add("DemoService")
                 .add("Device")
+                .add("HTTPResponse")
                 .build();
     }
 
