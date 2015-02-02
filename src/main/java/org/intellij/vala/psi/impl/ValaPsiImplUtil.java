@@ -275,7 +275,16 @@ public class ValaPsiImplUtil {
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaMemberAccess memberAccess) {
-        ValaMemberPart lastMemberPart = getLastPart(memberAccess.getMember());
+        return getTypeDescriptorPointedByLastMemberPart(memberAccess.getMember());
+    }
+
+    public static ValaTypeDescriptor getTypeDescriptor(ValaPointerMemberAccess pointerMemberAccess) {
+        return getTypeDescriptorPointedByLastMemberPart(pointerMemberAccess.getMember());
+    }
+
+
+    private static ValaTypeDescriptor getTypeDescriptorPointedByLastMemberPart(ValaMember member) {
+        ValaMemberPart lastMemberPart = getLastPart(member);
         PsiReference reference = lastMemberPart.getReference();
         if (reference == null) {
             return null;

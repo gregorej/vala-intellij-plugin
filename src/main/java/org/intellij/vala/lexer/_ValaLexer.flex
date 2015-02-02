@@ -183,6 +183,7 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
   "@\""                          { return TEMPLATE_STRING_OPEN; }
   "..."                          { return VARARGS; }
   "."                            { return DOT; }
+  "->"                           { return ARROW; }
   "pointer_member_access"        { return POINTER_MEMBER_ACCESS; }
   "element_access"               { return ELEMENT_ACCESS; }
   "post_increment_expression"    { return POST_INCREMENT_EXPRESSION; }

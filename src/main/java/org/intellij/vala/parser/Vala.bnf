@@ -160,6 +160,8 @@
     QUOTE='"'
     TEMPLATE_STRING_OPEN='@"'
     VARARGS="..."
+    DOT="."
+    ARROW="->"
 
     identifier="regexp:[A-Za-z_][A-Za-z0-9_]*"
     verbatim_string_literal="regexp:\"\"\"(.|\n|\r)*\"\"\""
@@ -169,12 +171,12 @@
     line_comment="regexp://.*"
     block_comment="regexp:/\*(.|\n)*\*/"
     character_literal="regexp:\'[A-Za-z0-9]\'"
-    dot="."
+
   ]
 
   extends("expression")=argument
   extends(".*expression")=expression
-  extends("method_call|member_access")=chain_access_part
+  extends("method_call|member_access|pointer_member_access")=chain_access_part
   extends(".*statement|local_variable_declarations|block")=statement
   extends("namespace_declaration|interface_declaration|struct_declaration|enum_declaration|errordomain_declaration|method_declaration|field_declaration|constant_declaration")=namespace_member
   implements("symbol_part|member_part") = "com.intellij.psi.PsiNamedElement"
@@ -251,6 +253,7 @@ simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=
 
 literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal {methods=[getTypeDescriptor]}
 member_access ::= "." member {methods=[getTypeDescriptor]}
+pointer_member_access ::= "->" member {methods=[getTypeDescriptor]}
 member ::= member_part ( "." member_part )*
 member_part ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getName setName getReference getPrevious]}
 template ::= '@"' ( expression "," )* '"'
@@ -274,7 +277,7 @@ constructor_declaration ::= constructor_declaration_modifiers? "construct" block
 constructor_declaration_modifiers ::= constructor_declaration_modifier ( " " constructor_declaration_modifier )*
 constructor_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override"
 
-destructor_declaration ::= constructor_declaration_modifiers? "~" "(" ")" block {pin=3}
+destructor_declaration ::= constructor_declaration_modifiers? "~" identifier "(" ")" block {pin=3}
 
 class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? class_body
 {
@@ -300,7 +303,7 @@ class_member ::= attributes?
                    creation_method_declaration |
                    destructor_declaration )
 {recoverWhile=class_member_recovery}
-private class_member_recovery ::= !(";"|"class"|"enum"|access_modifier|"}"|identifier|built_in_type)
+private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_modifier|"}"|identifier|built_in_type)
 
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
 type_declaration_modifier ::= "abstract" | "extern" | "static"
@@ -363,8 +366,10 @@ field_declaration ::= access_modifier? member_declaration_modifiers? type_weak i
 property_declaration ::= access_modifier? property_declaration_modifiers? type_weak identifier
                          "{" property_declaration_part* "}" {pin=5}
 
+affiliation ::= "owned" | "unowned"
+
 property_declaration_part ::= ( "default" "=" expression ";" ) | property_accessor
-property_accessor ::= attributes? access_modifier? ( property_get_accessor | property_set_construct_accessor | property_set_accessor)
+property_accessor ::= attributes? access_modifier? affiliation? ( property_get_accessor | property_set_construct_accessor | property_set_accessor)
 property_get_accessor ::= "get" ( ";" | block ) {pin=1}
 property_set_construct_accessor ::= ( "set" "construct" | "construct" "set" ) ( ";" | block )
 property_set_accessor ::=  "set" ( ";" | block )
