@@ -6,20 +6,16 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.google.common.collect.Iterables.getFirst;
-
 public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
 
     private PsiElement objectReference;
     private Project project;
-    private GlobalSearchScope scope;
 
     public ValaMethodReference(PsiNamedElement element) {
         this(null, element);
@@ -29,7 +25,6 @@ public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
         super(element, new TextRange(0, element.getName().length()));
         this.objectReference = objectReference;
         this.project = element.getProject();
-        scope = GlobalSearchScope.projectScope(project);
     }
 
     @Nullable
@@ -69,14 +64,14 @@ public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
                 }
             }
         }
-        if (declarationContainer instanceof ValaClassDeclaration) {
-            return getMatchingMethodDeclarationInSuperClasses(name, (ValaClassDeclaration) declarationContainer);
+        if (declarationContainer instanceof ValaTypeWithSuperTypes) {
+            return getMatchingMethodDeclarationInSuperClasses(name, (ValaTypeWithSuperTypes) declarationContainer);
         }
         return null;
     }
 
-    private static PsiElement getMatchingMethodDeclarationInSuperClasses(PsiNamedElement name, ValaClassDeclaration classDeclaration) {
-        for (ValaTypeDeclaration superType : classDeclaration.getSuperTypeDeclarations()) {
+    private static PsiElement getMatchingMethodDeclarationInSuperClasses(PsiNamedElement name, ValaTypeWithSuperTypes container) {
+        for (ValaTypeDeclaration superType : container.getSuperTypeDeclarations()) {
             if (superType instanceof ValaDeclarationContainer) {
                 PsiElement foundMatch = getMatchingMethodDeclaration(name, (ValaDeclarationContainer) superType);
                 if (foundMatch != null) {
@@ -94,7 +89,7 @@ public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
             if (descriptor != null) {
                 QualifiedName qualifiedName = descriptor.getQualifiedName();
                 if (qualifiedName != null) {
-                    return getFirst(index.get(qualifiedName, project, scope), null);
+                    return index.get(qualifiedName, project);
                 }
             }
         }

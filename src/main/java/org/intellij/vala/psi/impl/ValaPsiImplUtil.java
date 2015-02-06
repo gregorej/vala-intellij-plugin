@@ -39,6 +39,16 @@ public class ValaPsiImplUtil {
         return classDeclaration.getSymbol().getText();
     }
 
+    public static String getName(ValaStructDeclaration classDeclaration) {
+        return classDeclaration.getSymbol().getText();
+    }
+
+    public static String getName(ValaInterfaceDeclaration classDeclaration) {
+        return classDeclaration.getSymbol().getText();
+    }
+
+
+
     public static String getName(ValaSymbolPart symbolPart) {
         return symbolPart.getIdentifier().getText();
     }
@@ -88,7 +98,7 @@ public class ValaPsiImplUtil {
     }
 
     public static List<ValaMethodDeclaration> getMethodDeclarations(ValaClassDeclaration classDeclaration) {
-        return ClassDeclarationUtil.getMethodDeclarations(classDeclaration);
+        return TypeDeclarationUtil.getMethodDeclarations(classDeclaration);
     }
 
     public static String toString(StubBasedPsiElement<?> element) {
@@ -96,11 +106,19 @@ public class ValaPsiImplUtil {
     }
 
     public static List<ValaNamespaceMember> getNamespaceMemberList(ValaClassDeclaration classDeclaration) {
-        return ClassDeclarationUtil.getNamespaceMemberList(classDeclaration);
+        return TypeDeclarationUtil.getNamespaceMemberList(classDeclaration);
     }
 
     public static List<ValaDeclaration> getDeclarations(ValaClassDeclaration declaration) {
-        return ClassDeclarationUtil.getDeclarations(declaration);
+        return TypeDeclarationUtil.getDeclarations(declaration);
+    }
+
+    public static List<ValaDeclaration> getDeclarations(ValaInterfaceDeclaration declaration) {
+        return TypeDeclarationUtil.getDeclarations(declaration);
+    }
+
+    public static List<ValaDeclaration> getDeclarations(ValaStructDeclaration declaration) {
+        return TypeDeclarationUtil.getDeclarations(declaration);
     }
 
     public static List<ValaDeclaration> getDeclarations(ValaNamespaceDeclaration valaNamespaceDeclaration) {
@@ -123,16 +141,16 @@ public class ValaPsiImplUtil {
         return builder.build();
     }
 
-    public static QualifiedName getQName(ValaClassDeclaration classDeclaration) {
-        return QualifiedNameBuilder.forClassDeclaration(classDeclaration);
-    }
-
     public static QualifiedName getQName(ValaNamespaceDeclaration classDeclaration) {
         return QualifiedNameBuilder.forNamespaceDeclaration(classDeclaration);
     }
 
     public static QualifiedName getQName(ValaMethodDeclaration classDeclaration) {
         return QualifiedNameBuilder.forMethodDeclaration(classDeclaration);
+    }
+
+    public static QualifiedName getQName(ValaTypeDeclaration structDeclaration) {
+        return QualifiedNameBuilder.forTypeDeclaration(structDeclaration);
     }
 
     public static QualifiedName getQName(ValaFieldDeclaration fieldDeclaration) {
@@ -189,8 +207,11 @@ public class ValaPsiImplUtil {
     }
 
     public static List<ValaTypeDeclaration> getSuperTypeDeclarations(ValaClassDeclaration classDeclaration) {
+        return getSuperTypeDeclarations(classDeclaration.getBaseTypes());
+    }
+
+    private static List<ValaTypeDeclaration> getSuperTypeDeclarations(@Nullable ValaBaseTypes baseTypes) {
         ImmutableList.Builder<ValaTypeDeclaration> declarations = ImmutableList.builder();
-        final ValaBaseTypes baseTypes = classDeclaration.getBaseTypes();
         if (baseTypes == null) {
             return declarations.build();
         }
@@ -198,13 +219,21 @@ public class ValaPsiImplUtil {
         for (ValaType type : baseTypes.getTypeList()) {
             ValaTypeDescriptor descriptor = type.getTypeDescriptor();
             if (descriptor != null) {
-                ValaDeclaration declaration = index.get(descriptor.getQualifiedName(), classDeclaration.getProject());
+                ValaDeclaration declaration = index.get(descriptor.getQualifiedName(), baseTypes.getProject());
                 if (declaration instanceof ValaTypeDeclaration) {
                     declarations.add((ValaTypeDeclaration) declaration);
                 }
             }
         }
         return declarations.build();
+    }
+
+    public static List<ValaTypeDeclaration> getSuperTypeDeclarations(ValaInterfaceDeclaration interfaceDeclaration) {
+        return getSuperTypeDeclarations(interfaceDeclaration.getBaseTypes());
+    }
+
+    public static List<ValaTypeDeclaration> getSuperTypeDeclarations(ValaStructDeclaration structDeclaration) {
+        return getSuperTypeDeclarations(structDeclaration.getBaseTypes());
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaParameter parameter) {

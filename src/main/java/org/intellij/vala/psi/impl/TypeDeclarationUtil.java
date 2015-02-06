@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ClassDeclarationUtil {
+public class TypeDeclarationUtil {
 
     @NotNull
     public static List<ValaMethodDeclaration> getMethodDeclarations(ValaClassDeclaration classDeclaration) {
@@ -32,5 +32,28 @@ public class ClassDeclarationUtil {
 
     public static List<ValaDeclaration> getDeclarations(ValaClassDeclaration declaration) {
         return getMembersOfType(declaration, ValaDeclaration.class);
+    }
+
+    public static List<ValaDeclaration> getDeclarations(ValaInterfaceDeclaration declaration) {
+        ImmutableList.Builder<ValaDeclaration> declarations = ImmutableList.builder();
+        for (ValaInterfaceMember interfaceMember : declaration.getInterfaceMemberList()) {
+            if (interfaceMember.getClassDeclaration() != null) {
+                declarations.add(interfaceMember.getClassDeclaration());
+            }
+            if (interfaceMember.getNamespaceMember() instanceof ValaDeclaration) {
+                declarations.add((ValaDeclaration) interfaceMember.getNamespaceMember());
+            }
+        }
+        return declarations.build();
+    }
+
+    public static List<ValaDeclaration> getDeclarations(ValaStructDeclaration declaration) {
+        ImmutableList.Builder<ValaDeclaration> declarations = ImmutableList.builder();
+        for (ValaStructMember interfaceMember : declaration.getStructMemberList()) {
+            if (interfaceMember.getNamespaceMember() instanceof ValaDeclaration) {
+                declarations.add((ValaDeclaration) interfaceMember.getNamespaceMember());
+            }
+        }
+        return declarations.build();
     }
 }

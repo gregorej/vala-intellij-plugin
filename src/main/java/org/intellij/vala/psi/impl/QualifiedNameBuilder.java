@@ -148,15 +148,15 @@ public class QualifiedNameBuilder implements QualifiedName {
         return result;
     }
 
-    public static QualifiedName forClassDeclaration(ValaClassDeclaration classDeclaration) {
-        ValaDeclaration container = getParentOfType(classDeclaration.getParent(), ValaDeclaration.class, false);
+    public static QualifiedName forTypeDeclaration(ValaTypeDeclaration typeDeclaration) {
+        ValaDeclaration container = getParentOfType(typeDeclaration.getParent(), ValaDeclaration.class, false);
         QualifiedName qName;
         if (container == null) {
             qName = new QualifiedNameBuilder();
         } else {
             qName = container.getQName();
         }
-        return append(qName, classDeclaration.getSymbol());
+        return append(qName, typeDeclaration.getSymbol());
     }
 
     public static QualifiedName forNamespaceDeclaration(ValaNamespaceDeclaration namespaceDeclaration) {

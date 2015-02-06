@@ -60,13 +60,13 @@ public class ValaFieldReference extends PsiReferenceBase<PsiNamedElement> {
                 }
             }
         }
-        if (containingClass instanceof ValaClassDeclaration) {
-            return getMatchingMethodDeclarationInSuperClasses(myElement, (ValaClassDeclaration) containingClass);
+        if (containingClass instanceof ValaTypeWithSuperTypes) {
+            return getMatchingMethodDeclarationInSuperClasses(myElement, (ValaTypeWithSuperTypes) containingClass);
         }
         return null;
     }
 
-    private static PsiElement getMatchingMethodDeclarationInSuperClasses(PsiNamedElement name, ValaClassDeclaration classDeclaration) {
+    private static PsiElement getMatchingMethodDeclarationInSuperClasses(PsiNamedElement name, ValaTypeWithSuperTypes classDeclaration) {
         for (ValaTypeDeclaration superType : classDeclaration.getSuperTypeDeclarations()) {
             if (superType instanceof ValaDeclarationContainer) {
                 PsiElement foundMatch = resolveAsClassFieldReference(name, (ValaDeclarationContainer) superType);
