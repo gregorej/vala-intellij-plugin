@@ -85,4 +85,12 @@ public class ResolveClassTest extends ValaReferenceTestBase {
         assertThat(referencedElement, nullValue());
     }
 
+    public void testReferenceToSuperType() {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(hasName("Parent"), instanceOf(ValaClassDeclaration.class)));
+    }
+
 }

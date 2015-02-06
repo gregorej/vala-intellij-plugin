@@ -5,9 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
-import org.intellij.vala.psi.ValaDeclaration;
-import org.intellij.vala.psi.ValaDeclarationContainer;
-import org.intellij.vala.psi.ValaFieldDeclaration;
+import org.intellij.vala.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,6 +57,21 @@ public class ValaFieldReference extends PsiReferenceBase<PsiNamedElement> {
                 ValaFieldDeclaration fieldDeclaration = (ValaFieldDeclaration) declaration;
                 if (myElement.getName().equals(fieldDeclaration.getName())) {
                     return fieldDeclaration;
+                }
+            }
+        }
+        if (containingClass instanceof ValaClassDeclaration) {
+            return getMatchingMethodDeclarationInSuperClasses(myElement, (ValaClassDeclaration) containingClass);
+        }
+        return null;
+    }
+
+    private static PsiElement getMatchingMethodDeclarationInSuperClasses(PsiNamedElement name, ValaClassDeclaration classDeclaration) {
+        for (ValaTypeDeclaration superType : classDeclaration.getSuperTypeDeclarations()) {
+            if (superType instanceof ValaDeclarationContainer) {
+                PsiElement foundMatch = resolveAsClassFieldReference(name, (ValaDeclarationContainer) superType);
+                if (foundMatch != null) {
+                    return foundMatch;
                 }
             }
         }

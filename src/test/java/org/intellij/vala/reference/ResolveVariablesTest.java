@@ -83,4 +83,12 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
 
         assertThat(referencedElement, nullValue());
     }
+
+    public void testReferenceToFieldInSuperClass() {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("count")));
+    }
 }
