@@ -8,6 +8,7 @@ import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.intellij.vala.psi.*;
+import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.intellij.vala.psi.inference.ExpressionTypeInference;
 import org.intellij.vala.reference.*;
 import org.jetbrains.annotations.Nullable;
@@ -185,6 +186,25 @@ public class ValaPsiImplUtil {
             return ReferenceTypeDescriptor.forQualifiedName(((ValaDeclaration) referenced).getQName());
         }
         return null;
+    }
+
+    public static List<ValaTypeDeclaration> getSuperTypeDeclarations(ValaClassDeclaration classDeclaration) {
+        ImmutableList.Builder<ValaTypeDeclaration> declarations = ImmutableList.builder();
+        final ValaBaseTypes baseTypes = classDeclaration.getBaseTypes();
+        if (baseTypes == null) {
+            return declarations.build();
+        }
+        final DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
+        for (ValaType type : baseTypes.getTypeList()) {
+            ValaTypeDescriptor descriptor = type.getTypeDescriptor();
+            if (descriptor != null) {
+                ValaDeclaration declaration = index.get(descriptor.getQualifiedName(), classDeclaration.getProject());
+                if (declaration instanceof ValaTypeDeclaration) {
+                    declarations.add((ValaTypeDeclaration) declaration);
+                }
+            }
+        }
+        return declarations.build();
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaParameter parameter) {

@@ -283,7 +283,7 @@ destructor_declaration ::= constructor_declaration_modifiers? "~" identifier "("
 
 class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? class_body
 {
-    methods=[getName setName getMethodDeclarations getNamespaceMemberList toString getDeclarations getQName]
+    methods=[getName setName getMethodDeclarations getNamespaceMemberList toString getDeclarations getQName getSuperTypeDeclarations]
     pin=3
     stubClass="org.intellij.vala.psi.stub.ValaClassDeclarationStub"
 }

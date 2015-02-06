@@ -44,4 +44,12 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
 
         assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName("getName")));
     }
+
+    public void testReferenceToMethodInSuperClass() {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName("getCount")));
+    }
 }

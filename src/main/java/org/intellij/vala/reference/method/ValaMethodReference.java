@@ -60,12 +60,27 @@ public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
         return null;
     }
 
-    private static PsiElement getMatchingMethodDeclaration(PsiNamedElement name, ValaDeclarationContainer classDeclaration) {
-        for (ValaDeclaration namespaceMember : classDeclaration.getDeclarations()) {
+    private static PsiElement getMatchingMethodDeclaration(PsiNamedElement name, ValaDeclarationContainer declarationContainer) {
+        for (ValaDeclaration namespaceMember : declarationContainer.getDeclarations()) {
             if (namespaceMember instanceof ValaMethodDeclaration) {
                 ValaMethodDeclaration methodDeclaration = (ValaMethodDeclaration) namespaceMember;
                 if (name.getName().equals(methodDeclaration.getName())) {
                     return methodDeclaration;
+                }
+            }
+        }
+        if (declarationContainer instanceof ValaClassDeclaration) {
+            return getMatchingMethodDeclarationInSuperClasses(name, (ValaClassDeclaration) declarationContainer);
+        }
+        return null;
+    }
+
+    private static PsiElement getMatchingMethodDeclarationInSuperClasses(PsiNamedElement name, ValaClassDeclaration classDeclaration) {
+        for (ValaTypeDeclaration superType : classDeclaration.getSuperTypeDeclarations()) {
+            if (superType instanceof ValaDeclarationContainer) {
+                PsiElement foundMatch = getMatchingMethodDeclaration(name, (ValaDeclarationContainer) superType);
+                if (foundMatch != null) {
+                    return foundMatch;
                 }
             }
         }
