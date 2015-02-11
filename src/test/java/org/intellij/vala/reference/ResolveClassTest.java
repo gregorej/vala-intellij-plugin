@@ -93,4 +93,12 @@ public class ResolveClassTest extends ValaReferenceTestBase {
         assertThat(referencedElement, allOf(hasName("Parent"), instanceOf(ValaClassDeclaration.class)));
     }
 
+    public void testReferenceToClassInVapi() {
+        myFixture.configureByFiles(getTestName(false) + ".vala", "MyLibrary.vapi");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(hasName("MyLibraryClass"), instanceOf(ValaClassDeclaration.class), isInFile(hasName("MyLibrary.vapi"))));
+    }
+
 }

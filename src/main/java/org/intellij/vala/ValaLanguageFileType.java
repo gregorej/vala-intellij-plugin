@@ -13,7 +13,7 @@ public class ValaLanguageFileType extends LanguageFileType {
     public static final String DEFAULT_EXTENSION = "vala";
     public static final String DEFAULT_EXTENSION_WITH_DOT = "." + DEFAULT_EXTENSION;
     public static final ValaLanguageFileType INSTANCE = new ValaLanguageFileType();
-    public static final String ALL_EXTENSIONS = DEFAULT_EXTENSION;
+    public static final String ALL_EXTENSIONS = DEFAULT_EXTENSION + ";vapi";
     public static final IFileElementType FILE = new IStubFileElementType(ValaLanguage.INSTANCE);
 
     protected ValaLanguageFileType() {
