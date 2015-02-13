@@ -1,6 +1,8 @@
 package org.intellij.vala.psi;
 
+import com.google.common.collect.Iterables;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -43,7 +45,8 @@ public final class PsiMatchers {
 
             @Override
             protected void describeMismatchSafely(PsiElement item, Description mismatchDescription) {
-                mismatchDescription.appendText(psiToString(item, true, true));
+                PsiErrorElement errorElement = Iterables.getFirst(PsiTreeUtil.findChildrenOfType(item, PsiErrorElement.class), null);
+                mismatchDescription.appendText(psiToString(errorElement, true, true));
             }
         };
     }

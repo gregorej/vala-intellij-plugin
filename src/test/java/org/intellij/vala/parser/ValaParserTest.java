@@ -84,4 +84,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testArrays() {
         doTest(true);
     }
+
+    public void testSimpleLibrary() {
+        doTest(true);
+    }
 }

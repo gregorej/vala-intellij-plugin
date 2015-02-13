@@ -18,13 +18,11 @@ import static org.intellij.vala.psi.impl.ValaPsiImplUtil.getImportedNamespacesAv
 
 public class ValaTypeReference extends PsiReferenceBase<ValaSymbol> {
 
-    private GlobalSearchScope scope;
     private Project project;
 
     public ValaTypeReference(@NotNull ValaSymbol element, TextRange textRange) {
         super(element, textRange);
         project = element.getProject();
-        scope = GlobalSearchScope.projectScope(project);
     }
 
     @Nullable
@@ -41,7 +39,7 @@ public class ValaTypeReference extends PsiReferenceBase<ValaSymbol> {
 
     private PsiElement resolve(QualifiedName qualifiedName) {
         final DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
-        return Iterables.getFirst(index.get(qualifiedName, project, scope), null);
+        return index.get(qualifiedName, project);
     }
 
     private PsiElement resolveInImportedNamespaces() {

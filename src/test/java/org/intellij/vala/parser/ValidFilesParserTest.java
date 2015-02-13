@@ -27,6 +27,7 @@ public class ValidFilesParserTest extends AbstractValaParserTest {
                 .add("SingleObjectPropertyAssignment")
                 .add("BlockComment")
                 .add("Switch")
+                .add("SimpleLibrary")
                 .build();
     }
 

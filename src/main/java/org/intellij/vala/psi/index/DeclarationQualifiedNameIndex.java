@@ -38,7 +38,8 @@ public class DeclarationQualifiedNameIndex extends AbstractStubIndex<QualifiedNa
 
     @Nullable
     public ValaDeclaration get(QualifiedName qualifiedName, Project project) {
-        return Iterables.getFirst(get(qualifiedName, project, GlobalSearchScope.projectScope(project)), null);
+        final GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+        return Iterables.getFirst(get(qualifiedName, project, scope), null);
     }
 
 }

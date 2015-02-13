@@ -305,7 +305,7 @@ class_member ::= attributes?
                    creation_method_declaration |
                    destructor_declaration )
 {recoverWhile=class_member_recovery}
-private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_modifier|"}"|identifier|built_in_type)
+private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_modifier|"["|"}"|identifier|built_in_type)
 
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
 type_declaration_modifier ::= "abstract" | "extern" | "static"
@@ -343,7 +343,7 @@ creation_method_declaration ::= access_modifier? constructor_declaration_modifie
                                 }
 
 parameters ::= parameter ( "," parameter )*
-parameter ::= attributes? ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression )? ) ) {methods=[getName setName getTypeDescriptor]}
+parameter ::= attributes? affiliation? ( "..." | ( "params"? ( "out" | "ref" )? type identifier ( "=" expression )? ) ) {methods=[getName setName getTypeDescriptor]}
 
 
 throws_declaration ::= "throws" symbol ( "," symbol )*
