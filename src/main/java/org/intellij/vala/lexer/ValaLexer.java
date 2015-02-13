@@ -73,7 +73,8 @@ public class ValaLexer extends LookAheadLexer {
             KEY_UNOWNED,
             KEY_WEAK,
             KEY_ERRORDOMAIN,
-            KEY_ENUM);
+            KEY_ENUM,
+            KEY_DELEGATE);
 
     public static final TokenSet BUILT_IN_TYPES = TokenSet.create(
             TYPE_STRING,

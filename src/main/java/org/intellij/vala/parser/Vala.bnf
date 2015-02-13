@@ -129,6 +129,7 @@
     KEY_WEAK="weak"
     KEY_ERRORDOMAIN="errordomain"
     KEY_ENUM="enum"
+    KEY_DELEGATE="delegate"
     TYPE_VOID="void"
     TYPE_STRING="string"
     TYPE_CHAR="char"
@@ -194,7 +195,7 @@ vala_module ::= using_directive * namespace_member *
 symbol ::= symbol_part ( "." symbol_part )*
 symbol_part ::= ( "global::" identifier ) | identifier {methods=[getName setName getReference]}
 
-built_in_type ::= integral_type | floating_point_type | "bool" | "string" | "void"
+built_in_type ::= integral_type | floating_point_type | "bool" | "string" | "void" | "unichar"
 private integral_type ::= "char" | "uchar" | "short" | "ushort" | "long" | "ulong" | "size_t" | "ssize_t" | int_type
 private floating_point_type ::= "float" | "double"
 private int_type ::= "int" | "uint" | "int8" | "uint8" | "int16" | "uint16" | "int32" | "uint32" | "int64" | "uint64"
@@ -207,6 +208,7 @@ namespace_member ::= attributes?
                        struct_declaration |
                        enum_declaration |
                        errordomain_declaration |
+                       delegate_declaration |
                        method_declaration |
                        field_declaration |
                        constant_declaration ) {methods=[getNamespace]}
@@ -258,7 +260,7 @@ member_access ::= "." member {methods=[getTypeDescriptor]}
 pointer_member_access ::= "->" member {methods=[getTypeDescriptor]}
 member ::= member_part ( "." member_part )*
 member_part ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getName setName getReference getPrevious]}
-template ::= '@' '"' ( expression "," )* '"'
+template ::= "@" '"' ( expression "," )* '"'
 
 // get_unary_operator
 unary_operator ::= "+" | "-" | "!" | "~" | "++" | "--" | "*" | "&" | "(owned)" | "(void)" | "(dynamic)" | "(!)"
@@ -284,7 +286,7 @@ destructor_declaration ::= constructor_declaration_modifiers? "~" identifier "("
 class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? class_body
 {
     methods=[getName setName getMethodDeclarations getNamespaceMemberList toString getDeclarations getQName getSuperTypeDeclarations]
-    pin=3
+    pin=4
     stubClass="org.intellij.vala.psi.stub.ValaClassDeclarationStub"
 }
 
@@ -333,7 +335,7 @@ interface_member ::= attributes?
 
 namespace_declaration ::= "namespace" symbol "{" using_directive* namespace_member* "}" {methods=[getDeclarations getQName] pin=1}
 struct_declaration ::= access_modifier? type_declaration_modifiers? "struct" symbol ( ":" base_types )? "{" struct_member* "}" {pin=3 methods=[getSuperTypeDeclarations getQName getDeclarations getName setName]}
-struct_member ::= attributes? ( method_declaration | field_declaration | constant_declaration | property_declaration )
+struct_member ::= attributes? ( method_declaration | field_declaration | constant_declaration | property_declaration | creation_method_declaration )
 
 creation_method_declaration ::= access_modifier? constructor_declaration_modifiers? symbol
                                 "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )
@@ -350,7 +352,7 @@ throws_declaration ::= "throws" symbol ( "," symbol )*
 requires ::= "requires" "(" expression ")" requires?
 ensures ::= "ensures" "(" expression ")" ensures?
 
-delegate_declaration ::= access_modifier? delegate_declaration_modifiers? type symbol type_parameters?
+delegate_declaration ::= access_modifier? "delegate"? delegate_declaration_modifiers? type symbol type_parameters?
                          "(" parameters? ")" throws_declaration? ";"
 delegate_declaration_modifiers ::= delegate_declaration_modifier ( " " delegate_declaration_modifier )*
 delegate_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "abstract" | "virtual" | "override"
@@ -373,7 +375,7 @@ affiliation ::= "owned" | "unowned"
 property_declaration_part ::= ( "default" "=" expression ";" ) | property_accessor
 property_accessor ::= attributes? access_modifier? affiliation? ( property_get_accessor | property_set_construct_accessor | property_set_accessor)
 property_get_accessor ::= "get" ( ";" | block ) {pin=1}
-property_set_construct_accessor ::= ( "set" "construct" | "construct" "set" ) ( ";" | block )
+property_set_construct_accessor ::= ( ("set" "construct") | ("construct")) ( ";" | block )
 property_set_accessor ::=  "set" ( ";" | block )
 property_declaration_modifiers ::= property_declaration_modifier ( " " property_declaration_modifier )*
 property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "abstract" | "virtual" | "override" | "new"
@@ -459,7 +461,7 @@ local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {method
 expression_statement ::= statement_expression ";"
 type_base ::= (symbol type_arguments? ) | built_in_type
 type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? type_base ( "*" )* ( "?" )? array_type* ) {methods=[getTypeDescriptor]}
-type_arguments ::= "<" type ( "," type )* ">"
+type_arguments ::= "<" type_weak ( "," type_weak )* ">"
 type_parameters ::= "<" identifier ( "," identifier )* ">"
 type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? type_base ( "*" )* ( "?" )? array_type* ) {methods=[]}
 array_type ::= "[" array_size "]" ( "?" )?

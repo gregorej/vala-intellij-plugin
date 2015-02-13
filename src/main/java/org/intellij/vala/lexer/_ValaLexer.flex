@@ -8,12 +8,30 @@ package org.intellij.vala.lexer;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import static org.intellij.vala.psi.ValaTypes.*;
+import java.util.Stack;
 
 %%
 
 %{
   public _ValaLexer() {
     this((java.io.Reader)null);
+  }
+
+  private Stack<Integer> stack = new Stack<Integer>();
+
+  private void pushState(int state) {
+    stack.push(yystate());
+    yybegin(state);
+  }
+
+  private void popState() {
+    if (stack.empty()) {
+        yybegin(YYINITIAL);
+
+    } else {
+        int state = stack.pop();
+        yybegin(state);
+    }
   }
 %}
 
@@ -36,6 +54,8 @@ INTEGER_LITERAL=-?[0-9]+
 LINE_COMMENT="//".*
 BLOCK_COMMENT="/*" !([^]* "*/" [^]*) ("*/")?
 CHARACTER_LITERAL='[A-Za-z0-9]'
+
+%state AT_SGN
 
 %%
 <YYINITIAL> {
@@ -151,6 +171,7 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
   "weak"                         { return KEY_WEAK; }
   "errordomain"                  { return KEY_ERRORDOMAIN; }
   "enum"                         { return KEY_ENUM; }
+  "delegate"                     { return KEY_DELEGATE; }
   "void"                         { return TYPE_VOID; }
   "string"                       { return TYPE_STRING; }
   "char"                         { return TYPE_CHAR; }
@@ -180,7 +201,7 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
   "(dynamic)"                    { return CAST_DYNAMIC; }
   "(!)"                          { return CAST_NON_NULL; }
   "\""                           { return QUOTE; }
-  "@"                            { return TEMPLATE_STRING_OPEN; }
+  "@"                            { pushState(AT_SGN); return com.intellij.psi.TokenType.WHITE_SPACE;}
   "..."                          { return VARARGS; }
   "."                            { return DOT; }
   "->"                           { return ARROW; }
@@ -198,5 +219,10 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
   {BLOCK_COMMENT}                { return BLOCK_COMMENT; }
   {CHARACTER_LITERAL}            { return CHARACTER_LITERAL; }
 
-  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+  [^]                            { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+}
+
+<AT_SGN> {
+  {IDENTIFIER}                   { popState(); return IDENTIFIER; }
+  [^]                            { popState(); yypushback(yylength()); return TEMPLATE_STRING_OPEN; }
 }

@@ -6,6 +6,7 @@ import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.io.IOUtil;
 import org.hamcrest.CustomTypeSafeMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -46,7 +47,8 @@ public final class PsiMatchers {
             @Override
             protected void describeMismatchSafely(PsiElement item, Description mismatchDescription) {
                 PsiErrorElement errorElement = Iterables.getFirst(PsiTreeUtil.findChildrenOfType(item, PsiErrorElement.class), null);
-                mismatchDescription.appendText(psiToString(errorElement, true, true));
+                String psiString = psiToString(item, true, true);
+                mismatchDescription.appendText(psiString);
             }
         };
     }

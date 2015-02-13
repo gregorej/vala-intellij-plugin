@@ -114,6 +114,15 @@ public class ValaLexerTest {
     }
 
     @Test
+    public void shouldRecognizeKeywordPrecededByAtAsIdentifier() throws IOException {
+        valaLexer.start("@class");
+        valaLexer.advance();
+
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.IDENTIFIER));
+        assertThat(valaLexer.getTokenText(), is(equalTo("class")));
+    }
+
+    @Test
     public void shouldDetectVerbatimString() throws IOException {
         final String verbatimString = "\"\"\"some\n\"text\"\"\"\"";
         valaLexer.start(verbatimString);
