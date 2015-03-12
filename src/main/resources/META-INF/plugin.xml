@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>org.gregorej.intellij.vala</id>
     <name>Vala support plugin</name>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <vendor email="grzegorz.dyk@gmail.com" url="https://github.com/gregorej/vala-intellij-plugin">Grzegorz Dyk</vendor>
 
     <description>Support for Vala programming language</description>
@@ -31,6 +31,7 @@
         <stubIndex implementation="org.intellij.vala.psi.index.ClassNameIndex"/>
         <stubIndex implementation="org.intellij.vala.psi.index.DeclarationQualifiedNameIndex"/>
         <stubIndex implementation="org.intellij.vala.psi.index.DeclarationsInNamespaceIndex"/>
+        <library.type implementation="org.intellij.vala.project.ValaLibraryType" />
     </extensions>
 
     <application-components>
