@@ -35,6 +35,10 @@ public class ValaLibraryType extends LibraryType<ValaLibraryProperties> {
         return new ValaLibraryPropertiesEditor();
     }
 
+    public static ValaLibraryType instance() {
+        return (ValaLibraryType) LibraryType.findByKind(ValaLibraryKind.INSTANCE);
+    }
+
     @Nullable
     @Override
     public Icon getIcon() {

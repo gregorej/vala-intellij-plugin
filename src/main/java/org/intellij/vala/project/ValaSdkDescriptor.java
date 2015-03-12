@@ -34,7 +34,7 @@ public class ValaSdkDescriptor {
     public NewLibraryConfiguration createNewLibraryConfiguration() {
         ValaLibraryProperties properties = new ValaLibraryProperties();
         String name = "vala-sdk-" + version;
-        return new NewLibraryConfiguration(name) {
+        return new NewLibraryConfiguration(name, ValaLibraryType.instance(), properties) {
 
             @Override
             public void addRoots(@NotNull LibraryEditor libraryEditor) {

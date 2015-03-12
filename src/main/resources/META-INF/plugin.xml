@@ -32,12 +32,20 @@
         <stubIndex implementation="org.intellij.vala.psi.index.DeclarationQualifiedNameIndex"/>
         <stubIndex implementation="org.intellij.vala.psi.index.DeclarationsInNamespaceIndex"/>
         <library.type implementation="org.intellij.vala.project.ValaLibraryType" />
+
+        <editorNotificationProvider implementation="org.intellij.vala.project.notification.SetupValaSdkNotificationProvider"/>
     </extensions>
 
     <application-components>
     </application-components>
 
     <project-components>
+        <component>
+            <implementation-class>org.intellij.vala.project.ValaProjectCache</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.intellij.vala.project.ValaProjectEvents</implementation-class>
+        </component>
     </project-components>
 
     <actions>
