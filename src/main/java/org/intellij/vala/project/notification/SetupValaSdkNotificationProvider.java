@@ -58,7 +58,7 @@ public class SetupValaSdkNotificationProvider extends EditorNotifications.Provid
     private boolean hasSdk(PsiFile psiFile) {
         if (psiFile.getLanguage() == ValaLanguage.INSTANCE) {
             Module module = ModuleUtilCore.findModuleForPsiElement(psiFile);
-            return hasVala(module);
+            return module == null || hasVala(module);
         } else {
             return true;
         }

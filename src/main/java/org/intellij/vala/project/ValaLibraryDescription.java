@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.Set;
 
 public class ValaLibraryDescription extends CustomLibraryDescription {
@@ -24,15 +23,11 @@ public class ValaLibraryDescription extends CustomLibraryDescription {
     @Nullable
     @Override
     public NewLibraryConfiguration createNewLibrary(@NotNull JComponent jComponent, VirtualFile virtualFile) {
-        try {
-            ValaSdkDescriptor sdk = ValaSdkDescriptor.discoverFromEnvironmentVariable();
+            //ValaSdkDescriptor sdk = ValaSdkDescriptor.discoverFromEnvironmentVariable();
+            ValaSdkDescriptor sdk = new SdkSelectionDialog(jComponent).open();
             if (sdk == null) {
                 return null;
             }
             return sdk.createNewLibraryConfiguration();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

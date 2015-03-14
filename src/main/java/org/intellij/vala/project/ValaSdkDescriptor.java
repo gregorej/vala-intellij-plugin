@@ -47,12 +47,7 @@ public class ValaSdkDescriptor {
     }
 
     @Nullable
-    public static ValaSdkDescriptor discoverFromEnvironmentVariable() throws IOException {
-        String valaHomePath = System.getenv("VALA_HOME");
-        if (valaHomePath == null) {
-            return null;
-        }
-        File valaHome = new File(valaHomePath);
+    public static ValaSdkDescriptor fromDirectory(File valaHome) throws IOException {
         String version = readVersion(valaHome);
         VirtualFile valaSdkRoot = VfsUtil.findFileByIoFile(valaHome, false);
         Asserts.notNull(valaSdkRoot, "Vala SDK root directory could not be found");
@@ -65,6 +60,16 @@ public class ValaSdkDescriptor {
             }
         }
         return new ValaSdkDescriptor(version, vapiFiles.build());
+    }
+
+    @Nullable
+    public static ValaSdkDescriptor discoverFromEnvironmentVariable() throws IOException {
+        String valaHomePath = System.getenv("VALA_HOME");
+        if (valaHomePath == null) {
+            return null;
+        }
+        File valaHome = new File(valaHomePath);
+        return fromDirectory(valaHome);
     }
 
     private static String readVersion(File valaHome) throws IOException {
