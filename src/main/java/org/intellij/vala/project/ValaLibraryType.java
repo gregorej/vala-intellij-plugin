@@ -31,8 +31,8 @@ public class ValaLibraryType extends LibraryType<ValaLibraryProperties> {
 
     @Nullable
     @Override
-    public LibraryPropertiesEditor createPropertiesEditor(LibraryEditorComponent libraryEditorComponent) {
-        return new ValaLibraryPropertiesEditor();
+    public LibraryPropertiesEditor createPropertiesEditor(LibraryEditorComponent<ValaLibraryProperties> libraryEditorComponent) {
+        return new ValaLibraryPropertiesEditor(libraryEditorComponent);
     }
 
     public static ValaLibraryType instance() {
