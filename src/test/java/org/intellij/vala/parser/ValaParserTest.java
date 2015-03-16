@@ -88,4 +88,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testSimpleLibrary() {
         doTest(true);
     }
+
+    public void testEnumWithMethodsWithAttributes() {
+        doTest(true);
+    }
 }

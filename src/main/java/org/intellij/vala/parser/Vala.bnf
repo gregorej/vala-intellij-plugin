@@ -312,7 +312,9 @@ private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_mo
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
 type_declaration_modifier ::= "abstract" | "extern" | "static"
 enum_declaration ::= access_modifier? type_declaration_modifiers? "enum" symbol
-                     "{" enumvalues ( ";" ( method_declaration | constant_declaration )* )? "}" {pin=3}
+                     "{" enumvalues ( ";"  enum_member* )? "}" {pin=3}
+
+enum_member ::= attributes? ( method_declaration | constant_declaration)
 enumvalues ::= enumvalue ( "," enumvalue )*
 enumvalue ::= attributes? identifier ( "=" expression )?
 errordomain_declaration ::= access_modifier? type_declaration_modifiers? "errordomain" symbol

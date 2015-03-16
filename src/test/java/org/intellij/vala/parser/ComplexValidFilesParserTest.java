@@ -2,7 +2,6 @@ package org.intellij.vala.parser;
 
 import com.google.common.collect.ImmutableList;
 import com.intellij.psi.PsiFile;
-import com.intellij.testFramework.ParsingTestCase;
 import org.junit.runners.Parameterized;
 
 import java.io.IOException;
@@ -26,6 +25,8 @@ public class ComplexValidFilesParserTest extends AbstractValaParserTest {
                 .add("Device")
                 .add("HTTPResponse")
                 .add("gtk")
+                .add("DateTime")
+                .add("gstreamer")
                 .build();
     }
 

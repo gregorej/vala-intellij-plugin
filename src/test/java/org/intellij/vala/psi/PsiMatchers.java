@@ -47,7 +47,8 @@ public final class PsiMatchers {
             @Override
             protected void describeMismatchSafely(PsiElement item, Description mismatchDescription) {
                 PsiErrorElement errorElement = Iterables.getFirst(PsiTreeUtil.findChildrenOfType(item, PsiErrorElement.class), null);
-                String psiString = psiToString(item, true, true);
+                PsiElement referenceElement = item;
+                String psiString = psiToString(referenceElement, true, true);
                 mismatchDescription.appendText(psiString);
             }
         };
