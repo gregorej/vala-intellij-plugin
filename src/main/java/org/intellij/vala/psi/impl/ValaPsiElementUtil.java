@@ -4,6 +4,7 @@ package org.intellij.vala.psi.impl;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import org.intellij.vala.psi.*;
+import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,10 +36,15 @@ public class ValaPsiElementUtil {
     }
 
     public static ValaDeclaration findTypeDeclaration(PsiElement resolved) {
-        if (resolved instanceof ValaLocalVariable) {
-            return (ValaDeclaration) LocalVariableUtil.getTypeReference((ValaLocalVariable) resolved).resolve();
-        } else if (resolved instanceof ValaFieldDeclaration) {
-            return (ValaDeclaration) getTypeReference((ValaFieldDeclaration) resolved).resolve();
+        if (resolved instanceof HasTypeDescriptor) {
+            ValaTypeDescriptor typeDescriptor = ((HasTypeDescriptor) resolved).getTypeDescriptor();
+            if (typeDescriptor != null) {
+                final QualifiedName qualifiedName = typeDescriptor.getQualifiedName();
+                if (qualifiedName != null) {
+                    final DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
+                    return index.get(typeDescriptor.getQualifiedName(), resolved.getProject());
+                }
+            }
         }
         return null;
     }

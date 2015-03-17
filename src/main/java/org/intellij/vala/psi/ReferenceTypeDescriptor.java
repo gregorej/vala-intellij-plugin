@@ -2,8 +2,6 @@ package org.intellij.vala.psi;
 
 public class ReferenceTypeDescriptor implements ValaTypeDescriptor {
 
-
-
     private final ValaTypeBase type;
     private QualifiedName qualifiedName;
 

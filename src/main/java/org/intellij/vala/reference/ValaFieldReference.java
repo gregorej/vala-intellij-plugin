@@ -78,6 +78,7 @@ public class ValaFieldReference extends PsiReferenceBase<PsiNamedElement> {
         return null;
     }
 
+    @Nullable
     private ValaDeclaration resolveObjectType() {
         PsiReference parentRef = objectVariable.getReference();
         if (parentRef == null) {
