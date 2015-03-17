@@ -47,8 +47,6 @@ public class ValaPsiImplUtil {
         return classDeclaration.getSymbol().getText();
     }
 
-
-
     public static String getName(ValaSymbolPart symbolPart) {
         return symbolPart.getIdentifier().getText();
     }

@@ -1,6 +1,7 @@
 package org.intellij.vala.psi.impl;
 
 
+import org.apache.http.util.Asserts;
 import org.intellij.vala.psi.*;
 
 import java.io.DataInput;
@@ -104,8 +105,9 @@ public class QualifiedNameBuilder implements QualifiedName {
     }
 
     public static QualifiedName from(ValaCreationMethodDeclaration creationMethodDeclaration) {
-        ValaClassDeclaration valaClass = getParentOfType(creationMethodDeclaration, ValaClassDeclaration.class, false);
-        return append(valaClass.getQName(), creationMethodDeclaration.getSymbol());
+        ValaTypeDeclaration typeDeclaration = getParentOfType(creationMethodDeclaration, ValaTypeDeclaration.class, false);
+        Asserts.notNull(typeDeclaration, "creation method declaration without containing type declaration found");
+        return append(typeDeclaration.getQName(), creationMethodDeclaration.getSymbol());
     }
 
     public static QualifiedName read(DataInput inputStream) throws IOException {
