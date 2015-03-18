@@ -1,8 +1,6 @@
 package org.intellij.vala.reference;
 
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -13,9 +11,6 @@ import org.intellij.vala.psi.impl.QualifiedNameBuilder;
 import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
 
 import static org.intellij.vala.psi.impl.ValaPsiImplUtil.getImportedNamespacesAvailableFor;
 
@@ -46,11 +41,11 @@ public class ValaConstructorReference extends PsiReferenceBase<ValaMemberPart> {
     private PsiElement resolveWithRoot(QualifiedName rootName) {
         QualifiedName originalQualifiedName = rootName.append(QualifiedNameBuilder.from((ValaMember) myElement.getParent()));
         QualifiedName maybeDefaultConstructorQualifiedName = originalQualifiedName.append(originalQualifiedName.getTail());
-        ValaDeclaration defaultConstructor = resolveFirst(maybeDefaultConstructorQualifiedName);
+        ValaDeclaration defaultConstructor = resolve(maybeDefaultConstructorQualifiedName);
         if (defaultConstructor != null) {
             return defaultConstructor;
         }
-        ValaDeclaration classDeclaration = resolveFirst(originalQualifiedName);
+        ValaDeclaration classDeclaration = resolve(originalQualifiedName);
         if (classDeclaration != null) {
             return classDeclaration;
         }
@@ -68,23 +63,17 @@ public class ValaConstructorReference extends PsiReferenceBase<ValaMemberPart> {
         QualifiedName maybeClassQualifiedName = originalQualifiedName.getPrefix(originalQualifiedName.length() - 1);
         String maybeClassName = maybeClassQualifiedName.getTail();
         QualifiedName maybeNamedConstructorQualifiedName = maybeClassQualifiedName.append(maybeClassName).append(maybeConstructorName);
-        return resolveFirst(maybeNamedConstructorQualifiedName);
+        return resolve(maybeNamedConstructorQualifiedName);
     }
 
     @Nullable
-    private ValaDeclaration resolveFirst(QualifiedName maybeClassQualifiedName) {
-        return Iterables.getFirst(resolve(maybeClassQualifiedName), null);
-    }
-
-    private Collection<ValaDeclaration> resolve(QualifiedName qualifiedName) {
-        ImmutableList.Builder<ValaDeclaration> declarations = ImmutableList.builder();
+    private ValaDeclaration resolve(QualifiedName qualifiedName) {
         final DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
-        for (ValaDeclaration foundDeclaration : index.get(qualifiedName, project, scope)) {
-            if (foundDeclaration instanceof ValaClassDeclaration || foundDeclaration instanceof ValaCreationMethodDeclaration) {
-                declarations.add(foundDeclaration);
-            }
+        ValaDeclaration foundDeclaration = index.get(qualifiedName, project);
+        if (foundDeclaration instanceof ValaClassDeclaration || foundDeclaration instanceof ValaCreationMethodDeclaration) {
+            return foundDeclaration;
         }
-        return declarations.build();
+        return null;
     }
 
     @NotNull

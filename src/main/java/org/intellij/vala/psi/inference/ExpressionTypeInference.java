@@ -37,13 +37,20 @@ public class ExpressionTypeInference {
             return inferType((ValaTypeofExpression) valaExpression);
         } else if (valaExpression instanceof ValaCoalescingExpression) {
             return inferType((ValaCoalescingExpression) valaExpression);
+        } else if (valaExpression instanceof ValaTypeCastExpression) {
+            return inferType((ValaTypeCastExpression) valaExpression);
+        } else if (valaExpression instanceof ValaRelationalExpression) {
+            return inferType((ValaRelationalExpression) valaExpression);
         }
         return null;
     }
 
+    private static ValaTypeDescriptor inferType(ValaTypeCastExpression valaExpression) {
+        return valaExpression.getType().getTypeDescriptor();
+    }
+
     private static boolean isBooleanTypeExpression(ValaExpression valaExpression) {
-        return valaExpression instanceof ValaRelationalExpression
-                || valaExpression instanceof ValaConditionalAndExpression
+        return valaExpression instanceof ValaConditionalAndExpression
                 || valaExpression instanceof ValaConditionalOrExpression
                 || valaExpression instanceof ValaEqualityExpression;
     }
@@ -135,6 +142,22 @@ public class ExpressionTypeInference {
             return ((HasTypeDescriptor) resolved).getTypeDescriptor();
         }
         return null;
+    }
+
+    public static ValaTypeDescriptor inferType(ValaRelationalExpression valaRelationalExpression) {
+        List<ValaExpression> expressions = valaRelationalExpression.getExpressionList();
+        ValaTypeDescriptor result = null;
+        if (expressions.size() == 1) {
+            result = inferType(expressions.get(0));
+        } else if (expressions.size() == 2) {
+            final ValaExpression lastExpression = expressions.get(1);
+            if (lastExpression instanceof ValaTypeCastExpression) {
+                result = inferType((ValaTypeCastExpression) lastExpression);
+            } else if (lastExpression instanceof ValaTypeCheckExpression) {
+                result = BasicTypeDescriptor.BOOL;
+            }
+        }
+        return result;
     }
 
     private static boolean hasNoChainedAccess(ValaPrimaryExpression primaryExpression) {

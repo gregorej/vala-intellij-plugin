@@ -237,7 +237,9 @@ inclusive_or_expression ::= exclusive_or_expression ( "|" exclusive_or_expressio
 exclusive_or_expression ::= and_expression ( "^" and_expression )*
 and_expression ::= equality_expression ( "&" equality_expression )*
 equality_expression ::= relational_expression ( equality_operator relational_expression )*
-relational_expression ::= shift_expression ( (relational_operator shift_expression ) |( "is" type ) | ( "as" type ) )*
+relational_expression ::= shift_expression ( type_check_expression | type_cast_expression | (relational_operator shift_expression )* )
+type_cast_expression ::= "as" type {pin=1}
+type_check_expression ::= "is" type {pin=1}
 shift_expression ::= additive_expression ( shift_operator additive_expression )*
 additive_expression ::= multiplicative_expression ( additive_operator multiplicative_expression )*
 multiplicative_expression ::= unary_expression (multiplicative_operator unary_expression )*

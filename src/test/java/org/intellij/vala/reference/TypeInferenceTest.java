@@ -75,6 +75,11 @@ public class TypeInferenceTest extends ValaReferenceTestBase {
         assertThat(referenced, allOf(instanceOf(ValaMethodDeclaration.class), hasName("getName")));
     }
 
+    public void testInferFromCast() throws IOException {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+        assertThat(inferredType().getQualifiedName(), is(equalTo(nameOf("B"))));
+    }
+
     private ValaTypeDescriptor inferredType() {
         ValaExpression expression = getElementOfTypeAtCaret(ValaExpression.class);
         return ExpressionTypeInference.inferType(expression);
