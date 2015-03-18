@@ -36,7 +36,7 @@ public class TypeDeclarationUtil {
 
     public static List<ValaDeclaration> getDeclarations(ValaInterfaceDeclaration declaration) {
         ImmutableList.Builder<ValaDeclaration> declarations = ImmutableList.builder();
-        for (ValaInterfaceMember interfaceMember : declaration.getInterfaceMemberList()) {
+        for (ValaInterfaceMember interfaceMember : declaration.getInterfaceBody().getInterfaceMemberList()) {
             if (interfaceMember.getClassDeclaration() != null) {
                 declarations.add(interfaceMember.getClassDeclaration());
             }
@@ -49,7 +49,7 @@ public class TypeDeclarationUtil {
 
     public static List<ValaDeclaration> getDeclarations(ValaStructDeclaration declaration) {
         ImmutableList.Builder<ValaDeclaration> declarations = ImmutableList.builder();
-        for (ValaStructMember interfaceMember : declaration.getStructMemberList()) {
+        for (ValaStructMember interfaceMember : declaration.getStructBody().getStructMemberList()) {
             if (interfaceMember.getNamespaceMember() instanceof ValaDeclaration) {
                 declarations.add((ValaDeclaration) interfaceMember.getNamespaceMember());
             }

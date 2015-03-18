@@ -32,7 +32,7 @@ public class ValaFoldingBuilder extends CustomFoldingBuilder {
         foldStatements(descriptors, root);
         
         foldNamespaceBodies(descriptors, root);
-        foldClassBodies(descriptors, valaFile);
+        foldTypeDeclarationBodies(descriptors, valaFile);
         foldFunctionBodies(descriptors, root);
     }
 
@@ -49,7 +49,7 @@ public class ValaFoldingBuilder extends CustomFoldingBuilder {
 
         if (psiElement instanceof ValaNamespaceDeclaration)
             return "{...}";
-        if (psiElement instanceof ValaClassBody)
+        if (psiElement instanceof ValaTypeDeclarationBody)
             return "{...}";
         if (psiElement instanceof ValaMethodDeclaration ||
                 psiElement instanceof ValaCreationMethodDeclaration) return "{...}";
@@ -73,13 +73,10 @@ public class ValaFoldingBuilder extends CustomFoldingBuilder {
         }
     }
 
-    private static void foldClassBodies (@NotNull final List<FoldingDescriptor> descriptors, @NotNull final ValaFile valaFile) {
-        for (ValaClassDeclaration valaClass : PsiTreeUtil.findChildrenOfAnyType(valaFile, ValaClassDeclaration.class)) {
-            if (valaClass != null) {
-                final ValaClassBody body = valaClass.getClassBody();
-                if (body != null && body.getTextLength() > 2) {
-                    descriptors.add(new FoldingDescriptor(body, body.getTextRange()));
-                }
+    private static void foldTypeDeclarationBodies(@NotNull final List<FoldingDescriptor> descriptors, @NotNull final ValaFile valaFile) {
+        for (ValaTypeDeclarationBody body : PsiTreeUtil.findChildrenOfAnyType(valaFile, ValaTypeDeclarationBody.class)) {
+            if (body != null && body.getTextLength() > 2) {
+                descriptors.add(new FoldingDescriptor(body, body.getTextRange()));
             }
         }
     }
