@@ -1,15 +1,16 @@
 Vala Language plugin for Intellij
 ====================
 
-Still under constructor, not even Alpha yet.
+Still under construction!
 
-I would appreciate any help on that.
+I would appreciate any help on this plugin.
 
 About language itself: https://wiki.gnome.org/Projects/Vala
 
 
 How to build
 ------------------
+*Note* this instructions may seem complex but they really are quite simple. Also, most of them need to be done once. 
 
   1. Install Grammar-Kit plugin for Intellij
   2. Import Vala plugin sources as new Intellij project (in other words, create new project from sources). When you do this, choose Intellij plugin project type.
