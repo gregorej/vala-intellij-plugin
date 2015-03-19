@@ -2,6 +2,7 @@ package org.intellij.vala.reference.method;
 
 
 import com.intellij.psi.PsiElement;
+import org.intellij.vala.psi.ValaDelegateDeclaration;
 import org.intellij.vala.psi.ValaMemberPart;
 import org.intellij.vala.psi.ValaMethodDeclaration;
 import org.intellij.vala.psi.ValaSimpleName;
@@ -51,5 +52,13 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName("getCount")));
+    }
+
+    public void testReferenceToDelegate() {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(instanceOf(ValaDelegateDeclaration.class), hasName("get_size")));
     }
 }

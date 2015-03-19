@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
+import org.intellij.vala.psi.ValaAttribute;
 import org.intellij.vala.psi.ValaFieldDeclaration;
 import org.intellij.vala.psi.impl.ValaMemberPartImpl;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,13 @@ public class ValaAnnotator implements Annotator {
         ProgressManager.checkCanceled();
         if (isClassFieldAccess(psiElement)) {
             annotationHolder.createInfoAnnotation(psiElement, null).setTextAttributes(DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+        } else if (isAttribute(psiElement)) {
+            annotationHolder.createInfoAnnotation(psiElement, null).setTextAttributes(DefaultLanguageHighlighterColors.METADATA);
         }
+    }
+
+    private boolean isAttribute(PsiElement psiElement) {
+        return psiElement instanceof ValaAttribute;
     }
 
     private static boolean isClassFieldAccess(PsiElement psiElement) {

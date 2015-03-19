@@ -122,7 +122,7 @@ public class QualifiedNameBuilder implements QualifiedName {
         return qName;
     }
 
-    public static QualifiedName forMethodDeclaration(ValaMethodDeclaration methodDeclaration) {
+    public static QualifiedName forMethodDeclaration(ValaDelegateDeclaration methodDeclaration) {
         final String methodName = methodDeclaration.getIdentifier().getText();
         ValaDeclaration container = getParentOfType(methodDeclaration, ValaDeclaration.class, false);
         if (container == null) {

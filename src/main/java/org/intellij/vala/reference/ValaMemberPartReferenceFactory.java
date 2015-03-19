@@ -4,7 +4,7 @@ package org.intellij.vala.reference;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import org.intellij.vala.psi.*;
-import org.intellij.vala.reference.method.ValaMethodReference;
+import org.intellij.vala.reference.method.ValaDelegateReference;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class ValaMemberPartReferenceFactory {
     private static PsiReference resolveAsMethodReference(ValaMemberPart memberPart) {
         PsiElement precedingReference = getPrecedingReference(memberPart);
         if (precedingReference != null) {
-            return new ValaMethodReference(precedingReference, memberPart);
+            return new ValaDelegateReference(precedingReference, memberPart);
         }
         return null;
     }

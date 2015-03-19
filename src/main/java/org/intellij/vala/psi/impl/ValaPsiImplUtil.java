@@ -75,8 +75,12 @@ public class ValaPsiImplUtil {
         return simpleName.getIdentifier().getText();
     }
 
-    public static String getName(ValaMethodDeclaration methodDeclaration) {
+    public static String getName(ValaDelegateDeclaration methodDeclaration) {
         return methodDeclaration.getIdentifier().getText();
+    }
+
+    public static QualifiedName getQName(ValaDelegateDeclaration methodDeclaration) {
+        return QualifiedNameBuilder.forMethodDeclaration(methodDeclaration);
     }
 
     public static String getName(ValaParameter parameter) {
@@ -278,7 +282,7 @@ public class ValaPsiImplUtil {
         return getTypeDescriptor(declaration);
     }
 
-    public static ValaTypeDescriptor getTypeDescriptor(ValaMethodDeclaration declaration) {
+    public static ValaTypeDescriptor getTypeDescriptor(ValaDelegateDeclaration declaration) {
         return getTypeDescriptor(declaration.getType());
     }
 

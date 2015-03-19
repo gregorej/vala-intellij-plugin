@@ -18,7 +18,7 @@ public class TypeDeclarationUtil {
         ImmutableList.Builder<T> declarations = ImmutableList.builder();
         for (ValaClassMember member : classDeclaration.getClassBody().getClassMemberList()) {
             ValaNamespaceMember namespaceMember = member.getNamespaceMember();
-            if (namespaceMember !=null && expectedType.isAssignableFrom(namespaceMember.getClass())) {
+            if (namespaceMember != null && expectedType.isAssignableFrom(namespaceMember.getClass())) {
                 declarations.add((T) member.getNamespaceMember());
             }
         }

@@ -12,16 +12,16 @@ import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
+public class ValaDelegateReference extends PsiReferenceBase<PsiNamedElement> {
 
     private PsiElement objectReference;
     private Project project;
 
-    public ValaMethodReference(PsiNamedElement element) {
+    public ValaDelegateReference(PsiNamedElement element) {
         this(null, element);
     }
 
-    public ValaMethodReference(PsiElement objectReference, PsiNamedElement element) {
+    public ValaDelegateReference(PsiElement objectReference, PsiNamedElement element) {
         super(element, new TextRange(0, element.getName().length()));
         this.objectReference = objectReference;
         this.project = element.getProject();
@@ -56,9 +56,11 @@ public class ValaMethodReference extends PsiReferenceBase<PsiNamedElement> {
     }
 
     private static PsiElement getMatchingMethodDeclaration(PsiNamedElement name, ValaDeclarationContainer declarationContainer) {
-        for (ValaDeclaration namespaceMember : declarationContainer.getDeclarations()) {
-            if (namespaceMember instanceof ValaMethodDeclaration) {
-                ValaMethodDeclaration methodDeclaration = (ValaMethodDeclaration) namespaceMember;
+        int i = 0;
+        for (ValaDeclaration declaration : declarationContainer.getDeclarations()) {
+            i++;
+            if (declaration instanceof ValaDelegateDeclaration) {
+                ValaDelegateDeclaration methodDeclaration = (ValaDelegateDeclaration) declaration;
                 if (name.getName().equals(methodDeclaration.getName())) {
                     return methodDeclaration;
                 }
