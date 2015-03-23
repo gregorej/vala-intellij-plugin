@@ -56,9 +56,7 @@ public class ValaDelegateReference extends PsiReferenceBase<PsiNamedElement> {
     }
 
     private static PsiElement getMatchingMethodDeclaration(PsiNamedElement name, ValaDeclarationContainer declarationContainer) {
-        int i = 0;
         for (ValaDeclaration declaration : declarationContainer.getDeclarations()) {
-            i++;
             if (declaration instanceof ValaDelegateDeclaration) {
                 ValaDelegateDeclaration methodDeclaration = (ValaDelegateDeclaration) declaration;
                 if (name.getName().equals(methodDeclaration.getName())) {
