@@ -182,7 +182,8 @@
   extends("namespace_declaration|interface_declaration|struct_declaration|enum_declaration|errordomain_declaration|field_declaration|constant_declaration|delegate_declaration")=namespace_member
   extends("method_declaration")=delegate_declaration
   implements("symbol_part|member_part") = "com.intellij.psi.PsiNamedElement"
-  implements("class_declaration|struct_declaration|interface_declaration") = "org.intellij.vala.psi.ValaTypeWithSuperTypes, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
+  implements("interface_declaration") = "org.intellij.vala.psi.ValaTypeWithSuperTypes, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
+  implements("class_declaration|struct_declaration") = "org.intellij.vala.psi.ValaInstantiableTypeDeclaration, org.intellij.vala.psi.ValaTypeWithSuperTypes, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
   implements("method_declaration|delegate_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
   implements("creation_method_declaration") = "org.intellij.vala.psi.ValaDeclaration, com.intellij.psi.PsiNamedElement"
@@ -350,7 +351,7 @@ struct_member ::= attributes? ( method_declaration | field_declaration | constan
 creation_method_declaration ::= access_modifier? constructor_declaration_modifiers? symbol
                                 "(" parameters? ")" throws_declaration? requires? ensures? ( ";" | block )
                                 {
-                                methods=[getQName toString getName setName getTextOffset]
+                                methods=[getQName toString getName setName getTextOffset getTypeDeclaration]
                                 stubClass="org.intellij.vala.psi.stub.ValaCreationMethodDeclarationStub"
                                 }
 

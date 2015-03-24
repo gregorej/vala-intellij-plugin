@@ -333,6 +333,9 @@ public class ValaPsiImplUtil {
         return getTypeDescriptorPointedByLastMemberPart(pointerMemberAccess.getMember());
     }
 
+    public static ValaInstantiableTypeDeclaration getTypeDeclaration(ValaCreationMethodDeclaration creationMethodDeclaration) {
+        return PsiTreeUtil.getParentOfType(creationMethodDeclaration, ValaInstantiableTypeDeclaration.class);
+    }
 
     private static ValaTypeDescriptor getTypeDescriptorPointedByLastMemberPart(ValaMember member) {
         ValaMemberPart lastMemberPart = getLastPart(member);

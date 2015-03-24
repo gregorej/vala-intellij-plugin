@@ -6,6 +6,7 @@ import org.intellij.vala.psi.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TypeDeclarationUtil {
 
@@ -31,7 +32,18 @@ public class TypeDeclarationUtil {
     }
 
     public static List<ValaDeclaration> getDeclarations(ValaClassDeclaration declaration) {
-        return getMembersOfType(declaration, ValaDeclaration.class);
+        List<ValaDeclaration> constructors = constructors(declaration);
+        return ImmutableList.<ValaDeclaration>builder()
+                .addAll(getMembersOfType(declaration, ValaDeclaration.class))
+                .addAll(constructors)
+                .build();
+    }
+
+    private static List<ValaDeclaration> constructors(ValaClassDeclaration declaration) {
+        return declaration.getClassBody().getClassMemberList().stream()
+                .filter(member -> member.getCreationMethodDeclaration() != null)
+                .map(ValaClassMember::getCreationMethodDeclaration)
+                .collect(Collectors.toList());
     }
 
     public static List<ValaDeclaration> getDeclarations(ValaInterfaceDeclaration declaration) {

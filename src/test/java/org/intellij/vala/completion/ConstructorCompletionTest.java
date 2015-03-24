@@ -30,6 +30,14 @@ public class ConstructorCompletionTest extends LightPlatformCodeInsightFixtureTe
         doTest();
     }
 
+    public void testSingleConstructorCompletionFromImportedNamespace() {
+        doTest();
+    }
+
+    public void testSingleNamedConstructorCompletion() {
+        doTest();
+    }
+
     private void doTest() {
         myFixture.configureByFiles(this.getTestName(false) + "Before.vala");
 
