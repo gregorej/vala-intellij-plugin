@@ -5,7 +5,9 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
+import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PsiElementPattern;
+import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ProcessingContext;
@@ -20,6 +22,7 @@ import java.util.stream.Stream;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.StandardPatterns.instanceOf;
+import static com.intellij.patterns.StandardPatterns.or;
 
 public class ValaCompletionContributor extends CompletionContributor {
 
@@ -29,6 +32,11 @@ public class ValaCompletionContributor extends CompletionContributor {
         extendForKeywords();
         extendForConstructors();
         extendForVariables();
+        extendForWithoutContext();
+    }
+
+    private void extendForWithoutContext() {
+        extend(CompletionType.BASIC, anythingOther(), completeClassNames());
     }
 
     private void extendForKeywords() {
@@ -43,11 +51,10 @@ public class ValaCompletionContributor extends CompletionContributor {
     }
 
     private void extendForConstructors() {
-        extend(CompletionType.BASIC, withinInstanceCreation(),
-                completeConstructorNames());
+        extend(CompletionType.BASIC, withinInstanceCreation(), completeConstructorNames());
     }
 
-    private static PsiElementPattern.Capture<PsiElement> withinInstanceCreation() {
+    private static ElementPattern<PsiElement> withinInstanceCreation() {
         return psiElement().withSuperParent(3, psiElement(ValaTypes.OBJECT_OR_ARRAY_CREATION_EXPRESSION));
     }
 
@@ -55,9 +62,12 @@ public class ValaCompletionContributor extends CompletionContributor {
         extend(CompletionType.BASIC, variableDeclaration(), completeClassNames());
     }
 
-    private static PsiElementPattern.Capture<PsiElement> variableDeclaration() {
+    private static ElementPattern<PsiElement> anythingOther() {
+        return StandardPatterns.not(StandardPatterns.<PsiElement>or(withinInstanceCreation(), variableDeclaration()));
+    }
+
+    private static ElementPattern<PsiElement> variableDeclaration() {
         return psiElement().withSuperParent(1, psiElement(ValaTypes.BLOCK));
-        //return psiElement().inFile(instanceOf(ValaFile.class));
     }
 
     private CompletionProvider<CompletionParameters> completeClassNames() {

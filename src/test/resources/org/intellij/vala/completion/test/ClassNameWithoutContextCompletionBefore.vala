@@ -1,0 +1,5 @@
+class SomeClass {
+
+}
+
+SomeCl<caret>
