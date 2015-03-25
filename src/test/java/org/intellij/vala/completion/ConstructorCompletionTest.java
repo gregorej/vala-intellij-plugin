@@ -38,6 +38,10 @@ public class ConstructorCompletionTest extends LightPlatformCodeInsightFixtureTe
         doTest();
     }
 
+    public void testSingleNamedConstructorCompletionWithNameBeginWithDot() {
+        doTest();
+    }
+
     public void testClassNameWithoutContextCompletion() {
         doTest();
     }
