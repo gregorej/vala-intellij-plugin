@@ -16,6 +16,7 @@ import org.intellij.vala.psi.index.DeclarationsInNamespaceIndex;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -88,39 +89,44 @@ public class ValaCompletionContributor extends CompletionContributor {
                 ValaMember member = (ValaMember) memberPart.getParent();
                 String classNamePrefix = memberPart.getText();
                 final int memberPartIndex = member.getMemberPartList().indexOf(memberPart);
-                boolean onlyExplicitName = false;
-                if (memberPartIndex > 0) {
+                final boolean fullClassNamePresent = memberPartIndex > 0;
+                if (fullClassNamePresent) {
                     classNamePrefix = member.getMemberPartList().get(memberPartIndex - 1).getText();
-                    onlyExplicitName = true;
                 }
-                final boolean finalFlag = onlyExplicitName;
+                Function<ValaCreationMethodDeclaration, LookupElement> constructorToLookupElement = fullClassNamePresent
+                        ? ValaCompletionContributor::constructorToLookupElementWithOnlyExplicitName
+                        : ValaCompletionContributor::constructorToLookupElement;
                 final List<ValaDeclaration> typeDeclarations = getAllClassesWithNameStartingWith(parameters.getOriginalPosition(), classNamePrefix);
                 typeDeclarations.stream()
-                        .flatMap(constructor -> collectConstructorLookups(constructor, finalFlag))
+                        .flatMap(declaration -> collectConstructorLookups(declaration, constructorToLookupElement))
                         .forEach(result::addElement);
             }
         };
     }
 
-    private static LookupElement constructorToLookupElement(ValaCreationMethodDeclaration constructor, boolean onlyExplicitName) {
+    private static LookupElement constructorToLookupElement(ValaCreationMethodDeclaration constructor) {
         String constructorName = constructor.getName();
         String typeName = constructor.getTypeDeclaration().getQName().getTail();
         String fullConstructorName = constructorName;
-        if (!constructorName.equals(typeName) && !onlyExplicitName) {
+        if (!constructorName.equals(typeName)) {
             fullConstructorName = typeName + "." + constructorName;
         }
         LookupElementBuilder builder = LookupElementBuilder.create(fullConstructorName);
         return builder;
     }
 
-    private static Stream<LookupElement> collectConstructorLookups(ValaDeclaration declarationContainer, boolean onlyExplicitName) {
+    private static LookupElement constructorToLookupElementWithOnlyExplicitName(ValaCreationMethodDeclaration constructor) {
+        return LookupElementBuilder.create(constructor.getName());
+    }
+
+    private static Stream<LookupElement> collectConstructorLookups(ValaDeclaration declarationContainer, Function<ValaCreationMethodDeclaration, LookupElement> constructorToLookupElement) {
         if (!(declarationContainer instanceof ValaDeclarationContainer)) {
             return Stream.empty();
         }
         final List<LookupElement> constructorLookups = ((ValaDeclarationContainer) declarationContainer).getDeclarations()
                 .stream()
                 .filter(declaration -> declaration instanceof ValaCreationMethodDeclaration)
-                .map(declaration -> constructorToLookupElement((ValaCreationMethodDeclaration) declaration, onlyExplicitName))
+                .map(declaration -> constructorToLookupElement.apply((ValaCreationMethodDeclaration) declaration))
                 .collect(Collectors.toList());
         if (constructorLookups.isEmpty()) {
             return Stream.of(LookupElementBuilder.create(declarationContainer.getQName().getTail()));
