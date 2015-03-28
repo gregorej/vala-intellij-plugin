@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.codeStyle.MinusculeMatcher;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ProcessingContext;
 import org.intellij.vala.psi.*;
@@ -85,9 +86,9 @@ public class ValaCompletionContributor extends CompletionContributor {
         return new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet result) {
-                ValaMemberPart memberPart = (ValaMemberPart) parameters.getOriginalPosition().getParent();
+                ValaMemberPart memberPart = (ValaMemberPart) parameters.getPosition().getParent();
                 ValaMember member = (ValaMember) memberPart.getParent();
-                String classNamePrefix = memberPart.getText();
+                String classNamePrefix = parameters.getOriginalPosition().getText();
                 final int memberPartIndex = member.getMemberPartList().indexOf(memberPart);
                 final boolean fullClassNamePresent = memberPartIndex > 0;
                 if (fullClassNamePresent) {
