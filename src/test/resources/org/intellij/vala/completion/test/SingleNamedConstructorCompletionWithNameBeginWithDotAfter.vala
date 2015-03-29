@@ -6,5 +6,5 @@ class AnotherClass {
 }
 
 int main(string [] args) {
-	var obj = new AnotherClass.from_string(<caret>)
+	var obj = new AnotherClass.from_string(args)<caret>
 }

@@ -4,11 +4,16 @@ import com.google.common.collect.ImmutableList;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.codeInsight.lookup.LookupItem;
+import com.intellij.codeInsight.template.Template;
+import com.intellij.codeInsight.template.TextResult;
+import com.intellij.codeInsight.template.impl.ConstantNode;
+import com.intellij.codeInsight.template.impl.TemplateImpl;
+import com.intellij.codeInsight.template.impl.TextExpression;
 import com.intellij.openapi.project.Project;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.codeStyle.MinusculeMatcher;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ProcessingContext;
 import org.intellij.vala.psi.*;
@@ -22,7 +27,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
-import static com.intellij.patterns.StandardPatterns.instanceOf;
 import static com.intellij.patterns.StandardPatterns.not;
 
 public class ValaCompletionContributor extends CompletionContributor {
@@ -112,14 +116,33 @@ public class ValaCompletionContributor extends CompletionContributor {
         if (!constructorName.equals(typeName)) {
             fullConstructorName = typeName + "." + constructorName;
         }
-        LookupElementBuilder builder = LookupElementBuilder.create(fullConstructorName)
-                .withInsertHandler(new ConstructorParenthesesInsertHandler(constructor));
-        return builder;
+        return lookupItem(constructor, fullConstructorName);
+    }
+
+    private static LookupElement lookupItem(ValaCreationMethodDeclaration constructor, String constructorName) {
+        final Template constructorTemplate = new TemplateImpl(constructorName, "constructors");
+        constructorTemplate.addTextSegment(constructorName);
+        constructorTemplate.addTextSegment("(");
+        if (constructor.getParameters() != null) {
+            final List<ValaParameter> parameters = constructor.getParameters().getParameterList();
+            for (int i = 0; i < parameters.size(); i++) {
+                ValaParameter parameter = parameters.get(i);
+                final String paramName = parameter.getName();
+                constructorTemplate.addVariable(paramName, new TextExpression(paramName), true);
+                if (i < parameters.size() - 1) {
+                    constructorTemplate.addTextSegment(", ");
+                }
+            }
+        }
+        constructorTemplate.addTextSegment(")");
+        LookupItem<Template> item = LookupItem.fromString(constructorName);
+        item.setObject(constructorTemplate);
+        item.setInsertHandler(new DefaultInsertHandler());
+        return item;
     }
 
     private static LookupElement constructorToLookupElementWithOnlyExplicitName(ValaCreationMethodDeclaration constructor) {
-        return LookupElementBuilder.create(constructor.getName())
-                .withInsertHandler(new ConstructorParenthesesInsertHandler(constructor));
+        return lookupItem(constructor, constructor.getName());
     }
 
     private static Stream<LookupElement> collectConstructorLookups(ValaDeclaration declarationContainer, Function<ValaCreationMethodDeclaration, LookupElement> constructorToLookupElement) {
