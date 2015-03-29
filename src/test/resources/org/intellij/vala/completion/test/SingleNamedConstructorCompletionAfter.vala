@@ -5,5 +5,5 @@ class SomeClass {
 }
 
 int main(string [] args) {
-	var obj = new SomeClass.from_string
+	var obj = new SomeClass.from_string(<caret>)
 }

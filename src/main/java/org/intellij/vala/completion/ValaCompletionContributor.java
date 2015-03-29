@@ -112,12 +112,14 @@ public class ValaCompletionContributor extends CompletionContributor {
         if (!constructorName.equals(typeName)) {
             fullConstructorName = typeName + "." + constructorName;
         }
-        LookupElementBuilder builder = LookupElementBuilder.create(fullConstructorName);
+        LookupElementBuilder builder = LookupElementBuilder.create(fullConstructorName)
+                .withInsertHandler(new ConstructorParenthesesInsertHandler(constructor));
         return builder;
     }
 
     private static LookupElement constructorToLookupElementWithOnlyExplicitName(ValaCreationMethodDeclaration constructor) {
-        return LookupElementBuilder.create(constructor.getName());
+        return LookupElementBuilder.create(constructor.getName())
+                .withInsertHandler(new ConstructorParenthesesInsertHandler(constructor));
     }
 
     private static Stream<LookupElement> collectConstructorLookups(ValaDeclaration declarationContainer, Function<ValaCreationMethodDeclaration, LookupElement> constructorToLookupElement) {
@@ -130,7 +132,8 @@ public class ValaCompletionContributor extends CompletionContributor {
                 .map(declaration -> constructorToLookupElement.apply((ValaCreationMethodDeclaration) declaration))
                 .collect(Collectors.toList());
         if (constructorLookups.isEmpty()) {
-            return Stream.of(LookupElementBuilder.create(declarationContainer.getQName().getTail()));
+            return Stream.of(LookupElementBuilder.create(declarationContainer.getQName().getTail())
+                    .withInsertHandler(new DefaultConstructorInsertHandler()));
         } else {
             return constructorLookups.stream();
         }
