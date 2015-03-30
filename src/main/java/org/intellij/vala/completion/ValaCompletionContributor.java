@@ -1,13 +1,10 @@
 package org.intellij.vala.completion;
 
-import com.google.common.collect.ImmutableList;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.lookup.LookupItem;
 import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.TextResult;
-import com.intellij.codeInsight.template.impl.ConstantNode;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.codeInsight.template.impl.TextExpression;
 import com.intellij.openapi.project.Project;
@@ -80,8 +77,9 @@ public class ValaCompletionContributor extends CompletionContributor {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet result) {
                 final String classNamePrefix = parameters.getOriginalPosition().getText();
-                final List<ValaDeclaration> declarations = getAllClassesWithNameStartingWith(parameters.getOriginalPosition(), classNamePrefix);
-                addResultsForDeclarations(declarations.stream(), result);
+                getAllClassesWithNameStartingWith(parameters.getOriginalPosition(), classNamePrefix)
+                        .map(declaration -> LookupElementBuilder.create(declaration.getQName().getTail()))
+                        .forEach(result::addElement);
             }
         };
     }
@@ -101,8 +99,8 @@ public class ValaCompletionContributor extends CompletionContributor {
                 Function<ValaCreationMethodDeclaration, LookupElement> constructorToLookupElement = fullClassNamePresent
                         ? ValaCompletionContributor::constructorToLookupElementWithOnlyExplicitName
                         : ValaCompletionContributor::constructorToLookupElement;
-                final List<ValaDeclaration> typeDeclarations = getAllClassesWithNameStartingWith(parameters.getOriginalPosition(), classNamePrefix);
-                typeDeclarations.stream()
+                final Stream<ValaDeclaration> typeDeclarations = getAllClassesWithNameStartingWith(parameters.getOriginalPosition(), classNamePrefix);
+                typeDeclarations
                         .flatMap(declaration -> collectConstructorLookups(declaration, constructorToLookupElement))
                         .forEach(result::addElement);
             }
@@ -162,24 +160,13 @@ public class ValaCompletionContributor extends CompletionContributor {
         }
     }
 
-    private static List<ValaDeclaration> getAllClassesWithNameStartingWith(PsiElement psiElement, String namePrefix) {
+    private static Stream<ValaDeclaration> getAllClassesWithNameStartingWith(PsiElement psiElement, String namePrefix) {
         final Project project = psiElement.getProject();
-        GlobalSearchScope globalSearchScope = GlobalSearchScope.projectScope(project);
-        DeclarationsInNamespaceIndex index = DeclarationsInNamespaceIndex.getInstance();
-        ImmutableList.Builder<ValaDeclaration> declarations = ImmutableList.builder();
-        for (QualifiedName importedName : ValaPsiImplUtil.getImportedNamespacesAvailableFor(psiElement)) {
-            for (ValaDeclaration foundDeclaration: index.get(importedName, project, globalSearchScope)) {
-                if (foundDeclaration.getQName().getTail().startsWith(namePrefix)) {
-                    declarations.add(foundDeclaration);
-                }
-            }
-        }
-        return declarations.build();
+        final GlobalSearchScope globalSearchScope = GlobalSearchScope.projectScope(project);
+        final DeclarationsInNamespaceIndex index = DeclarationsInNamespaceIndex.getInstance();
+        return ValaPsiImplUtil.getImportedNamespacesAvailableFor(psiElement).stream()
+                .flatMap(importedName -> index.get(importedName, project, globalSearchScope).stream())
+                .filter(declaration -> declaration.getQName().getTail().startsWith(namePrefix));
     }
 
-    private static void addResultsForDeclarations(Stream<ValaDeclaration> classes, CompletionResultSet resultSet) {
-        classes.forEach(declaration ->
-                        resultSet.addElement(LookupElementBuilder.create(declaration.getQName().getTail()))
-        );
-    }
 }
