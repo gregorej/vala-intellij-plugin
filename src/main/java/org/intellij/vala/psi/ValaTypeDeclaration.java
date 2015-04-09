@@ -2,8 +2,12 @@ package org.intellij.vala.psi;
 
 import org.jetbrains.annotations.Nullable;
 
-public interface ValaTypeDeclaration extends ValaDeclaration {
+import java.util.List;
+
+public interface ValaTypeDeclaration extends ValaDeclaration, ValaDeclarationContainer {
 
     @Nullable
     ValaSymbol getSymbol();
+
+    List<ValaDelegateDeclaration> getDelegates();
 }

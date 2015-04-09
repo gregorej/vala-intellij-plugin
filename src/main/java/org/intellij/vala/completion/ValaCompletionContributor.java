@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.lookup.LookupItem;
+import com.intellij.codeInsight.template.JavaCodeContextType;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.codeInsight.template.impl.TextExpression;
@@ -15,6 +16,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ProcessingContext;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.impl.ValaPsiImplUtil;
+import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.intellij.vala.psi.index.DeclarationsInNamespaceIndex;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,10 +37,16 @@ public class ValaCompletionContributor extends CompletionContributor {
         extendForConstructors();
         extendForVariables();
         extendForWithoutContext();
+        extendForMethods();
+        extend(CompletionType.BASIC, isMemberAccess(), completeMethodNames());
     }
 
     private void extendForWithoutContext() {
         extend(CompletionType.BASIC, anythingOther(), completeClassNames());
+    }
+
+    private void extendForMethods() {
+        extend(CompletionType.BASIC, withinPrimaryExpression(), completeMethodNames());
     }
 
     private void extendForKeywords() {
@@ -60,12 +68,20 @@ public class ValaCompletionContributor extends CompletionContributor {
         return psiElement().withSuperParent(3, psiElement(ValaTypes.OBJECT_OR_ARRAY_CREATION_EXPRESSION));
     }
 
+    private static ElementPattern<PsiElement> withinPrimaryExpression() {
+        return psiElement().withSuperParent(3, psiElement(ValaTypes.PRIMARY_EXPRESSION));
+    }
+
+    private static ElementPattern<PsiElement> isMemberAccess() {
+        return psiElement().withSuperParent(3, psiElement(ValaTypes.MEMBER_ACCESS));
+    }
+
     private void extendForVariables() {
         extend(CompletionType.BASIC, variableDeclaration(), completeClassNames());
     }
 
     private static ElementPattern<PsiElement> anythingOther() {
-        return not(StandardPatterns.<PsiElement>or(withinInstanceCreation(), variableDeclaration()));
+        return not(StandardPatterns.<PsiElement>or(withinInstanceCreation(), variableDeclaration(), isMemberAccess()));
     }
 
     private static ElementPattern<PsiElement> variableDeclaration() {
@@ -77,7 +93,7 @@ public class ValaCompletionContributor extends CompletionContributor {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet result) {
                 final String classNamePrefix = parameters.getOriginalPosition().getText();
-                getAllClassesWithNameStartingWith(parameters.getOriginalPosition(), classNamePrefix)
+                getAllDeclarationsWithNameStartingWith(parameters.getOriginalPosition(), classNamePrefix)
                         .map(declaration -> LookupElementBuilder.create(declaration.getQName().getTail()))
                         .forEach(result::addElement);
             }
@@ -88,8 +104,8 @@ public class ValaCompletionContributor extends CompletionContributor {
         return new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet result) {
-                ValaMemberPart memberPart = (ValaMemberPart) parameters.getPosition().getParent();
-                ValaMember member = (ValaMember) memberPart.getParent();
+                final ValaMemberPart memberPart = (ValaMemberPart) parameters.getPosition().getParent();
+                final ValaMember member = (ValaMember) memberPart.getParent();
                 String classNamePrefix = parameters.getOriginalPosition().getText();
                 final int memberPartIndex = member.getMemberPartList().indexOf(memberPart);
                 final boolean fullClassNamePresent = memberPartIndex > 0;
@@ -99,10 +115,31 @@ public class ValaCompletionContributor extends CompletionContributor {
                 Function<ValaCreationMethodDeclaration, LookupElement> constructorToLookupElement = fullClassNamePresent
                         ? ValaCompletionContributor::constructorToLookupElementWithOnlyExplicitName
                         : ValaCompletionContributor::constructorToLookupElement;
-                final Stream<ValaDeclaration> typeDeclarations = getAllClassesWithNameStartingWith(parameters.getOriginalPosition(), classNamePrefix);
+                final Stream<ValaDeclaration> typeDeclarations = getAllDeclarationsWithNameStartingWith(parameters.getOriginalPosition(), classNamePrefix);
                 typeDeclarations
                         .flatMap(declaration -> collectConstructorLookups(declaration, constructorToLookupElement))
                         .forEach(result::addElement);
+            }
+        };
+    }
+
+    private CompletionProvider<CompletionParameters> completeMethodNames() {
+        return new CompletionProvider<CompletionParameters>() {
+            @Override
+            protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet) {
+                final ValaMemberPart memberPart = (ValaMemberPart) completionParameters.getPosition().getParent();
+                final ValaMember member = (ValaMember) memberPart.getParent();
+                final ValaMemberAccess memberAccess = (ValaMemberAccess) member.getParent();
+                final ValaPrimaryExpression primaryExpression = (ValaPrimaryExpression) memberAccess.getParent();
+                final ValaSimpleName simpleName = primaryExpression.getSimpleName();
+                if (simpleName != null) {
+                    DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
+                    ValaDeclaration declaration = index.get(simpleName.getTypeDescriptor().getQualifiedName(), member.getProject());
+                    if (declaration instanceof ValaTypeDeclaration) {
+                        ValaTypeDeclaration typeDeclaration = (ValaTypeDeclaration) declaration;
+                        typeDeclaration.getDelegates().stream().forEach(delegateDeclaration -> completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), delegateDeclaration.getName())));
+                    }
+                }
             }
         };
     }
@@ -118,16 +155,20 @@ public class ValaCompletionContributor extends CompletionContributor {
     }
 
     private static LookupElement lookupItem(ValaCreationMethodDeclaration constructor, String constructorName) {
-        final Template constructorTemplate = new TemplateImpl(constructorName, "constructors");
+        return lookupItem(constructor.getParameters(), constructorName);
+    }
+
+    private static LookupElement lookupItem(ValaParameters parameters, String constructorName) {
+        final Template constructorTemplate = new TemplateImpl(constructorName, "callable");
         constructorTemplate.addTextSegment(constructorName);
         constructorTemplate.addTextSegment("(");
-        if (constructor.getParameters() != null) {
-            final List<ValaParameter> parameters = constructor.getParameters().getParameterList();
-            for (int i = 0; i < parameters.size(); i++) {
-                ValaParameter parameter = parameters.get(i);
+        if (parameters != null) {
+            final List<ValaParameter> parameterList = parameters.getParameterList();
+            for (int i = 0; i < parameterList.size(); i++) {
+                ValaParameter parameter = parameterList.get(i);
                 final String paramName = parameter.getName();
                 constructorTemplate.addVariable(paramName, new TextExpression(paramName), true);
-                if (i < parameters.size() - 1) {
+                if (i < parameterList.size() - 1) {
                     constructorTemplate.addTextSegment(", ");
                 }
             }
@@ -160,7 +201,7 @@ public class ValaCompletionContributor extends CompletionContributor {
         }
     }
 
-    private static Stream<ValaDeclaration> getAllClassesWithNameStartingWith(PsiElement psiElement, String namePrefix) {
+    private static Stream<ValaDeclaration> getAllDeclarationsWithNameStartingWith(PsiElement psiElement, String namePrefix) {
         final Project project = psiElement.getProject();
         final GlobalSearchScope globalSearchScope = GlobalSearchScope.projectScope(project);
         final DeclarationsInNamespaceIndex index = DeclarationsInNamespaceIndex.getInstance();

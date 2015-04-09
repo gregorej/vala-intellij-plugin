@@ -115,12 +115,20 @@ public class ValaPsiImplUtil {
         return TypeDeclarationUtil.getDeclarations(declaration);
     }
 
+    public static List<ValaDeclaration> getDeclarations(ValaEnumDeclaration declaration) {
+        return TypeDeclarationUtil.getDeclarations(declaration);
+    }
+
     public static List<ValaDeclaration> getDeclarations(ValaInterfaceDeclaration declaration) {
         return TypeDeclarationUtil.getDeclarations(declaration);
     }
 
     public static List<ValaDeclaration> getDeclarations(ValaStructDeclaration declaration) {
         return TypeDeclarationUtil.getDeclarations(declaration);
+    }
+
+    public static List<ValaDelegateDeclaration> getDelegates(ValaTypeDeclaration typeDeclaration) {
+        return TypeDeclarationUtil.getDelegates(typeDeclaration);
     }
 
     public static List<ValaDeclaration> getDeclarations(ValaNamespaceDeclaration valaNamespaceDeclaration) {

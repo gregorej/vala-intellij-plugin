@@ -191,6 +191,7 @@
   implements("local_variable|parameter|simple_name") = "com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
   implements("method_call|literal|chain_access_part")="org.intellij.vala.psi.HasTypeDescriptor"
   implements("class_body|struct_body|enum_body|interface_body")="org.intellij.vala.psi.ValaTypeDeclarationBody"
+  implements("enum_declaration")="org.intellij.vala.psi.ValaTypeDeclaration"
   implements("relational_operator|equality_operator|shift_operator|additive_operator|multiplicative_operator")="org.intellij.vala.psi.ValaBinaryOperator"
 }
 
@@ -290,7 +291,7 @@ destructor_declaration ::= constructor_declaration_modifiers? "~" identifier "("
 
 class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? class_body
 {
-    methods=[getName setName getMethodDeclarations getNamespaceMemberList toString getDeclarations getQName getSuperTypeDeclarations]
+    methods=[getName setName getMethodDeclarations getNamespaceMemberList toString getDeclarations getQName getSuperTypeDeclarations getDelegates]
     pin=4
     stubClass="org.intellij.vala.psi.stub.ValaClassDeclarationStub"
 }
@@ -316,7 +317,7 @@ private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_mo
 
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
 type_declaration_modifier ::= "abstract" | "extern" | "static"
-enum_declaration ::= access_modifier? type_declaration_modifiers? "enum" symbol enum_body {pin=3}
+enum_declaration ::= access_modifier? type_declaration_modifiers? "enum" symbol enum_body {pin=3 methods=[getQName getDeclarations getDelegates]}
 
 enum_body ::= "{" enumvalues ( ";"  enum_member* )? "}"
 
@@ -329,7 +330,7 @@ errorcodes ::= errorcode ( "," errorcode )*
 errorcode ::= attributes? identifier ("=" expression)?
 
 interface_declaration ::= access_modifier? type_declaration_modifiers? "interface" symbol type_parameters?
-                          (":" base_types)? interface_body {pin=3 methods=[getSuperTypeDeclarations getQName getDeclarations getName setName]}
+                          (":" base_types)? interface_body {pin=3 methods=[getSuperTypeDeclarations getQName getDeclarations getName setName getDelegates]}
 
 interface_body ::= "{" interface_member* "}"
 interface_member ::= attributes?
@@ -344,7 +345,7 @@ interface_member ::= attributes?
                        property_declaration )
 
 namespace_declaration ::= "namespace" symbol "{" using_directive* namespace_member* "}" {methods=[getDeclarations getQName] pin=1}
-struct_declaration ::= access_modifier? type_declaration_modifiers? "struct" symbol ( ":" base_types )? struct_body {pin=3 methods=[getSuperTypeDeclarations getQName getDeclarations getName setName]}
+struct_declaration ::= access_modifier? type_declaration_modifiers? "struct" symbol ( ":" base_types )? struct_body {pin=3 methods=[getSuperTypeDeclarations getQName getDeclarations getName setName getDelegates]}
 struct_body ::= "{" struct_member* "}"
 struct_member ::= attributes? ( method_declaration | field_declaration | constant_declaration | property_declaration | creation_method_declaration )
 
@@ -454,8 +455,8 @@ for_initializer ::= local_variable_declarations | ( statement_expression ( "," s
 for_iterator ::= statement_expression ( "," statement_expression )*
 statement_expression ::= expression
 foreach_statement ::= "foreach" "(" ( "var" | type) identifier "in" expression ")" embedded_statement {pin=1}
-break_statement ::= "break" ";"
-continue_statement ::= "continue" ";"
+break_statement ::= "break" ";" {pin=1}
+continue_statement ::= "continue" ";" {pin=1}
 return_statement ::= "return" ( expression )? ";"
 yield_statement ::= "yield" ( expression_statement | "return" expression )? ";" {pin=1}
 throw_statement ::= "throw" expression ";" {pin=1}
@@ -469,7 +470,7 @@ local_variable_declarations ::= ( "var" | type ) local_variable_declaration ( ",
 local_variable_declaration ::= local_tuple_declaration | local_variable {methods=[getTypeDescriptor]}
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression {pin=5}
 local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {methods=[getName setName getTypeDescriptor]}
-expression_statement ::= statement_expression ";"
+expression_statement ::= statement_expression ";" {pin=1}
 type_base ::= (symbol type_arguments? ) | built_in_type
 type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? type_base ( "*" )* ( "?" )? array_type* ) {methods=[getTypeDescriptor]}
 type_arguments ::= "<" type_weak ( "," type_weak )* ">"

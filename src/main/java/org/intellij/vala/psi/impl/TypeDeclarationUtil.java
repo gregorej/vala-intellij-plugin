@@ -68,4 +68,21 @@ public class TypeDeclarationUtil {
         }
         return declarations.build();
     }
+
+    public static List<ValaDeclaration> getDeclarations(ValaEnumDeclaration declaration) {
+        ImmutableList.Builder<ValaDeclaration> declarations = ImmutableList.builder();
+        for (ValaEnumMember enumMember : declaration.getEnumBody().getEnumMemberList()) {
+            if (enumMember.getNamespaceMember() instanceof ValaDeclaration) {
+                declarations.add((ValaDeclaration) enumMember.getNamespaceMember());
+            }
+        }
+        return declarations.build();
+    }
+
+    public static List<ValaDelegateDeclaration> getDelegates(ValaTypeDeclaration typeDeclaration) {
+        return typeDeclaration.getDeclarations().stream()
+                .filter(declaration -> declaration instanceof ValaDelegateDeclaration)
+                .map(declaration -> (ValaDelegateDeclaration) declaration)
+                .collect(Collectors.toList());
+    }
 }

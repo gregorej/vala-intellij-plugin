@@ -14,4 +14,8 @@ public class ValaInvalidParserTest extends AbstractValaParserTest {
     public void testSyntaxErrorInMethodRecovery() {
         doTest(true);
     }
+
+    public void testIncompleteMethodReference() {
+        doTest(true);
+    }
 }
