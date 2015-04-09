@@ -1,5 +1,6 @@
 package org.intellij.vala.completion;
 
+import com.google.common.collect.ImmutableList;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -135,13 +136,22 @@ public class ValaCompletionContributor extends CompletionContributor {
                 if (simpleName != null) {
                     DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
                     ValaDeclaration declaration = index.get(simpleName.getTypeDescriptor().getQualifiedName(), member.getProject());
-                    if (declaration instanceof ValaTypeDeclaration) {
-                        ValaTypeDeclaration typeDeclaration = (ValaTypeDeclaration) declaration;
-                        typeDeclaration.getDelegates().stream().forEach(delegateDeclaration -> completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), delegateDeclaration.getName())));
-                    }
+                    collectDelegates(declaration).forEach(delegateDeclaration -> completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), delegateDeclaration.getName())));
                 }
             }
         };
+    }
+
+    private static Stream<ValaDelegateDeclaration> collectDelegates(ValaDeclaration declaration) {
+        Stream<ValaDelegateDeclaration> result = Stream.empty();
+        if (declaration instanceof ValaTypeDeclaration) {
+            ValaTypeDeclaration typeDeclaration = (ValaTypeDeclaration) declaration;
+            result = typeDeclaration.getDelegates().stream();
+        }
+        if (declaration instanceof ValaTypeWithSuperTypes) {
+            result = Stream.concat(result, ((ValaTypeWithSuperTypes) declaration).getSuperTypeDeclarations().stream().flatMap(ValaCompletionContributor::collectDelegates));
+        }
+        return result;
     }
 
     private static LookupElement constructorToLookupElement(ValaCreationMethodDeclaration constructor) {
