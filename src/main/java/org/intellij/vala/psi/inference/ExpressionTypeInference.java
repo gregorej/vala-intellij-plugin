@@ -41,6 +41,8 @@ public class ExpressionTypeInference {
             return inferType((ValaTypeCastExpression) valaExpression);
         } else if (valaExpression instanceof ValaRelationalExpression) {
             return inferType((ValaRelationalExpression) valaExpression);
+        } else if (valaExpression instanceof ValaSimpleExpression) {
+            return inferType((ValaSimpleExpression) valaExpression);
         }
         return null;
     }
@@ -56,18 +58,25 @@ public class ExpressionTypeInference {
     }
 
     public static ValaTypeDescriptor inferType(ValaPrimaryExpression primaryExpression) {
-        if (primaryExpression.getLiteral() != null && hasNoChainedAccess(primaryExpression)) {
-            return primaryExpression.getLiteral().getTypeDescriptor();
+        if (hasNoChainedAccess(primaryExpression)) {
+            return inferType((ValaSimpleExpression) primaryExpression.getExpression());
+        } else {
+            return ValaPsiElementUtil.getLastPart(primaryExpression).getTypeDescriptor();
         }
-        if (primaryExpression.getSimpleName() != null) {
-            ValaChainAccessPart lastPart = ValaPsiElementUtil.getLastPart(primaryExpression);
-            if (lastPart == null) {
-                return inferType(primaryExpression.getSimpleName());
-            } else {
-                return lastPart.getTypeDescriptor();
-            }
+    }
+
+    public static ValaTypeDescriptor inferType(ValaSimpleExpression simpleExpression) {
+        if (simpleExpression instanceof ValaSimpleName) {
+            return inferType((ValaSimpleName) simpleExpression);
+        } else if (simpleExpression instanceof ValaTypeofExpression) {
+            return inferType((ValaTypeofExpression) simpleExpression);
+        } else if (simpleExpression instanceof ValaSizeofExpression) {
+            return inferType((ValaSizeofExpression) simpleExpression);
+        } else if (simpleExpression instanceof ValaLiteral) {
+            return ((ValaLiteral) simpleExpression).getTypeDescriptor();
+        } else {
+            return null;
         }
-        return null;
     }
 
     private static ValaTypeDescriptor inferType(ValaShiftExpression shiftExpression) {

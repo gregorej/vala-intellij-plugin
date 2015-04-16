@@ -1,11 +1,9 @@
 package org.intellij.vala.completion;
 
-import com.google.common.collect.ImmutableList;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.lookup.LookupItem;
-import com.intellij.codeInsight.template.JavaCodeContextType;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.codeInsight.template.impl.TextExpression;
@@ -70,11 +68,11 @@ public class ValaCompletionContributor extends CompletionContributor {
     }
 
     private static ElementPattern<PsiElement> withinPrimaryExpression() {
-        return psiElement().withSuperParent(3, psiElement(ValaTypes.PRIMARY_EXPRESSION));
+        return psiElement().withSuperParent(2, psiElement(ValaTypes.PRIMARY_EXPRESSION));
     }
 
     private static ElementPattern<PsiElement> isMemberAccess() {
-        return psiElement().withSuperParent(3, psiElement(ValaTypes.MEMBER_ACCESS));
+        return psiElement().withSuperParent(1, psiElement(ValaTypes.MEMBER_ACCESS));
     }
 
     private void extendForVariables() {
@@ -128,15 +126,15 @@ public class ValaCompletionContributor extends CompletionContributor {
         return new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet) {
-                final ValaMemberPart memberPart = (ValaMemberPart) completionParameters.getPosition().getParent();
-                final ValaMember member = (ValaMember) memberPart.getParent();
-                final ValaMemberAccess memberAccess = (ValaMemberAccess) member.getParent();
+                final ValaMemberAccess memberAccess = (ValaMemberAccess) completionParameters.getPosition().getParent();
                 final ValaPrimaryExpression primaryExpression = (ValaPrimaryExpression) memberAccess.getParent();
-                final ValaSimpleName simpleName = primaryExpression.getSimpleName();
-                if (simpleName != null) {
-                    DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
-                    ValaDeclaration declaration = index.get(simpleName.getTypeDescriptor().getQualifiedName(), member.getProject());
-                    collectDelegates(declaration).forEach(delegateDeclaration -> completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), delegateDeclaration.getName())));
+                final ValaSimpleExpression simpleExpression = (ValaSimpleExpression) primaryExpression.getExpression();
+                if (simpleExpression instanceof ValaSimpleName) {
+                    ValaSimpleName simpleName = (ValaSimpleName) simpleExpression;
+                    final DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
+                    final ValaDeclaration declaration = index.get(simpleName.getTypeDescriptor().getQualifiedName(), memberAccess.getProject());
+                    collectDelegates(declaration).forEach(delegateDeclaration ->
+                            completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), "." + delegateDeclaration.getName())));
                 }
             }
         };
@@ -168,9 +166,9 @@ public class ValaCompletionContributor extends CompletionContributor {
         return lookupItem(constructor.getParameters(), constructorName);
     }
 
-    private static LookupElement lookupItem(ValaParameters parameters, String constructorName) {
-        final Template constructorTemplate = new TemplateImpl(constructorName, "callable");
-        constructorTemplate.addTextSegment(constructorName);
+    private static LookupElement lookupItem(ValaParameters parameters, String methodName) {
+        final Template constructorTemplate = new TemplateImpl(methodName, "callable");
+        constructorTemplate.addTextSegment(methodName);
         constructorTemplate.addTextSegment("(");
         if (parameters != null) {
             final List<ValaParameter> parameterList = parameters.getParameterList();
@@ -184,7 +182,7 @@ public class ValaCompletionContributor extends CompletionContributor {
             }
         }
         constructorTemplate.addTextSegment(")");
-        LookupItem<Template> item = LookupItem.fromString(constructorName);
+        LookupItem<Template> item = LookupItem.fromString(methodName);
         item.setObject(constructorTemplate);
         item.setInsertHandler(new DefaultInsertHandler());
         return item;

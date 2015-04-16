@@ -31,7 +31,7 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
     public void testReferenceToFieldInCurrentClassWithThisAccessor() {
         myFixture.configureByFiles("ReferenceToFieldInCurrentClassWithThisAccessor.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberAccess.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("status")));
     }
@@ -63,15 +63,15 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
     public void testReferenceToFieldInExplicitObject() {
         myFixture.configureByFiles("ReferenceToFieldInExplicitObject.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberAccess.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("field")));
     }
 
     public void testReferenceToFieldInExplicitObjectIndirect() {
-        myFixture.configureByFiles("ReferenceToFieldInExplicitObjectIndirect.vala");
+        myFixture.configureByFiles(getTestName(false) + ".vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberAccess.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("next")));
     }
@@ -87,7 +87,7 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
     public void testReferenceToFieldInSuperClass() {
         myFixture.configureByFiles(getTestName(false) + ".vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberAccess.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("count")));
     }
@@ -95,7 +95,7 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
     public void testReferenceToFieldInInferredObject() {
         myFixture.configureByFiles(getTestName(false) + ".vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberAccess.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("field")));
     }

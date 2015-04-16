@@ -71,7 +71,7 @@ public class TypeInferenceTest extends ValaReferenceTestBase {
     public void testMethodReferenceOnInferredObjectType() throws IOException {
         myFixture.configureByFiles(getTestName(false) + ".vala");
 
-        PsiElement referenced = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
+        PsiElement referenced = getElementOfTypeAtCaret(ValaMemberAccess.class).getReference().resolve();
         assertThat(referenced, allOf(instanceOf(ValaMethodDeclaration.class), hasName("getName")));
     }
 

@@ -67,6 +67,14 @@ public class ValaPsiImplUtil {
         return fieldDeclaration.getIdentifier().getText();
     }
 
+    public static String getName(ValaMemberAccess memberAccess) {
+        return memberAccess.getIdentifier().getText();
+    }
+
+    public static String getName(ValaPointerMemberAccess memberAccess) {
+        return memberAccess.getIdentifier().getText();
+    }
+
     public static int getTextOffset(ValaCreationMethodDeclaration creationMethodDeclaration) {
         return getLastPart(creationMethodDeclaration.getSymbol()).getTextOffset();
     }
@@ -97,6 +105,22 @@ public class ValaPsiImplUtil {
 
     public static PsiReference getReference(ValaMemberPart memberPart) {
         return ValaMemberPartReferenceFactory.INSTANCE.create(memberPart);
+    }
+
+    public static PsiReference getReference(ValaThisAccess thisAccess) {
+        return new ThisAccessReference(thisAccess);
+    }
+
+    public static PsiReference getReference(ValaMemberAccess memberAccess) {
+        return new ValaMemberAccessReference(memberAccess);
+    }
+
+    public static PsiReference getReference(ValaMethodCall methodCall) {
+        ValaChainAccessPart previous = methodCall.getPrevious();
+        if (previous instanceof ValaMemberAccess) {
+            return previous.getReference();
+        }
+        return null;
     }
 
     public static List<ValaMethodDeclaration> getMethodDeclarations(ValaClassDeclaration classDeclaration) {
@@ -167,7 +191,7 @@ public class ValaPsiImplUtil {
         return QualifiedNameBuilder.forFieldDeclaration(fieldDeclaration);
     }
 
-    public static ValaMethodDeclaration getMethodDeclaration(ValaMethodCall methodCall) {
+    public static ValaDelegateDeclaration getMethodDeclaration(ValaMethodCall methodCall) {
         return ValaPsiElementUtil.getMethodDeclaration(methodCall);
     }
 
@@ -279,11 +303,21 @@ public class ValaPsiImplUtil {
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaFieldDeclaration fieldDeclaration) {
-        return ReferenceTypeDescriptor.forType(fieldDeclaration.getTypeWeak());
+        ValaTypeBase typeBase = fieldDeclaration.getTypeWeak().getTypeBase();
+        if (typeBase != null) {
+            ValaBuiltInType builtInType = typeBase.getBuiltInType();
+            if (builtInType != null) {
+                return BasicTypeDescriptor.forType(builtInType);
+            }
+            else {
+                return ReferenceTypeDescriptor.forQualifiedName(fieldDeclaration.getQName().getPrefix(fieldDeclaration.getQName().length() - 1));
+            }
+        }
+        return null;
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaMethodCall valaMethodCall) {
-        ValaMethodDeclaration declaration = ValaPsiElementUtil.getMethodDeclaration(valaMethodCall);
+        ValaDelegateDeclaration declaration = ValaPsiElementUtil.getMethodDeclaration(valaMethodCall);
         if (declaration == null) {
             return null;
         }
@@ -334,11 +368,18 @@ public class ValaPsiImplUtil {
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaMemberAccess memberAccess) {
-        return getTypeDescriptorPointedByLastMemberPart(memberAccess.getMember());
+        PsiReference reference = memberAccess.getReference();
+        if (reference != null) {
+            PsiElement resolved = reference.resolve();
+            if (resolved instanceof HasTypeDescriptor) {
+                return ((HasTypeDescriptor) resolved).getTypeDescriptor();
+            }
+        }
+        return null;
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaPointerMemberAccess pointerMemberAccess) {
-        return getTypeDescriptorPointedByLastMemberPart(pointerMemberAccess.getMember());
+        return null;
     }
 
     public static ValaInstantiableTypeDeclaration getTypeDeclaration(ValaCreationMethodDeclaration creationMethodDeclaration) {

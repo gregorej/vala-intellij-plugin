@@ -9,7 +9,7 @@ import org.intellij.vala.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static org.intellij.vala.reference.ValaFieldReference.resolveAsThisClassFieldReference;
+import static org.intellij.vala.reference.ValaMemberAccessReference.resolveAsThisClassFieldReference;
 
 public class ValaVariableReference extends PsiReferenceBase<PsiNamedElement> {
 

@@ -7,6 +7,12 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 import org.hamcrest.CustomTypeSafeMatcher;
 import org.hamcrest.Matcher;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertThat;
+
 public abstract class CompletionTestBase extends LightPlatformCodeInsightFixtureTestCase {
 
     public CompletionTestBase() {
@@ -39,6 +45,14 @@ public abstract class CompletionTestBase extends LightPlatformCodeInsightFixture
         myFixture.complete(CompletionType.BASIC, SINGLE_INVOCATION);
 
         myFixture.checkResultByFile(this.getTestName(false) + "After.vala");
+    }
+
+    public void expect(Matcher<? super LookupElement> ... lookupElements) {
+        myFixture.configureByFiles(this.getTestName(false) + ".vala");
+
+        List<LookupElement> elements = Arrays.asList(myFixture.completeBasic());
+
+        assertThat(elements, containsInAnyOrder(lookupElements));
     }
 
 }

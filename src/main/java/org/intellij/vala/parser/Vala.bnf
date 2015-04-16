@@ -178,10 +178,11 @@
   extends("expression")=argument
   extends(".*expression")=expression
   extends("method_call|member_access|pointer_member_access|element_access")=chain_access_part
+  extends("literal|initializer|tuple|template|this_access|base_access|object_or_array_creation_expression|yield_expression|sizeof_expression|typeof_expression|simple_name|built_in_type")=simple_expression
   extends(".*statement|local_variable_declarations|block")=statement
   extends("namespace_declaration|interface_declaration|struct_declaration|enum_declaration|errordomain_declaration|field_declaration|constant_declaration|delegate_declaration")=namespace_member
   extends("method_declaration")=delegate_declaration
-  implements("symbol_part|member_part") = "com.intellij.psi.PsiNamedElement"
+  implements("symbol_part|member_part|member_access") = "com.intellij.psi.PsiNamedElement"
   implements("interface_declaration") = "org.intellij.vala.psi.ValaTypeWithSuperTypes, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
   implements("class_declaration|struct_declaration") = "org.intellij.vala.psi.ValaInstantiableTypeDeclaration, org.intellij.vala.psi.ValaTypeWithSuperTypes, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
@@ -249,9 +250,10 @@ multiplicative_expression ::= unary_expression (multiplicative_operator unary_ex
 unary_expression ::= ( unary_operator unary_expression ) |
                      ( "(" ( "owned" | "void" | "dynamic" | "!" | type ) ")" unary_expression ) |
                      primary_expression
-primary_expression ::= ( literal | initializer | tuple | template | this_access | base_access |
-                       object_or_array_creation_expression | yield_expression | sizeof_expression | typeof_expression |
-                       simple_name | built_in_type ) chain_access_part*
+primary_expression ::= simple_expression chain_access_part* {pin=1}
+simple_expression ::= ( literal | initializer | tuple | template | this_access | base_access |
+                                                   object_or_array_creation_expression | yield_expression | sizeof_expression | typeof_expression |
+                                                   simple_name | built_in_type )
 
 chain_access_part ::= member_access | pointer_member_access | method_call | element_access | post_increment_expression | post_decrement_expression {methods=[getPrevious getTypeDescriptor]}
 
@@ -262,8 +264,8 @@ simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=
 
 literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal | template_string_literal {methods=[getTypeDescriptor]}
 template_string_literal ::= "@" string_literal
-member_access ::= "." member {methods=[getTypeDescriptor]}
-pointer_member_access ::= "->" member {methods=[getTypeDescriptor]}
+member_access ::= "." identifier {methods=[getTypeDescriptor getName setName getReference]}
+pointer_member_access ::= "->" identifier {methods=[getTypeDescriptor getName setName]}
 member ::= member_part ( "." member_part )*
 member_part ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getName setName getReference getPrevious]}
 template ::= "@" '"' ( expression "," )* '"'
@@ -278,7 +280,7 @@ lambda_expression ::= lambda_expression_params "=>" lambda_expression_body
 lambda_expression_body ::= expression | block
 
 yield_expression ::= "yield" ( base_access "." )? member method_call
-method_call ::= "(" arguments? ")" object_initializer? {methods=[getMethodDeclaration getTypeDescriptor]}
+method_call ::= "(" arguments? ")" object_initializer? {methods=[getMethodDeclaration getTypeDescriptor getReference]}
 
 member_declaration_modifiers ::= member_declaration_modifier ( " " member_declaration_modifier )*
 member_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override" | "new"
@@ -393,7 +395,7 @@ property_declaration_modifiers ::= property_declaration_modifier ( " " property_
 property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "abstract" | "virtual" | "override" | "new"
 
 tuple ::= "(" expression ( "," expression )* ")"
-this_access ::= "this"
+this_access ::= "this" {methods=[getReference]}
 base_access ::= "base"
 object_or_array_creation_expression ::= "new" (member | built_in_type) ( object_creation_expression | array_creation_expression ) {pin=1}
 object_creation_expression ::= "(" ( arguments )? ")" ( object_initializer )?
