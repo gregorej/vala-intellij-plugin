@@ -229,7 +229,7 @@ public class ValaPsiImplUtil {
         return getTypeDescriptor(typeBase);
     }
 
-    private static ValaTypeDescriptor getTypeDescriptor(ValaTypeBase typeBase) {
+    public static ValaTypeDescriptor getTypeDescriptor(ValaTypeBase typeBase) {
         if (typeBase.getBuiltInType() != null) {
             return ReferenceTypeDescriptor.forType(typeBase.getBuiltInType());
         }
@@ -305,13 +305,7 @@ public class ValaPsiImplUtil {
     public static ValaTypeDescriptor getTypeDescriptor(ValaFieldDeclaration fieldDeclaration) {
         ValaTypeBase typeBase = fieldDeclaration.getTypeWeak().getTypeBase();
         if (typeBase != null) {
-            ValaBuiltInType builtInType = typeBase.getBuiltInType();
-            if (builtInType != null) {
-                return BasicTypeDescriptor.forType(builtInType);
-            }
-            else {
-                return ReferenceTypeDescriptor.forQualifiedName(fieldDeclaration.getQName().getPrefix(fieldDeclaration.getQName().length() - 1));
-            }
+            return typeBase.getTypeDescriptor();
         }
         return null;
     }

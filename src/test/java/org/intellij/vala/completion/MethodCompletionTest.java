@@ -9,4 +9,8 @@ public class MethodCompletionTest extends CompletionTestBase {
     public void testSingleParameterlessMethodFromSuperclassCompletion() {
         doTest();
     }
+
+    public void testSingleMethodCompletionForObjectReferencedByField() {
+        doTest();
+    }
 }

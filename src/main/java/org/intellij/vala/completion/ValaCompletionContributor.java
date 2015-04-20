@@ -20,6 +20,7 @@ import org.intellij.vala.psi.index.DeclarationsInNamespaceIndex;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -128,14 +129,23 @@ public class ValaCompletionContributor extends CompletionContributor {
             protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet) {
                 final ValaMemberAccess memberAccess = (ValaMemberAccess) completionParameters.getPosition().getParent();
                 final ValaPrimaryExpression primaryExpression = (ValaPrimaryExpression) memberAccess.getParent();
+                Optional<ValaDeclaration> containingDeclaration = Optional.empty();
+                int memberAccessIndex = primaryExpression.getChainAccessPartList().indexOf(memberAccess);
+
+                final DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
                 final ValaSimpleExpression simpleExpression = (ValaSimpleExpression) primaryExpression.getExpression();
-                if (simpleExpression instanceof ValaSimpleName) {
+                if (memberAccessIndex > 0) {
+                    ValaChainAccessPart previousPart = primaryExpression.getChainAccessPartList().get(memberAccessIndex - 1);
+                    QualifiedName qualifiedName = previousPart.getTypeDescriptor().getQualifiedName();
+                    if (qualifiedName != null) {
+                        containingDeclaration = Optional.ofNullable(index.get(qualifiedName, memberAccess.getProject()));
+                    }
+                } else if (simpleExpression instanceof ValaSimpleName) {
                     ValaSimpleName simpleName = (ValaSimpleName) simpleExpression;
-                    final DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
-                    final ValaDeclaration declaration = index.get(simpleName.getTypeDescriptor().getQualifiedName(), memberAccess.getProject());
-                    collectDelegates(declaration).forEach(delegateDeclaration ->
-                            completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), "." + delegateDeclaration.getName())));
+                    containingDeclaration = Optional.ofNullable(index.get(simpleName.getTypeDescriptor().getQualifiedName(), memberAccess.getProject()));
                 }
+                containingDeclaration.ifPresent(declaration -> collectDelegates(declaration).forEach(delegateDeclaration ->
+                            completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), "." + delegateDeclaration.getName()))));
             }
         };
     }
