@@ -13,4 +13,8 @@ public class MethodCompletionTest extends CompletionTestBase {
     public void testSingleMethodCompletionForObjectReferencedByField() {
         doTest();
     }
+
+    public void testSingleMethodCompletionFromCurrentClass() {
+        doTest();
+    }
 }

@@ -9,9 +9,11 @@ import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.codeInsight.template.impl.TextExpression;
 import com.intellij.openapi.project.Project;
 import com.intellij.patterns.ElementPattern;
+import com.intellij.patterns.PsiElementPattern;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.impl.ValaPsiImplUtil;
@@ -27,6 +29,7 @@ import java.util.stream.Stream;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.StandardPatterns.not;
+import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
 
 public class ValaCompletionContributor extends CompletionContributor {
 
@@ -47,6 +50,23 @@ public class ValaCompletionContributor extends CompletionContributor {
 
     private void extendForMethods() {
         extend(CompletionType.BASIC, withinPrimaryExpression(), completeMethodNames());
+        extend(CompletionType.BASIC, withinSimpleName(), completeMethodNamesFromCurrentClass());
+    }
+
+    private static PsiElementPattern.Capture<PsiElement> withinSimpleName() {
+        return psiElement().withSuperParent(1, psiElement(ValaTypes.SIMPLE_NAME));
+    }
+
+    private CompletionProvider<CompletionParameters> completeMethodNamesFromCurrentClass() {
+        return new CompletionProvider<CompletionParameters>() {
+            @Override
+            protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet) {
+                Optional<ValaTypeDeclaration> containingDeclaration = Optional.ofNullable(getParentOfType(completionParameters.getPosition(), ValaTypeDeclaration.class));
+
+                containingDeclaration.ifPresent(declaration -> collectDelegates(declaration).forEach(delegateDeclaration ->
+                        completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), delegateDeclaration.getName()))));
+            }
+        };
     }
 
     private void extendForKeywords() {
