@@ -17,4 +17,8 @@ public class MethodCompletionTest extends CompletionTestBase {
     public void testSingleMethodCompletionFromCurrentClass() {
         doTest();
     }
+
+    public void testSingleMethodCompletionReferencedByThis() {
+        doTest();
+    }
 }

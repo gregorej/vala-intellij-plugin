@@ -13,7 +13,6 @@ import com.intellij.patterns.PsiElementPattern;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.impl.ValaPsiImplUtil;
@@ -61,12 +60,16 @@ public class ValaCompletionContributor extends CompletionContributor {
         return new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet) {
-                Optional<ValaTypeDeclaration> containingDeclaration = Optional.ofNullable(getParentOfType(completionParameters.getPosition(), ValaTypeDeclaration.class));
+                Optional<ValaDeclaration> containingDeclaration = currentDeclaration(completionParameters.getPosition());
 
                 containingDeclaration.ifPresent(declaration -> collectDelegates(declaration).forEach(delegateDeclaration ->
                         completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), delegateDeclaration.getName()))));
             }
         };
+    }
+
+    private static Optional<ValaDeclaration> currentDeclaration(PsiElement psiElement) {
+        return Optional.ofNullable(getParentOfType(psiElement, ValaTypeDeclaration.class));
     }
 
     private void extendForKeywords() {
@@ -161,8 +164,10 @@ public class ValaCompletionContributor extends CompletionContributor {
                         containingDeclaration = Optional.ofNullable(index.get(qualifiedName, memberAccess.getProject()));
                     }
                 } else if (simpleExpression instanceof ValaSimpleName) {
-                    ValaSimpleName simpleName = (ValaSimpleName) simpleExpression;
+                    ValaSimpleName simpleName =(ValaSimpleName) simpleExpression;
                     containingDeclaration = Optional.ofNullable(index.get(simpleName.getTypeDescriptor().getQualifiedName(), memberAccess.getProject()));
+                } else if (simpleExpression instanceof ValaThisAccess) {
+                    containingDeclaration = currentDeclaration(completionParameters.getPosition());
                 }
                 containingDeclaration.ifPresent(declaration -> collectDelegates(declaration).forEach(delegateDeclaration ->
                             completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), "." + delegateDeclaration.getName()))));
