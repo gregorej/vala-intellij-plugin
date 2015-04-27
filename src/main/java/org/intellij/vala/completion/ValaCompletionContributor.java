@@ -164,13 +164,13 @@ public class ValaCompletionContributor extends CompletionContributor {
                         containingDeclaration = Optional.ofNullable(index.get(qualifiedName, memberAccess.getProject()));
                     }
                 } else if (simpleExpression instanceof ValaSimpleName) {
-                    ValaSimpleName simpleName =(ValaSimpleName) simpleExpression;
+                    ValaSimpleName simpleName = (ValaSimpleName) simpleExpression;
                     containingDeclaration = Optional.ofNullable(index.get(simpleName.getTypeDescriptor().getQualifiedName(), memberAccess.getProject()));
                 } else if (simpleExpression instanceof ValaThisAccess) {
                     containingDeclaration = currentDeclaration(completionParameters.getPosition());
                 }
                 containingDeclaration.ifPresent(declaration -> collectDelegates(declaration).forEach(delegateDeclaration ->
-                            completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), "." + delegateDeclaration.getName()))));
+                            completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), delegateDeclaration.getName(), "." + delegateDeclaration.getName()))));
             }
         };
     }
@@ -202,8 +202,12 @@ public class ValaCompletionContributor extends CompletionContributor {
     }
 
     private static LookupElement lookupItem(ValaParameters parameters, String methodName) {
-        final Template constructorTemplate = new TemplateImpl(methodName, "callable");
-        constructorTemplate.addTextSegment(methodName);
+        return lookupItem(parameters, methodName, methodName);
+    }
+
+    private static LookupElement lookupItem(ValaParameters parameters, String methodName, String lookupString) {
+        final Template constructorTemplate = new TemplateImpl(lookupString, "callable");
+        constructorTemplate.addTextSegment(lookupString);
         constructorTemplate.addTextSegment("(");
         if (parameters != null) {
             final List<ValaParameter> parameterList = parameters.getParameterList();
@@ -217,9 +221,10 @@ public class ValaCompletionContributor extends CompletionContributor {
             }
         }
         constructorTemplate.addTextSegment(")");
-        LookupItem<Template> item = LookupItem.fromString(methodName);
+        LookupItem<Template> item = LookupItem.fromString(lookupString);
         item.setObject(constructorTemplate);
         item.setInsertHandler(new DefaultInsertHandler());
+        item.setPresentableText(methodName);
         return item;
     }
 

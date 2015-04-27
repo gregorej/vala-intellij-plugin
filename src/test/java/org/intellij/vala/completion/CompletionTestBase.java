@@ -2,6 +2,7 @@ package org.intellij.vala.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupItem;
 import com.intellij.testFramework.PlatformTestCase;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import org.hamcrest.CustomTypeSafeMatcher;
@@ -30,11 +31,14 @@ public abstract class CompletionTestBase extends LightPlatformCodeInsightFixture
         return false;
     }
 
-    protected static Matcher<? super LookupElement> lookupElement(String lookupString) {
+    protected static Matcher<? super LookupElement> lookupItem(String lookupString) {
         return new CustomTypeSafeMatcher<LookupElement>("Lookup element with lookup string " + lookupString) {
             @Override
             protected boolean matchesSafely(LookupElement lookupElement) {
-                return lookupString.equals(lookupElement.getLookupString());
+                if (!(lookupElement instanceof LookupItem)) {
+                    return false;
+                }
+                return lookupString.equals(((LookupItem) lookupElement).getPresentableText());
             }
         };
     }

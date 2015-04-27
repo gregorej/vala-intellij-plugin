@@ -21,4 +21,8 @@ public class MethodCompletionTest extends CompletionTestBase {
     public void testSingleMethodCompletionReferencedByThis() {
         doTest();
     }
+
+    public void testMultipleMethodsFromSameClassCompletion() {
+        expect(lookupItem("method1"), lookupItem("method2"));
+    }
 }

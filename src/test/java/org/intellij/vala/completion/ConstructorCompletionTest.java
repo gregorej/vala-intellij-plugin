@@ -31,10 +31,10 @@ public class ConstructorCompletionTest extends CompletionTestBase {
     }
 
     public void testSingleNamedConstructorCompletionRightAfterDot() {
-        expect(lookupElement("from_string"));
+        expect(lookupItem("from_string"));
     }
 
     public void testMultipleNamedConstructorCompletion() {
-        expect(lookupElement("MyClass.from_string"), lookupElement("MyClass.from_int"));
+        expect(lookupItem("MyClass.from_string"), lookupItem("MyClass.from_int"));
     }
 }
