@@ -182,7 +182,7 @@
   extends(".*statement|local_variable_declarations|block")=statement
   extends("namespace_declaration|interface_declaration|struct_declaration|enum_declaration|errordomain_declaration|field_declaration|constant_declaration|delegate_declaration")=namespace_member
   extends("method_declaration")=delegate_declaration
-  implements("symbol_part|member_part|member_access") = "com.intellij.psi.PsiNamedElement"
+  implements("symbol_part|member_part|member_access") = "com.intellij.psi.PsiNamedElement, com.intellij.psi.PsiNameIdentifierOwner"
   implements("interface_declaration") = "org.intellij.vala.psi.ValaTypeWithSuperTypes, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
   implements("class_declaration|struct_declaration") = "org.intellij.vala.psi.ValaInstantiableTypeDeclaration, org.intellij.vala.psi.ValaTypeWithSuperTypes, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
@@ -198,7 +198,7 @@
 
 vala_module ::= using_directive * namespace_member *
 symbol ::= symbol_part ( "." symbol_part )*
-symbol_part ::= ( "global::" identifier ) | identifier {methods=[getName setName getReference]}
+symbol_part ::= ( "global::" identifier ) | identifier {methods=[getName setName getReference getNameIdentifier]}
 
 built_in_type ::= integral_type | floating_point_type | "bool" | "string" | "void" | "unichar"
 private integral_type ::= "char" | "uchar" | "short" | "ushort" | "long" | "ulong" | "size_t" | "ssize_t" | int_type
@@ -264,10 +264,10 @@ simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=
 
 literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal | template_string_literal {methods=[getTypeDescriptor]}
 template_string_literal ::= "@" string_literal
-member_access ::= "." identifier {methods=[getTypeDescriptor getName setName getReference]}
-pointer_member_access ::= "->" identifier {methods=[getTypeDescriptor getName setName]}
+member_access ::= "." identifier {methods=[getTypeDescriptor getName setName getReference getNameIdentifier]}
+pointer_member_access ::= "->" identifier {methods=[getTypeDescriptor getName setName getNameIdentifier]}
 member ::= member_part ( "." member_part )*
-member_part ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getName setName getReference getPrevious]}
+member_part ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getName setName getReference getPrevious getNameIdentifier]}
 template ::= "@" '"' ( expression "," )* '"'
 
 // get_unary_operator

@@ -51,6 +51,10 @@ public class ValaPsiImplUtil {
         return symbolPart.getIdentifier().getText();
     }
 
+    public static PsiElement getNameIdentifier(ValaSymbolPart symbolPart) {
+        return symbolPart.getIdentifier();
+    }
+
     public static String getName(ValaMemberPart memberPart) {
         return memberPart.getIdentifier().getText();
     }
@@ -71,8 +75,20 @@ public class ValaPsiImplUtil {
         return memberAccess.getIdentifier().getText();
     }
 
+    public static PsiElement getNameIdentifier(ValaMemberPart memberPart) {
+        return memberPart.getIdentifier();
+    }
+
+    public static PsiElement getNameIdentifier(ValaMemberAccess memberAccess) {
+        return memberAccess.getIdentifier();
+    }
+
     public static String getName(ValaPointerMemberAccess memberAccess) {
         return memberAccess.getIdentifier().getText();
+    }
+
+    public static PsiElement getNameIdentifier(ValaPointerMemberAccess pointerAccess) {
+        return pointerAccess.getIdentifier();
     }
 
     public static int getTextOffset(ValaCreationMethodDeclaration creationMethodDeclaration) {
