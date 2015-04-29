@@ -46,7 +46,7 @@ EOL="\r"|"\n"|"\r\n"
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
-IDENTIFIER=[A-Za-z_][A-Za-z0-9_]*
+ID=[A-Za-z_][A-Za-z0-9_]*
 VERBATIM_STRING_LITERAL=\"\"\"(.|\n|\r)*\"\"\"
 STRING_LITERAL=\"([^\"\\]|\\\"|\\'|\\)*\"
 REAL_LITERAL=-?[0-9]+\.[0-9]+
@@ -210,7 +210,7 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
   "post_increment_expression"    { return POST_INCREMENT_EXPRESSION; }
   "post_decrement_expression"    { return POST_DECREMENT_EXPRESSION; }
 
-  {IDENTIFIER}                   { return IDENTIFIER; }
+  {ID}                   		 { return ID; }
   {VERBATIM_STRING_LITERAL}      { return VERBATIM_STRING_LITERAL; }
   {STRING_LITERAL}               { return STRING_LITERAL; }
   {REAL_LITERAL}                 { return REAL_LITERAL; }
@@ -223,6 +223,6 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
 }
 
 <AT_SGN> {
-  {IDENTIFIER}                   { popState(); return IDENTIFIER; }
+  {ID}                   		 { popState(); return ID; }
   [^]                            { popState(); yypushback(yylength()); return TEMPLATE_STRING_OPEN; }
 }

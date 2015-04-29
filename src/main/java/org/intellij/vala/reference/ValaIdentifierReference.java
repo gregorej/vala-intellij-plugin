@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.intellij.vala.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,9 +18,9 @@ import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
 import static org.intellij.vala.psi.impl.ValaPsiElementUtil.findTypeDeclaration;
 
 
-public class ValaMemberAccessReference extends PsiReferenceBase<ValaMemberAccess> {
+public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
 
-    public ValaMemberAccessReference(ValaMemberAccess valaMemberAccess) {
+    public ValaIdentifierReference(ValaIdentifier valaMemberAccess) {
         super(valaMemberAccess, new TextRange(0, valaMemberAccess.getTextLength()));
     }
 
@@ -38,13 +39,18 @@ public class ValaMemberAccessReference extends PsiReferenceBase<ValaMemberAccess
     @Nullable
     @Override
     public PsiElement resolve() {
-        return resolveAsOtherObjectFieldReference();
+        PsiElement parent = myElement.getParent();
+        if (parent instanceof ValaMemberAccess) {
+            return resolveAsOtherObjectFieldReference((ValaMemberAccess) parent);
+        } else {
+            return null;
+        }
     }
 
-    private PsiElement resolveAsOtherObjectFieldReference() {
-        ValaDeclaration objectTypeDeclaration = resolveObjectType();
+    private PsiElement resolveAsOtherObjectFieldReference(ValaMemberAccess memberAccess) {
+        ValaDeclaration objectTypeDeclaration = resolveObjectType(memberAccess);
         if (objectTypeDeclaration instanceof ValaDeclarationContainer) {
-            return resolveAsClassFieldReference(myElement, (ValaDeclarationContainer) objectTypeDeclaration);
+            return resolveAsClassFieldReference(memberAccess, (ValaDeclarationContainer) objectTypeDeclaration);
         }
         return null;
     }
@@ -89,8 +95,8 @@ public class ValaMemberAccessReference extends PsiReferenceBase<ValaMemberAccess
     }
 
     @Nullable
-    private ValaDeclaration resolveObjectType() {
-        PsiReference parentRef = getPrecedingReference(myElement).getReference();
+    private static ValaDeclaration resolveObjectType(ValaMemberAccess memberAccess) {
+        PsiReference parentRef = getPrecedingReference(memberAccess).getReference();
         if (parentRef == null) {
             return null;
         }

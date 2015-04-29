@@ -40,7 +40,7 @@ public class ValaCompletionContributor extends CompletionContributor {
         extendForVariables();
         extendForWithoutContext();
         extendForMethods();
-        extend(CompletionType.BASIC, isMemberAccess(), completeMethodNames());
+        //extend(CompletionType.BASIC, isMemberAccess(), completeMethodNames());
     }
 
     private void extendForWithoutContext() {
@@ -53,7 +53,7 @@ public class ValaCompletionContributor extends CompletionContributor {
     }
 
     private static PsiElementPattern.Capture<PsiElement> withinSimpleName() {
-        return psiElement().withSuperParent(1, psiElement(ValaTypes.SIMPLE_NAME));
+        return psiElement().withSuperParent(2, psiElement(ValaTypes.SIMPLE_NAME));
     }
 
     private CompletionProvider<CompletionParameters> completeMethodNamesFromCurrentClass() {
@@ -88,15 +88,15 @@ public class ValaCompletionContributor extends CompletionContributor {
     }
 
     private static ElementPattern<PsiElement> withinInstanceCreation() {
-        return psiElement().withSuperParent(3, psiElement(ValaTypes.OBJECT_OR_ARRAY_CREATION_EXPRESSION));
+        return psiElement().withSuperParent(4, psiElement(ValaTypes.OBJECT_OR_ARRAY_CREATION_EXPRESSION));
     }
 
     private static ElementPattern<PsiElement> withinPrimaryExpression() {
-        return psiElement().withSuperParent(2, psiElement(ValaTypes.PRIMARY_EXPRESSION));
+        return psiElement().withSuperParent(3, psiElement(ValaTypes.PRIMARY_EXPRESSION));
     }
 
     private static ElementPattern<PsiElement> isMemberAccess() {
-        return psiElement().withSuperParent(1, psiElement(ValaTypes.MEMBER_ACCESS));
+        return psiElement().withSuperParent(2, psiElement(ValaTypes.MEMBER_ACCESS));
     }
 
     private void extendForVariables() {
@@ -127,7 +127,7 @@ public class ValaCompletionContributor extends CompletionContributor {
         return new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet result) {
-                final ValaMemberPart memberPart = (ValaMemberPart) parameters.getPosition().getParent();
+                final ValaMemberPart memberPart = (ValaMemberPart) parameters.getPosition().getParent().getParent();
                 final ValaMember member = (ValaMember) memberPart.getParent();
                 String classNamePrefix = parameters.getOriginalPosition().getText();
                 final int memberPartIndex = member.getMemberPartList().indexOf(memberPart);
@@ -150,7 +150,7 @@ public class ValaCompletionContributor extends CompletionContributor {
         return new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet) {
-                final ValaMemberAccess memberAccess = (ValaMemberAccess) completionParameters.getPosition().getParent();
+                final ValaMemberAccess memberAccess = (ValaMemberAccess) completionParameters.getPosition().getParent().getParent();
                 final ValaPrimaryExpression primaryExpression = (ValaPrimaryExpression) memberAccess.getParent();
                 Optional<ValaDeclaration> containingDeclaration = Optional.empty();
                 int memberAccessIndex = primaryExpression.getChainAccessPartList().indexOf(memberAccess);
@@ -170,7 +170,7 @@ public class ValaCompletionContributor extends CompletionContributor {
                     containingDeclaration = currentDeclaration(completionParameters.getPosition());
                 }
                 containingDeclaration.ifPresent(declaration -> collectDelegates(declaration).forEach(delegateDeclaration ->
-                            completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), delegateDeclaration.getName(), "." + delegateDeclaration.getName()))));
+                        completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), delegateDeclaration.getName(), delegateDeclaration.getName()))));
             }
         };
     }
@@ -203,6 +203,11 @@ public class ValaCompletionContributor extends CompletionContributor {
 
     private static LookupElement lookupItem(ValaParameters parameters, String methodName) {
         return lookupItem(parameters, methodName, methodName);
+    }
+
+    @Override
+    public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result) {
+        super.fillCompletionVariants(parameters, result);
     }
 
     private static LookupElement lookupItem(ValaParameters parameters, String methodName, String lookupString) {

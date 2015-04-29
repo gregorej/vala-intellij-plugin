@@ -93,7 +93,7 @@ public class ValaLexerTest {
     public void shouldRecognizeIdentifiers() throws IOException {
         valaLexer.start("some_identifier");
 
-        assertThat(valaLexer.getTokenType(), is(ValaTypes.IDENTIFIER));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.ID));
         assertThat(valaLexer.getTokenText(), is(equalTo("some_identifier")));
     }
 
@@ -118,7 +118,7 @@ public class ValaLexerTest {
         valaLexer.start("@class");
         valaLexer.advance();
 
-        assertThat(valaLexer.getTokenType(), is(ValaTypes.IDENTIFIER));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.ID));
         assertThat(valaLexer.getTokenText(), is(equalTo("class")));
     }
 

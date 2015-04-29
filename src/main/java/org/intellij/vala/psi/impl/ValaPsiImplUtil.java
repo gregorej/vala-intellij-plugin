@@ -43,6 +43,10 @@ public class ValaPsiImplUtil {
         return classDeclaration.getSymbol().getText();
     }
 
+    public static String getName(ValaIdentifier identifier) {
+        return identifier.getText();
+    }
+
     public static String getName(ValaInterfaceDeclaration classDeclaration) {
         return classDeclaration.getSymbol().getText();
     }
@@ -128,13 +132,17 @@ public class ValaPsiImplUtil {
     }
 
     public static PsiReference getReference(ValaMemberAccess memberAccess) {
-        return new ValaMemberAccessReference(memberAccess);
+        return memberAccess.getIdentifier().getReference();
+    }
+
+    public static PsiReference getReference(ValaIdentifier identifier) {
+        return new ValaIdentifierReference(identifier);
     }
 
     public static PsiReference getReference(ValaMethodCall methodCall) {
         ValaChainAccessPart previous = methodCall.getPrevious();
         if (previous instanceof ValaMemberAccess) {
-            return previous.getReference();
+            return ((ValaMemberAccess) previous).getIdentifier().getReference();
         }
         return null;
     }
@@ -378,7 +386,7 @@ public class ValaPsiImplUtil {
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaMemberAccess memberAccess) {
-        PsiReference reference = memberAccess.getReference();
+        PsiReference reference = memberAccess.getIdentifier().getReference();
         if (reference != null) {
             PsiElement resolved = reference.resolve();
             if (resolved instanceof HasTypeDescriptor) {

@@ -30,7 +30,7 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
     public void testReferenceToMethodFromCallOnExplicitObject() {
         myFixture.configureByFiles("ReferenceToMethodFromCallOnExplicitObject.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberAccess.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName("open")));
     }
@@ -38,7 +38,7 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
     public void testReferenceToMethodFromCallOnMethodCallChain() {
         myFixture.configureByFiles("ReferenceToMethodFromCallOnMethodCallChain.vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberAccess.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName("getName")));
     }
@@ -46,7 +46,7 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
     public void testReferenceToMethodInSuperClass() {
         myFixture.configureByFiles(getTestName(false) + ".vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberAccess.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName("getCount")));
     }
@@ -54,7 +54,7 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
     public void testReferenceToDelegate() {
         myFixture.configureByFiles(getTestName(false) + ".vala");
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberAccess.class).getReference().resolve();
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaDelegateDeclaration.class), hasName("get_size")));
     }
