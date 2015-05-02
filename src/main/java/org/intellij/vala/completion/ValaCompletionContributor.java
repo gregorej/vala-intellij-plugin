@@ -170,7 +170,7 @@ public class ValaCompletionContributor extends CompletionContributor {
                     containingDeclaration = currentDeclaration(completionParameters.getPosition());
                 }
                 containingDeclaration.ifPresent(declaration -> collectDelegates(declaration).forEach(delegateDeclaration ->
-                        completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), delegateDeclaration.getName(), delegateDeclaration.getName()))));
+                        completionResultSet.addElement(lookupItem(delegateDeclaration.getParameters(), delegateDeclaration.getName()))));
             }
         };
     }
@@ -202,17 +202,8 @@ public class ValaCompletionContributor extends CompletionContributor {
     }
 
     private static LookupElement lookupItem(ValaParameters parameters, String methodName) {
-        return lookupItem(parameters, methodName, methodName);
-    }
-
-    @Override
-    public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result) {
-        super.fillCompletionVariants(parameters, result);
-    }
-
-    private static LookupElement lookupItem(ValaParameters parameters, String methodName, String lookupString) {
-        final Template constructorTemplate = new TemplateImpl(lookupString, "callable");
-        constructorTemplate.addTextSegment(lookupString);
+        final Template constructorTemplate = new TemplateImpl(methodName, "callable");
+        constructorTemplate.addTextSegment(methodName);
         constructorTemplate.addTextSegment("(");
         if (parameters != null) {
             final List<ValaParameter> parameterList = parameters.getParameterList();
@@ -226,11 +217,16 @@ public class ValaCompletionContributor extends CompletionContributor {
             }
         }
         constructorTemplate.addTextSegment(")");
-        LookupItem<Template> item = LookupItem.fromString(lookupString);
+        LookupItem<Template> item = LookupItem.fromString(methodName);
         item.setObject(constructorTemplate);
         item.setInsertHandler(new DefaultInsertHandler());
         item.setPresentableText(methodName);
         return item;
+    }
+
+    @Override
+    public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result) {
+        super.fillCompletionVariants(parameters, result);
     }
 
     private static LookupElement constructorToLookupElementWithOnlyExplicitName(ValaCreationMethodDeclaration constructor) {
