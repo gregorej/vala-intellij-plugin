@@ -298,7 +298,11 @@ public class ValaPsiImplUtil {
         if (parameter.getType() == null) {
             return null;
         }
-        return ReferenceTypeDescriptor.forType(parameter.getType());
+        final ValaTypeBase typeBase = parameter.getType().getTypeBase();
+        if (typeBase != null) {
+            return typeBase.getTypeDescriptor();
+        }
+        return null;
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaLocalVariableDeclaration valaLocalVariableDeclaration) {

@@ -7,6 +7,7 @@ import org.intellij.vala.reference.ValaReferenceTestBase;
 
 import static org.hamcrest.Matchers.*;
 import static org.intellij.vala.psi.PsiMatchers.hasName;
+import static org.intellij.vala.psi.PsiMatchers.hasParentOfType;
 import static org.junit.Assert.assertThat;
 
 public class ResolveMethodDeclaration extends ValaReferenceTestBase {
@@ -57,5 +58,14 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
         assertThat(referencedElement, allOf(instanceOf(ValaDelegateDeclaration.class), hasName("get_size")));
+    }
+
+    public void testReferenceToDelegateInInterface() {
+        myFixture.configureByFile(getTestName(false) + ".vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(instanceOf(ValaDelegateDeclaration.class), hasName("method"),
+                hasParentOfType(ValaInterfaceDeclaration.class)));
     }
 }
