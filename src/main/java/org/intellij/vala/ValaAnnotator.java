@@ -7,6 +7,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import org.intellij.vala.psi.ValaAttribute;
 import org.intellij.vala.psi.ValaFieldDeclaration;
+import org.intellij.vala.psi.ValaIdentifier;
 import org.intellij.vala.psi.impl.ValaMemberPartImpl;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,6 +28,6 @@ public class ValaAnnotator implements Annotator {
     }
 
     private static boolean isClassFieldAccess(PsiElement psiElement) {
-        return psiElement instanceof ValaMemberPartImpl && psiElement.getReference() != null && psiElement.getReference().resolve() instanceof ValaFieldDeclaration;
+        return psiElement instanceof ValaIdentifier && psiElement.getReference() != null && psiElement.getReference().resolve() instanceof ValaFieldDeclaration;
     }
 }
