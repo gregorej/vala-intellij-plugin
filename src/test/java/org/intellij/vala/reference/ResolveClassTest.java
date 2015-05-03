@@ -117,4 +117,12 @@ public class ResolveClassTest extends ValaReferenceTestBase {
         assertThat(referenceElement, allOf(hasName("MyInterface"), instanceOf(ValaInterfaceDeclaration.class)));
     }
 
+    public void testReferenceToStructDeclaration() {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+
+        PsiElement referenceElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
+
+        assertThat(referenceElement, allOf(hasName("MyStruct"), instanceOf(ValaStructDeclaration.class)));
+    }
+
 }
