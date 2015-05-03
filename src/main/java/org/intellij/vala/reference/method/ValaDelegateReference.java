@@ -72,8 +72,8 @@ public class ValaDelegateReference extends PsiReferenceBase<PsiNamedElement> {
 
     private static PsiElement getMatchingMethodDeclarationInSuperClasses(PsiNamedElement name, ValaTypeWithSuperTypes container) {
         for (ValaTypeDeclaration superType : container.getSuperTypeDeclarations()) {
-            if (superType instanceof ValaDeclarationContainer) {
-                PsiElement foundMatch = getMatchingMethodDeclaration(name, (ValaDeclarationContainer) superType);
+            if (superType != null) {
+                PsiElement foundMatch = getMatchingMethodDeclaration(name, superType);
                 if (foundMatch != null) {
                     return foundMatch;
                 }

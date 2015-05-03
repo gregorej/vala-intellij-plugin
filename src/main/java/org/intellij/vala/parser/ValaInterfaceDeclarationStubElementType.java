@@ -5,7 +5,7 @@ import org.intellij.vala.ValaLanguage;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.impl.QualifiedNameBuilder;
 import org.intellij.vala.psi.impl.ValaInterfaceDeclarationImpl;
-import org.intellij.vala.psi.index.ClassNameIndex;
+import org.intellij.vala.psi.index.TypeNameIndex;
 import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.intellij.vala.psi.index.DeclarationsInNamespaceIndex;
 import org.intellij.vala.psi.stub.ValaInterfaceDeclarationStub;
@@ -49,7 +49,7 @@ public class ValaInterfaceDeclarationStubElementType extends IStubElementType<Va
 
     @Override
     public void indexStub(@NotNull ValaInterfaceDeclarationStub valaNamespaceLikeStub, @NotNull IndexSink indexSink) {
-        indexSink.occurrence(ClassNameIndex.KEY, valaNamespaceLikeStub.getQName().getTail());
+        indexSink.occurrence(TypeNameIndex.KEY, valaNamespaceLikeStub.getQName().getTail());
         final QualifiedName qualifiedName = valaNamespaceLikeStub.getQName();
         final QualifiedName namespaceQualifiedName = qualifiedName.getPrefix(qualifiedName.length() - 1);
         indexSink.occurrence(DeclarationQualifiedNameIndex.KEY, qualifiedName);

@@ -28,7 +28,7 @@
         <completion.contributor language="Vala"
                                 implementationClass="org.intellij.vala.completion.ValaCompletionContributor"/>
         <stubElementTypeHolder class="org.intellij.vala.psi.ValaTypes"/>
-        <stubIndex implementation="org.intellij.vala.psi.index.ClassNameIndex"/>
+        <stubIndex implementation="org.intellij.vala.psi.index.TypeNameIndex"/>
         <stubIndex implementation="org.intellij.vala.psi.index.DeclarationQualifiedNameIndex"/>
         <stubIndex implementation="org.intellij.vala.psi.index.DeclarationsInNamespaceIndex"/>
         <library.type implementation="org.intellij.vala.project.ValaLibraryType" />

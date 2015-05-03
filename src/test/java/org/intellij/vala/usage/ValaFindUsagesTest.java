@@ -29,15 +29,15 @@ public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase 
     public void testSimpleMethodUsage() {
         Collection<UsageInfo> foundUsages = myFixture.testFindUsages("SimpleMethod.vala");
 
-        assertThat(foundUsages, contains(resolvesTo(methodDeclaration("some_method"))));
+        assertThat(foundUsages, contains(resolvingTo(methodDeclaration("some_method"))));
     }
 
     public void testTwoMethodUsages() {
         Collection<UsageInfo> foundUsages = myFixture.testFindUsages("TwoMethodUsages.vala");
 
         assertThat(foundUsages, contains(
-                resolvesTo(methodDeclaration("some_method")),
-                resolvesTo(methodDeclaration("some_method"))
+                resolvingTo(methodDeclaration("some_method")),
+                resolvingTo(methodDeclaration("some_method"))
         ));
     }
 
@@ -45,15 +45,15 @@ public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase 
         Collection<UsageInfo> foundUsages = myFixture.testFindUsages("TwoConstructorUsages.vala");
 
         assertThat(foundUsages, contains(
-                resolvesTo(constructor("FooClass")),
-                resolvesTo(constructor("FooClass"))));
+                resolvingTo(constructor("FooClass")),
+                resolvingTo(constructor("FooClass"))));
     }
 
     public void testNamedConstructorUsage() {
         Collection<UsageInfo> foundUsages = myFixture.testFindUsages("NamedConstructorUsage.vala");
 
         assertThat(foundUsages, hasSize(1));
-        assertThat(foundUsages, contains(resolvesTo(constructor("with_beer"))));
+        assertThat(foundUsages, contains(resolvingTo(constructor("with_beer"))));
     }
 
     private static Matcher<PsiElement> constructor(String name) {
@@ -64,7 +64,7 @@ public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase 
         return allOf(instanceOf(ValaMethodDeclaration.class), hasName(name));
     }
 
-    private static Matcher<UsageInfo> resolvesTo(final Matcher<? super PsiElement> resolutionTarget) {
+    private static Matcher<UsageInfo> resolvingTo(final Matcher<? super PsiElement> resolutionTarget) {
         return new CustomTypeSafeMatcher<UsageInfo>("resolving to " + resolutionTarget) {
             @Override
             protected void describeMismatchSafely(UsageInfo item, Description mismatchDescription) {

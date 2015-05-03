@@ -1,13 +1,11 @@
 package org.intellij.vala.parser;
 
-import com.intellij.lang.LighterAST;
-import com.intellij.lang.LighterASTNode;
 import com.intellij.psi.stubs.*;
 import org.intellij.vala.ValaLanguage;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.impl.QualifiedNameBuilder;
 import org.intellij.vala.psi.impl.ValaClassDeclarationImpl;
-import org.intellij.vala.psi.index.ClassNameIndex;
+import org.intellij.vala.psi.index.TypeNameIndex;
 import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.intellij.vala.psi.index.DeclarationsInNamespaceIndex;
 import org.intellij.vala.psi.stub.ValaClassDeclarationStub;
@@ -51,7 +49,7 @@ public class ValaClassDeclarationStubElementType extends IStubElementType<ValaCl
 
     @Override
     public void indexStub(@NotNull ValaClassDeclarationStub valaNamespaceLikeStub, @NotNull IndexSink indexSink) {
-        indexSink.occurrence(ClassNameIndex.KEY, valaNamespaceLikeStub.getName());
+        indexSink.occurrence(TypeNameIndex.KEY, valaNamespaceLikeStub.getName());
         final QualifiedName qualifiedName = valaNamespaceLikeStub.getQName();
         final QualifiedName namespaceQualifiedName = qualifiedName.getPrefix(qualifiedName.length() - 1);
         indexSink.occurrence(DeclarationQualifiedNameIndex.KEY, qualifiedName);

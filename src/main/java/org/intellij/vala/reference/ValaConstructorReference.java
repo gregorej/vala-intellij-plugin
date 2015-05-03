@@ -17,12 +17,10 @@ import static org.intellij.vala.psi.impl.ValaPsiImplUtil.getImportedNamespacesAv
 public class ValaConstructorReference extends PsiReferenceBase<ValaMemberPart> {
 
     private Project project;
-    private GlobalSearchScope scope;
 
     public ValaConstructorReference(ValaMemberPart element) {
         super(element, new TextRange(0, element.getTextLength()));
         project = element.getProject();
-        scope = GlobalSearchScope.projectScope(project);
 
     }
 
