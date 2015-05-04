@@ -23,7 +23,7 @@ public class ValaAnnotator implements Annotator {
         }
     }
 
-    private boolean isAttribute(PsiElement psiElement) {
+    private static boolean isAttribute(PsiElement psiElement) {
         return psiElement instanceof ValaAttribute;
     }
 

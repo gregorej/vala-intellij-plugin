@@ -125,4 +125,12 @@ public class ResolveClassTest extends ValaReferenceTestBase {
         assertThat(referenceElement, allOf(hasName("MyStruct"), instanceOf(ValaStructDeclaration.class)));
     }
 
+    public void testReferenceToEnumDeclaration() {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(instanceOf(ValaEnumDeclaration.class), hasName("MyEnum")));
+    }
+
 }

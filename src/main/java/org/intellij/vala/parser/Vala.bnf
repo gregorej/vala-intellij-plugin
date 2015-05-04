@@ -180,7 +180,7 @@
   extends("method_call|member_access|pointer_member_access|element_access")=chain_access_part
   extends("literal|initializer|tuple|template|this_access|base_access|object_or_array_creation_expression|yield_expression|sizeof_expression|typeof_expression|simple_name|built_in_type")=simple_expression
   extends(".*statement|local_variable_declarations|block")=statement
-  extends("namespace_declaration|enum_declaration|errordomain_declaration|field_declaration|constant_declaration|delegate_declaration")=namespace_member
+  extends("namespace_declaration|errordomain_declaration|field_declaration|constant_declaration|delegate_declaration")=namespace_member
   extends("method_declaration")=delegate_declaration
   implements("symbol_part|member_part|member_access") = "com.intellij.psi.PsiNameIdentifierOwner"
   implements("interface_declaration") = "org.intellij.vala.psi.ValaTypeWithSuperTypes, org.intellij.vala.psi.ValaDeclarationContainer, com.intellij.psi.PsiNamedElement"
@@ -192,7 +192,7 @@
   implements("local_variable|parameter|simple_name") = "com.intellij.psi.PsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
   implements("method_call|literal|chain_access_part")="org.intellij.vala.psi.HasTypeDescriptor"
   implements("class_body|struct_body|enum_body|interface_body")="org.intellij.vala.psi.ValaTypeDeclarationBody"
-  implements("enum_declaration")="org.intellij.vala.psi.ValaTypeDeclaration"
+  implements("enum_declaration")="org.intellij.vala.psi.ValaTypeDeclaration, com.intellij.psi.PsiNamedElement"
   implements("relational_operator|equality_operator|shift_operator|additive_operator|multiplicative_operator")="org.intellij.vala.psi.ValaBinaryOperator"
 }
 
@@ -319,7 +319,7 @@ private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_mo
 
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
 type_declaration_modifier ::= "abstract" | "extern" | "static"
-enum_declaration ::= access_modifier? type_declaration_modifiers? "enum" symbol enum_body {pin=3 methods=[getQName getDeclarations getDelegates]}
+enum_declaration ::= access_modifier? type_declaration_modifiers? "enum" symbol enum_body {pin=3 methods=[getQName getDeclarations getDelegates getName setName toString] stubClass="org.intellij.vala.psi.stub.ValaEnumDeclarationStub"}
 
 enum_body ::= "{" enumvalues ( ";"  enum_member* )? "}"
 

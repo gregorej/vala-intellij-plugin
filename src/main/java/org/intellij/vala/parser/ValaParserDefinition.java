@@ -76,6 +76,8 @@ public class ValaParserDefinition implements ParserDefinition {
             return new ValaInterfaceDeclarationStubElementType();
         } else if ("STRUCT_DECLARATION".equals(string)) {
             return new ValaStructDeclarationStubElementType();
+        } else if ("ENUM_DECLARATION".equals(string)) {
+            return new ValaEnumDeclarationStubElementType();
         } else {
             return new ValaElementType(string);
         }

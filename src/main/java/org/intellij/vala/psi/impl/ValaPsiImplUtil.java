@@ -91,6 +91,10 @@ public class ValaPsiImplUtil {
         return memberAccess.getIdentifier().getText();
     }
 
+    public static String getName(ValaEnumDeclaration enumDeclaration) {
+        return getLastPart(enumDeclaration.getSymbol()).getName();
+    }
+
     public static PsiElement getNameIdentifier(ValaPointerMemberAccess pointerAccess) {
         return pointerAccess.getIdentifier();
     }

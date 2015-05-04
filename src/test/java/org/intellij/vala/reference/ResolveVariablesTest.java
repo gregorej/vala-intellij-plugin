@@ -2,6 +2,7 @@ package org.intellij.vala.reference;
 
 
 import com.intellij.psi.PsiElement;
+import org.hamcrest.Matcher;
 import org.intellij.vala.psi.*;
 
 import static org.hamcrest.Matchers.allOf;
@@ -93,10 +94,27 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
     }
 
     public void testReferenceToFieldInInferredObject() {
-        myFixture.configureByFiles(getTestName(false) + ".vala");
+        expect(ValaIdentifier.class).referencesTo(allOf(instanceOf(ValaFieldDeclaration.class), hasName("field")));
+    }
 
-        PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
+    private ReferenceExpectation expect(Class<? extends PsiElement> psiElementClass) {
+        return new ReferenceExpectation(psiElementClass);
+    }
 
-        assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("field")));
+    private class ReferenceExpectation {
+
+        private final Class<? extends PsiElement> psiElementClass;
+
+        public ReferenceExpectation(Class<? extends PsiElement> psiElementClass) {
+            this.psiElementClass = psiElementClass;
+        }
+
+        public void referencesTo(Matcher<? super PsiElement> referenceMatcher) {
+            myFixture.configureByFiles(getTestName(false) + ".vala");
+
+            PsiElement referencedElement = getElementOfTypeAtCaret(psiElementClass).getReference().resolve();
+
+            assertThat(referencedElement, referenceMatcher);
+        }
     }
 }
