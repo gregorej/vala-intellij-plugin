@@ -7,6 +7,9 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.intellij.vala.psi.*;
+import org.intellij.vala.psi.impl.ValaPsiElementUtil;
+import org.intellij.vala.psi.impl.ValaPsiImplUtil;
+import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,9 +45,31 @@ public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
         PsiElement parent = myElement.getParent();
         if (parent instanceof ValaMemberAccess) {
             return resolveAsOtherObjectFieldReference((ValaMemberAccess) parent);
+        } else if (parent instanceof ValaSimpleName) {
+            return resolveAsDirectReference((ValaSimpleName) parent);
         } else {
             return null;
         }
+    }
+
+    private static PsiElement resolveAsDirectReference(ValaSimpleName simpleName) {
+        PsiElement variable = ValaVariableReference.resolve(simpleName);
+        if (variable != null) {
+            return variable;
+        }
+        return resolveAsDirectTypeReference(simpleName);
+    }
+
+    private static PsiElement resolveAsDirectTypeReference(ValaSimpleName simpleName) {
+        DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
+        for (QualifiedName qualifiedName : ValaPsiImplUtil.getImportedNamespacesAvailableFor(simpleName)) {
+            final QualifiedName directQualifiedName = qualifiedName.append(simpleName.getName());
+            ValaDeclaration foundDeclaration = index.get(directQualifiedName, simpleName.getProject());
+            if (foundDeclaration != null) {
+                return foundDeclaration;
+            }
+        }
+        return null;
     }
 
     private PsiElement resolveAsOtherObjectFieldReference(ValaMemberAccess memberAccess) {
@@ -105,8 +130,7 @@ public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
             return (ValaDeclaration) resolved;
         }
         if (resolved != null) {
-            ValaDeclaration result = findTypeDeclaration(resolved);
-            return result;
+            return findTypeDeclaration(resolved);
         }
         return null;
     }

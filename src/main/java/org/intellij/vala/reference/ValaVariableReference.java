@@ -20,15 +20,19 @@ public class ValaVariableReference extends PsiReferenceBase<PsiNamedElement> {
     @Nullable
     @Override
     public PsiElement resolve() {
-        PsiElement localVariable = resolveAsLocalVariable(myElement);
+        return resolve(myElement);
+    }
+
+    public static PsiElement resolve(PsiNamedElement simpleName) {
+        PsiElement localVariable = resolveAsLocalVariable(simpleName);
         if (localVariable != null) {
             return localVariable;
         }
-        PsiElement classField = resolveAsThisClassFieldReference(myElement);
+        PsiElement classField = resolveAsThisClassFieldReference(simpleName);
         if (classField != null) {
             return classField;
         }
-        return resolveAsMethodArgument(myElement);
+        return resolveAsMethodArgument(simpleName);
     }
 
     private static PsiElement resolveAsLocalVariable(PsiNamedElement myElement) {
