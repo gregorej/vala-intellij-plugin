@@ -5,9 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.util.PsiTreeUtil;
 import org.intellij.vala.psi.*;
-import org.intellij.vala.psi.impl.ValaPsiElementUtil;
 import org.intellij.vala.psi.impl.ValaPsiImplUtil;
 import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +17,7 @@ import java.util.stream.Stream;
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
 import static org.intellij.vala.psi.impl.ValaPsiElementUtil.findTypeDeclaration;
+import static org.intellij.vala.psi.impl.ValaPsiElementUtil.isMethodCall;
 
 
 public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
@@ -53,11 +52,16 @@ public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
     }
 
     private static PsiElement resolveAsDirectReference(ValaSimpleName simpleName) {
-        PsiElement variable = ValaVariableReference.resolve(simpleName);
-        if (variable != null) {
-            return variable;
+        if (isMethodCall(simpleName)) {
+            return resolveAsThisClassReference(simpleName, delegateWithName(simpleName));
         }
-        return resolveAsDirectTypeReference(simpleName);
+        else {
+            PsiElement variable = ValaVariableReference.resolve(simpleName);
+            if (variable != null) {
+                return variable;
+            }
+            return resolveAsDirectTypeReference(simpleName);
+        }
     }
 
     private static PsiElement resolveAsDirectTypeReference(ValaSimpleName simpleName) {
@@ -74,33 +78,49 @@ public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
 
     private PsiElement resolveAsOtherObjectFieldReference(ValaMemberAccess memberAccess) {
         ValaDeclaration objectTypeDeclaration = resolveObjectType(memberAccess);
-        if (objectTypeDeclaration instanceof ValaDeclarationContainer) {
+        if (objectTypeDeclaration instanceof ValaEnumDeclaration) {
+            return resolveAsEnumValue(memberAccess, (ValaEnumDeclaration) objectTypeDeclaration);
+        } else if (objectTypeDeclaration instanceof ValaDeclarationContainer) {
             return resolveAsClassFieldReference(memberAccess, (ValaDeclarationContainer) objectTypeDeclaration);
         }
         return null;
     }
 
-    public static PsiElement resolveAsThisClassFieldReference(PsiNamedElement myElement) {
-        ValaDeclarationContainer containingClass = getParentOfType(myElement, ValaDeclarationContainer.class, false);
-        if (containingClass == null) {
-            return null;
-        }
-        return declarationsIncludingSuperclasses(containingClass).filter(fieldPredicate(myElement)).findAny().orElse(null);
+    private static PsiElement resolveAsEnumValue(ValaMemberAccess memberAccess, ValaEnumDeclaration enumDeclaration) {
+        return enumDeclaration.getEnumBody().getEnumvalues().getEnumvalueList().stream()
+                .filter((enumValue) -> enumValue.getName() != null && enumValue.getName().equals(memberAccess.getName()))
+                .findAny()
+                .orElse(null);
     }
 
-    private static PsiElement resolveAsClassFieldReference(ValaMemberAccess myElement, ValaDeclarationContainer containingClass) {
-        Predicate<ValaDeclaration> delegatePredicate = (declaration) -> declaration instanceof ValaDelegateDeclaration && myElement.getName().equals(((ValaDelegateDeclaration) declaration).getName());
-        Predicate<ValaDeclaration> declarationPredicate;
-        if (shouldLookForDelegates(myElement)) {
-            declarationPredicate = delegatePredicate;
-        } else {
-            declarationPredicate = fieldPredicate(myElement);
+    private static PsiElement resolveAsThisClassReference(PsiNamedElement reference, Predicate<ValaDeclaration> declarationPredicate) {
+        ValaDeclarationContainer containingClass = getParentOfType(reference, ValaDeclarationContainer.class, false);
+        if (containingClass == null) {
+            return null;
         }
         return declarationsIncludingSuperclasses(containingClass).filter(declarationPredicate).findAny().orElse(null);
     }
 
-    private static Predicate<ValaDeclaration> fieldPredicate(PsiNamedElement myElement) {
+    public static PsiElement resolveAsThisClassFieldReference(PsiNamedElement myElement) {
+        return resolveAsThisClassReference(myElement, fieldWithName(myElement));
+    }
+
+    private static PsiElement resolveAsClassFieldReference(ValaMemberAccess myElement, ValaDeclarationContainer containingClass) {
+        Predicate<ValaDeclaration> declarationPredicate;
+        if (shouldLookForDelegates(myElement)) {
+            declarationPredicate = delegateWithName(myElement);
+        } else {
+            declarationPredicate = fieldWithName(myElement);
+        }
+        return declarationsIncludingSuperclasses(containingClass).filter(declarationPredicate).findAny().orElse(null);
+    }
+
+    private static Predicate<ValaDeclaration> fieldWithName(PsiNamedElement myElement) {
         return (declaration) -> declaration instanceof ValaFieldDeclaration && myElement.getName().equals(((ValaFieldDeclaration) declaration).getName());
+    }
+
+    private static Predicate<ValaDeclaration> delegateWithName(PsiNamedElement myElement) {
+        return (declaration) -> declaration instanceof ValaDelegateDeclaration && myElement.getName().equals(((ValaDelegateDeclaration) declaration).getName());
     }
 
     private static boolean shouldLookForDelegates(ValaMemberAccess myElement) {

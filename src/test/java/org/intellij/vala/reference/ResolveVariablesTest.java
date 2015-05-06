@@ -97,6 +97,10 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
         expect(ValaIdentifier.class).referencesTo(allOf(instanceOf(ValaFieldDeclaration.class), hasName("field")));
     }
 
+    public void testReferenceToEnumValue() {
+        expect(ValaIdentifier.class).referencesTo(allOf(instanceOf(ValaEnumvalue.class), hasName("MY_VALUE_1")));
+    }
+
     private ReferenceExpectation expect(Class<? extends PsiElement> psiElementClass) {
         return new ReferenceExpectation(psiElementClass);
     }

@@ -20,7 +20,7 @@ import static org.intellij.vala.psi.impl.ValaPsiElementUtil.getLastPart;
 public class ValaPsiImplUtil {
 
     public static PsiReference getReference(ValaSimpleName simpleName) {
-        return ValaSimpleNameReferenceFactory.INSTANCE.create(simpleName);
+        return simpleName.getIdentifier().getReference();
     }
 
     public static PsiReference getReference(ValaSymbolPart part) {
@@ -109,6 +109,10 @@ public class ValaPsiImplUtil {
 
     public static String getName(ValaDelegateDeclaration methodDeclaration) {
         return methodDeclaration.getIdentifier().getText();
+    }
+
+    public static String getName(ValaEnumvalue enumvalue) {
+        return enumvalue.getIdentifier().getName();
     }
 
     public static QualifiedName getQName(ValaDelegateDeclaration methodDeclaration) {
@@ -361,6 +365,8 @@ public class ValaPsiImplUtil {
             PsiElement resolved = reference.resolve();
             if (resolved instanceof HasTypeDescriptor) {
                 return ((HasTypeDescriptor) resolved).getTypeDescriptor();
+            } else if (resolved instanceof ValaTypeDeclaration) {
+                return ReferenceTypeDescriptor.forQualifiedName(((ValaTypeDeclaration) resolved).getQName());
             }
         }
         return null;

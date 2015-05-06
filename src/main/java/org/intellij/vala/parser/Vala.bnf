@@ -325,7 +325,7 @@ enum_body ::= "{" enumvalues ( ";"  enum_member* )? "}"
 
 enum_member ::= attributes? ( method_declaration | constant_declaration)
 enumvalues ::= enumvalue ( "," enumvalue )*
-enumvalue ::= attributes? identifier ( "=" expression )?
+enumvalue ::= attributes? identifier ( "=" expression )? {methods=[getName setName] implements="com.intellij.psi.PsiNamedElement"}
 errordomain_declaration ::= access_modifier? type_declaration_modifiers? "errordomain" symbol
                             "{" errorcodes ( ";" method_declaration* )? "}" {pin=3}
 errorcodes ::= errorcode ( "," errorcode )*
