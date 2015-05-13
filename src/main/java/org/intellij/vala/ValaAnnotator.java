@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement;
 import org.intellij.vala.psi.ValaAttribute;
 import org.intellij.vala.psi.ValaFieldDeclaration;
 import org.intellij.vala.psi.ValaIdentifier;
-import org.intellij.vala.psi.impl.ValaMemberPartImpl;
 import org.jetbrains.annotations.NotNull;
 
 public class ValaAnnotator implements Annotator {
@@ -24,7 +23,7 @@ public class ValaAnnotator implements Annotator {
     }
 
     private static boolean isAttribute(PsiElement psiElement) {
-        return psiElement instanceof ValaAttribute;
+        return psiElement instanceof ValaIdentifier && psiElement.getParent() instanceof ValaAttribute;
     }
 
     private static boolean isClassFieldAccess(PsiElement psiElement) {
