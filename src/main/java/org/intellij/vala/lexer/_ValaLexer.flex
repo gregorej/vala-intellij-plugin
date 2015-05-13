@@ -47,6 +47,7 @@ LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
 ID=[A-Za-z_][A-Za-z0-9_]*
+ESCAPED_ID=[A-Za-z0-9_]+
 VERBATIM_STRING_LITERAL=\"\"\"(.|\n|\r)*\"\"\"
 STRING_LITERAL=\"([^\"\\]|\\\"|\\'|\\)*\"
 REAL_LITERAL=-?[0-9]+\.[0-9]+
@@ -223,6 +224,6 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
 }
 
 <AT_SGN> {
-  {ID}                   		 { popState(); return ID; }
+  {ESCAPED_ID}                   		 { popState(); return ID; }
   [^]                            { popState(); yypushback(yylength()); return TEMPLATE_STRING_OPEN; }
 }

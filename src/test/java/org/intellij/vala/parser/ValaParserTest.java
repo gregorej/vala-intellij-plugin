@@ -92,4 +92,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testEnumWithMethodsWithAttributes() {
         doTest(true);
     }
+
+    public void testConstantNameStartingWithDecimal() {
+        doTest(true);
+    }
 }
