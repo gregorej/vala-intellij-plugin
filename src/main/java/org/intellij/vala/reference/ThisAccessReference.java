@@ -8,6 +8,8 @@ import org.intellij.vala.psi.ValaThisAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public class ThisAccessReference extends PsiReferenceBase<ValaThisAccess> {
 
     public ThisAccessReference(@NotNull ValaThisAccess element) {
@@ -18,6 +20,10 @@ public class ThisAccessReference extends PsiReferenceBase<ValaThisAccess> {
     @Override
     public PsiElement resolve() {
         return PsiTreeUtil.getParentOfType(myElement, ValaDeclarationContainer.class, false);
+    }
+
+    public static Optional<PsiElement> resolve(ValaThisAccess thisAccess) {
+        return Optional.ofNullable(PsiTreeUtil.getParentOfType(thisAccess, ValaDeclarationContainer.class, false));
     }
 
     @NotNull

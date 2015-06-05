@@ -1,77 +1,76 @@
 package org.intellij.vala.reference;
 
 
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.search.GlobalSearchScope;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.impl.QualifiedNameBuilder;
 import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 import static org.intellij.vala.psi.impl.ValaPsiImplUtil.getImportedNamespacesAvailableFor;
 
 public class ValaConstructorReference extends PsiReferenceBase<ValaMemberPart> {
 
-    private Project project;
-
     public ValaConstructorReference(ValaMemberPart element) {
         super(element, new TextRange(0, element.getTextLength()));
-        project = element.getProject();
-
     }
 
     @Nullable
     @Override
     public PsiElement resolve() {
-        for (QualifiedName name : getImportedNamespacesAvailableFor(myElement)) {
-            PsiElement result = resolveWithRoot(name);
-            if (result != null) {
+        return resolve(myElement).orElse(null);
+    }
+
+    public static Optional<? extends PsiElement> resolve(ValaMemberPart memberPart) {
+        for (QualifiedName name : getImportedNamespacesAvailableFor(memberPart)) {
+            Optional<? extends PsiElement> result = resolveWithRoot(memberPart, name);
+            if (result.isPresent()) {
                 return result;
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    private PsiElement resolveWithRoot(QualifiedName rootName) {
-        QualifiedName originalQualifiedName = rootName.append(QualifiedNameBuilder.from((ValaMember) myElement.getParent()));
+    private static Optional<? extends PsiElement> resolveWithRoot(ValaMemberPart memberPart, QualifiedName rootName) {
+        QualifiedName originalQualifiedName = rootName.append(QualifiedNameBuilder.from((ValaMember) memberPart.getParent()));
         QualifiedName maybeDefaultConstructorQualifiedName = originalQualifiedName.append(originalQualifiedName.getTail());
-        ValaDeclaration defaultConstructor = resolve(maybeDefaultConstructorQualifiedName);
-        if (defaultConstructor != null) {
+        Optional<ValaDeclaration> defaultConstructor = resolve(memberPart, maybeDefaultConstructorQualifiedName);
+        if (defaultConstructor.isPresent()) {
             return defaultConstructor;
         }
-        ValaDeclaration classDeclaration = resolve(originalQualifiedName);
-        if (classDeclaration != null) {
+        Optional<ValaDeclaration> classDeclaration = resolve(memberPart, originalQualifiedName);
+        if (classDeclaration.isPresent()) {
             return classDeclaration;
         }
         if (originalQualifiedName.length() > 1) {
-            ValaDeclaration namedConstructorDeclaration = resolveAssumingIsNamedConstructor(originalQualifiedName);
-            if (namedConstructorDeclaration != null) {
+            Optional<ValaDeclaration> namedConstructorDeclaration = resolveAssumingIsNamedConstructor(memberPart, originalQualifiedName);
+            if (namedConstructorDeclaration.isPresent()) {
                 return namedConstructorDeclaration;
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    private ValaDeclaration resolveAssumingIsNamedConstructor(QualifiedName originalQualifiedName) {
+    private static Optional<ValaDeclaration> resolveAssumingIsNamedConstructor(ValaMemberPart memberPart, QualifiedName originalQualifiedName) {
         String maybeConstructorName = originalQualifiedName.getTail();
         QualifiedName maybeClassQualifiedName = originalQualifiedName.getPrefix(originalQualifiedName.length() - 1);
         String maybeClassName = maybeClassQualifiedName.getTail();
         QualifiedName maybeNamedConstructorQualifiedName = maybeClassQualifiedName.append(maybeClassName).append(maybeConstructorName);
-        return resolve(maybeNamedConstructorQualifiedName);
+        return resolve(memberPart, maybeNamedConstructorQualifiedName);
     }
 
-    @Nullable
-    private ValaDeclaration resolve(QualifiedName qualifiedName) {
+    private static Optional<ValaDeclaration> resolve(ValaMemberPart memberPart, QualifiedName qualifiedName) {
         final DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
-        ValaDeclaration foundDeclaration = index.get(qualifiedName, project);
+        ValaDeclaration foundDeclaration = index.get(qualifiedName, memberPart.getProject());
         if (foundDeclaration instanceof ValaClassDeclaration || foundDeclaration instanceof ValaCreationMethodDeclaration) {
-            return foundDeclaration;
+            return Optional.of(foundDeclaration);
         }
-        return null;
+        return Optional.empty();
     }
 
     @NotNull

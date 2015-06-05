@@ -13,6 +13,8 @@ import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 import static org.intellij.vala.psi.impl.ValaPsiImplUtil.getImportedNamespacesAvailableFor;
 
 
@@ -28,29 +30,33 @@ public class ValaTypeReference extends PsiReferenceBase<ValaSymbol> {
     @Nullable
     @Override
     public PsiElement resolve() {
-        final QualifiedName qualifiedName = QualifiedNameBuilder.from(myElement);
-        PsiElement resolvedWithFullName = resolve(qualifiedName);
-        if (resolvedWithFullName != null) {
+        return resolve(myElement).orElse(null);
+    }
+
+    public static Optional<PsiElement> resolve(ValaSymbol symbol) {
+        final QualifiedName qualifiedName = QualifiedNameBuilder.from(symbol);
+        Optional<PsiElement> resolvedWithFullName = resolve(symbol, qualifiedName);
+        if (resolvedWithFullName.isPresent()) {
             return resolvedWithFullName;
         } else {
-            return resolveInImportedNamespaces();
+            return resolveInImportedNamespaces(symbol);
         }
     }
 
-    private PsiElement resolve(QualifiedName qualifiedName) {
+    private static Optional<PsiElement> resolve(ValaSymbol symbol, QualifiedName qualifiedName) {
         final DeclarationQualifiedNameIndex index = DeclarationQualifiedNameIndex.getInstance();
-        return index.get(qualifiedName, project);
+        return Optional.ofNullable(index.get(qualifiedName, symbol.getProject()));
     }
 
-    private PsiElement resolveInImportedNamespaces() {
-        for (QualifiedName importedName : getImportedNamespacesAvailableFor(myElement)) {
-            QualifiedName nameToTry = QualifiedNameBuilder.append(importedName, myElement);
-            PsiElement foundElement = resolve(nameToTry);
-            if (foundElement != null) {
+    private static Optional<PsiElement> resolveInImportedNamespaces(ValaSymbol symbol) {
+        for (QualifiedName importedName : getImportedNamespacesAvailableFor(symbol)) {
+            QualifiedName nameToTry = QualifiedNameBuilder.append(importedName, symbol);
+            Optional<PsiElement> foundElement = resolve(symbol, nameToTry);
+            if (foundElement.isPresent()) {
                 return foundElement;
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @NotNull

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -41,14 +42,18 @@ public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
     @Nullable
     @Override
     public PsiElement resolve() {
-        PsiElement parent = myElement.getParent();
+        return resolve(myElement).orElse(null);
+    }
+
+    public static Optional<PsiElement> resolve(ValaIdentifier identifier) {
+        PsiElement parent = identifier.getParent();
+        PsiElement result = null;
         if (parent instanceof ValaMemberAccess) {
-            return resolveAsOtherObjectFieldReference((ValaMemberAccess) parent);
+            result =  resolveAsOtherObjectFieldReference((ValaMemberAccess) parent);
         } else if (parent instanceof ValaSimpleName) {
-            return resolveAsDirectReference((ValaSimpleName) parent);
-        } else {
-            return null;
+            result = resolveAsDirectReference((ValaSimpleName) parent);
         }
+        return Optional.ofNullable(result);
     }
 
     private static PsiElement resolveAsDirectReference(ValaSimpleName simpleName) {
@@ -76,7 +81,7 @@ public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
         return null;
     }
 
-    private PsiElement resolveAsOtherObjectFieldReference(ValaMemberAccess memberAccess) {
+    private static PsiElement resolveAsOtherObjectFieldReference(ValaMemberAccess memberAccess) {
         ValaDeclaration objectTypeDeclaration = resolveObjectType(memberAccess);
         if (objectTypeDeclaration instanceof ValaEnumDeclaration) {
             return resolveAsEnumValue(memberAccess, (ValaEnumDeclaration) objectTypeDeclaration);
@@ -116,11 +121,11 @@ public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
     }
 
     private static Predicate<ValaDeclaration> fieldWithName(PsiNamedElement myElement) {
-        return (declaration) -> declaration instanceof ValaFieldDeclaration && myElement.getName().equals(((ValaFieldDeclaration) declaration).getName());
+        return (declaration) -> declaration instanceof ValaFieldDeclaration && myElement.getName().equals(declaration.getName());
     }
 
     private static Predicate<ValaDeclaration> delegateWithName(PsiNamedElement myElement) {
-        return (declaration) -> declaration instanceof ValaDelegateDeclaration && myElement.getName().equals(((ValaDelegateDeclaration) declaration).getName());
+        return (declaration) -> declaration instanceof ValaDelegateDeclaration && myElement.getName().equals(declaration.getName());
     }
 
     private static boolean shouldLookForDelegates(ValaMemberAccess myElement) {

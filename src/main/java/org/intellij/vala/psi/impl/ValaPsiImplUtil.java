@@ -24,6 +24,18 @@ public class ValaPsiImplUtil {
         return simpleName.getIdentifier().getReference();
     }
 
+    public static Optional<PsiElement> resolve(ValaSimpleName simpleName) {
+        return simpleName.getIdentifier().resolve();
+    }
+
+    public static Optional<PsiElement> resolve(ValaIdentifier identifier) {
+        return ValaIdentifierReference.resolve(identifier);
+    }
+
+    public static Optional<PsiElement> resolve(ValaSymbolPart symbolPart) {
+        return SymbolReferenceRetriever.resolve(symbolPart);
+    }
+
     public static PsiReference getReference(ValaSymbolPart part) {
         return SymbolReferenceRetriever.getReference(part);
     }
@@ -160,12 +172,24 @@ public class ValaPsiImplUtil {
         return ValaMemberPartReferenceFactory.INSTANCE.create(memberPart);
     }
 
+    public static Optional<PsiElement> resolve(ValaMemberPart memberPart) {
+        return (Optional<PsiElement>) ValaMemberPartReferenceFactory.resolve(memberPart);
+    }
+
     public static PsiReference getReference(ValaThisAccess thisAccess) {
         return new ThisAccessReference(thisAccess);
     }
 
+    public static Optional<PsiElement> resolve(ValaThisAccess thisAccess) {
+        return ThisAccessReference.resolve(thisAccess);
+    }
+
     public static PsiReference getReference(ValaMemberAccess memberAccess) {
         return memberAccess.getIdentifier().getReference();
+    }
+
+    public static Optional<PsiElement> resolve(ValaMemberAccess memberAccess) {
+        return memberAccess.getIdentifier().resolve();
     }
 
     public static PsiReference getReference(ValaIdentifier identifier) {
@@ -176,6 +200,14 @@ public class ValaPsiImplUtil {
         ValaChainAccessPart previous = methodCall.getPrevious();
         if (previous instanceof ValaMemberAccess) {
             return ((ValaMemberAccess) previous).getIdentifier().getReference();
+        }
+        return null;
+    }
+
+    public static Optional<PsiElement> resolve(ValaMethodCall methodCall) {
+        ValaChainAccessPart previous = methodCall.getPrevious();
+        if (previous instanceof ValaMemberAccess) {
+            return ((ValaMemberAccess) previous).getIdentifier().resolve();
         }
         return null;
     }
@@ -385,16 +417,15 @@ public class ValaPsiImplUtil {
 
     @Nullable
     public static ValaTypeDescriptor getTypeDescriptor(ValaSimpleName simpleName) {
-        PsiReference reference = simpleName.getReference();
-        if (reference != null) {
-            PsiElement resolved = reference.resolve();
+        return simpleName.resolve().map(resolved -> {
             if (resolved instanceof HasTypeDescriptor) {
                 return ((HasTypeDescriptor) resolved).getTypeDescriptor();
             } else if (resolved instanceof ValaTypeDeclaration) {
                 return ReferenceTypeDescriptor.forQualifiedName(((ValaTypeDeclaration) resolved).getQName());
+            } else {
+                return null;
             }
-        }
-        return null;
+        }).orElse(null);
     }
 
     @Nullable
@@ -425,14 +456,12 @@ public class ValaPsiImplUtil {
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaMemberAccess memberAccess) {
-        PsiReference reference = memberAccess.getIdentifier().getReference();
-        if (reference != null) {
-            PsiElement resolved = reference.resolve();
+        return memberAccess.getIdentifier().resolve().map(resolved -> {
             if (resolved instanceof HasTypeDescriptor) {
                 return ((HasTypeDescriptor) resolved).getTypeDescriptor();
             }
-        }
-        return null;
+            return null;
+        }).orElse(null);
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaPointerMemberAccess pointerMemberAccess) {
@@ -441,19 +470,6 @@ public class ValaPsiImplUtil {
 
     public static ValaInstantiableTypeDeclaration getTypeDeclaration(ValaCreationMethodDeclaration creationMethodDeclaration) {
         return PsiTreeUtil.getParentOfType(creationMethodDeclaration, ValaInstantiableTypeDeclaration.class);
-    }
-
-    private static ValaTypeDescriptor getTypeDescriptorPointedByLastMemberPart(ValaMember member) {
-        ValaMemberPart lastMemberPart = getLastPart(member);
-        PsiReference reference = lastMemberPart.getReference();
-        if (reference == null) {
-            return null;
-        }
-        PsiElement resolvedElement = reference.resolve();
-        if (resolvedElement instanceof HasTypeDescriptor) {
-            return ((HasTypeDescriptor) resolvedElement).getTypeDescriptor();
-        }
-        return null;
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaChainAccessPart accessPart) {
