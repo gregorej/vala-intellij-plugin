@@ -14,6 +14,7 @@ import org.intellij.vala.reference.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.intellij.vala.psi.impl.ValaPsiElementUtil.getLastPart;
 
@@ -33,6 +34,30 @@ public class ValaPsiImplUtil {
 
     public static ValaNamespaceDeclaration getNamespace(ValaNamespaceMember valaClassDeclaration) {
         return PsiTreeUtil.getParentOfType(valaClassDeclaration, ValaNamespaceDeclaration.class, false);
+    }
+
+    public static ValaPsiElement getNameIdentifier(ValaTypeDeclaration typeDeclaration) {
+        return ValaPsiElementUtil.getLastPart(typeDeclaration.getSymbol());
+    }
+
+    public static ValaPsiElement getNameIdentifier(ValaDelegateDeclaration delegateDeclaration) {
+        return delegateDeclaration.getIdentifier();
+    }
+
+    public static ValaPsiElement getNameIdentifier(ValaCreationMethodDeclaration creationMethodDeclaration) {
+        return ValaPsiElementUtil.getLastPart(creationMethodDeclaration.getSymbol());
+    }
+
+    public static ValaPsiElement getNameIdentifier(ValaFieldDeclaration fieldDeclaration) {
+        return fieldDeclaration.getIdentifier();
+    }
+
+    public static ValaPsiElement getNameIdentifier(ValaNamespaceDeclaration namespaceDeclaration) {
+        return ValaPsiElementUtil.getLastPart(namespaceDeclaration.getSymbol());
+    }
+
+    public static String getName(ValaPsiNameIdentifierOwner nameIdentifierOwner) {
+        return Optional.ofNullable(nameIdentifierOwner.getNameIdentifier()).map(PsiElement::getText).orElse(null);
     }
 
     public static String getName(ValaClassDeclaration classDeclaration) {
