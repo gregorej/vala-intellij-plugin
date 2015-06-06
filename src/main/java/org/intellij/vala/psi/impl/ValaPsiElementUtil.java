@@ -29,15 +29,6 @@ public class ValaPsiElementUtil {
         return !parent.getChainAccessPartList().isEmpty() && parent.getChainAccessPartList().get(0) instanceof ValaMethodCall;
     }
 
-    public static PsiReference getTypeReference(ValaFieldDeclaration fieldDeclaration) {
-        ValaSymbol symbol = fieldDeclaration.getTypeWeak().getTypeBase().getSymbol();
-        if (symbol != null) {
-            List<ValaSymbolPart> parts = symbol.getSymbolPartList();
-            return parts.get(parts.size() - 1).getReference();
-        }
-        return null;
-    }
-
     public static ValaDeclaration findTypeDeclaration(PsiElement resolved) {
         if (resolved instanceof HasTypeDescriptor) {
             ValaTypeDescriptor typeDescriptor = ((HasTypeDescriptor) resolved).getTypeDescriptor();

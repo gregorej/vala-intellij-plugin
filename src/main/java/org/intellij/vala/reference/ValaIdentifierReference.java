@@ -146,16 +146,16 @@ public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
 
     @Nullable
     private static ValaDeclaration resolveObjectType(ValaMemberAccess memberAccess) {
-        PsiReference parentRef = getPrecedingReference(memberAccess).getReference();
-        if (parentRef == null) {
-            return null;
-        }
-        PsiElement resolved = parentRef.resolve();
-        if (resolved instanceof ValaTypeDeclaration) {
-            return (ValaDeclaration) resolved;
-        }
-        if (resolved != null) {
-            return findTypeDeclaration(resolved);
+        PsiElement precedingElement = getPrecedingReference(memberAccess);
+        if (precedingElement instanceof ValaResolvableElement) {
+            return ((ValaResolvableElement) precedingElement).resolve().map(resolved -> {
+                if (resolved instanceof ValaTypeDeclaration) {
+                    return (ValaDeclaration) resolved;
+                }
+                else {
+                    return findTypeDeclaration(resolved);
+                }
+            }).orElse(null);
         }
         return null;
     }
