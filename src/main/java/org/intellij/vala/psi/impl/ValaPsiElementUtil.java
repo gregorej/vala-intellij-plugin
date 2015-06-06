@@ -20,7 +20,6 @@ public class ValaPsiElementUtil {
         return lastPart;
     }
 
-
     public static boolean isMethodCall(ValaSimpleName simpleName) {
         if (! (simpleName.getParent() instanceof ValaPrimaryExpression)) {
             return false;
@@ -43,25 +42,6 @@ public class ValaPsiElementUtil {
         return null;
     }
 
-    private static PsiElement resolveReference(PsiElement referenceHolder) {
-        if (referenceHolder == null) {
-            return null;
-        }
-        PsiReference reference = referenceHolder.getReference();
-        if (reference != null) {
-            return reference.resolve();
-        }
-        return null;
-    }
-
-    private static PsiElement resolveReference(ValaSymbol symbol) {
-        List<ValaSymbolPart> symbolParts = symbol.getSymbolPartList();
-        if (symbolParts.isEmpty()) {
-            return null;
-        }
-        return resolveReference(symbolParts.get(symbolParts.size() - 1));
-    }
-
     @Nullable
     public static ValaDelegateDeclaration getMethodDeclaration(ValaMethodCall valaMethodCall) {
         ValaChainAccessPart previousPart = valaMethodCall.getPrevious();
@@ -76,34 +56,12 @@ public class ValaPsiElementUtil {
             return null;
         }
         ValaMemberAccess memberAccess = (ValaMemberAccess) previousPart;
-        PsiElement resolved = resolveReference(memberAccess);
-        if (resolved instanceof ValaDelegateDeclaration) {
-            return (ValaDelegateDeclaration) resolved;
-        }
-        return null;
-    }
-
-    @Nullable
-    public static ValaTypeDeclaration getReturningTypeDeclaration(@NotNull ValaMethodDeclaration valaMethodDeclaration) {
-        ValaType type = valaMethodDeclaration.getType();
-        return getTypeDeclaration(type);
-    }
-
-    @Nullable
-    private static ValaTypeDeclaration getTypeDeclaration(@NotNull ValaType type) {
-        ValaTypeBase base = type.getTypeBase();
-        if (base == null) {
+        return memberAccess.resolve().map( resolved -> {
+            if (resolved instanceof ValaDelegateDeclaration) {
+                return (ValaDelegateDeclaration) resolved;
+            }
             return null;
-        }
-        ValaSymbol symbol = base.getSymbol();
-        if (symbol == null) {
-            return null;
-        }
-        PsiElement resolved = resolveReference(symbol);
-        if (resolved instanceof ValaTypeDeclaration) {
-            return (ValaTypeDeclaration) resolved;
-        }
-        return null;
+        }).orElse(null);
     }
 
     @NotNull
@@ -126,8 +84,9 @@ public class ValaPsiElementUtil {
     }
 
     private static ValaDelegateDeclaration getValaDelegateDeclaration(ValaPrimaryExpression parent) {
-        if (parent.getExpression() instanceof ValaSimpleName) {
-            return (ValaDelegateDeclaration) resolveReference(parent.getExpression());
+        final ValaExpression parentExpression = parent.getExpression();
+        if (parentExpression instanceof ValaSimpleName) {
+            return (ValaDelegateDeclaration) ((ValaSimpleName) parentExpression).resolve().orElse(null);
         }
         return null;
     }

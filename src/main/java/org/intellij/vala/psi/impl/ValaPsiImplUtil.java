@@ -36,6 +36,10 @@ public class ValaPsiImplUtil {
         return SymbolReferenceRetriever.resolve(symbolPart);
     }
 
+    public static Optional<PsiElement> resolve(ValaSymbol symbol) {
+        return SymbolReferenceRetriever.resolve(symbol);
+    }
+
     public static PsiReference getReference(ValaSymbolPart part) {
         return SymbolReferenceRetriever.getReference(part);
     }
