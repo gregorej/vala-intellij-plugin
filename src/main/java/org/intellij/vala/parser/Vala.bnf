@@ -182,15 +182,15 @@
   extends(".*statement|local_variable_declarations|block")=statement
   extends("namespace_declaration|errordomain_declaration|field_declaration|constant_declaration|delegate_declaration")=namespace_member
   extends("method_declaration")=delegate_declaration
-  implements("symbol_part|member_part|member_access") = "org.intellij.vala.psi.ValaPsiNameIdentifierOwner"
+  implements("symbol_part|member_part|member_access") = "org.intellij.vala.psi.ValaPsiNameIdentifierOwner, org.intellij.vala.psi.ValaResolvableElement"
   implements("interface_declaration") = "org.intellij.vala.psi.ValaTypeWithSuperTypes, org.intellij.vala.psi.ValaDeclarationContainer, org.intellij.vala.psi.ValaPsiNamedElement"
   implements("class_declaration|struct_declaration") = "org.intellij.vala.psi.ValaInstantiableTypeDeclaration, org.intellij.vala.psi.ValaTypeWithSuperTypes, org.intellij.vala.psi.ValaDeclarationContainer, org.intellij.vala.psi.ValaPsiNamedElement"
   implements("namespace_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaDeclarationContainer"
   implements("method_declaration|delegate_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
   implements("creation_method_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaPsiNamedElement"
   implements("field_declaration") = "org.intellij.vala.psi.ValaDeclaration, org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
-  implements("local_variable|parameter|simple_name") = "org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
-  implements("method_call|literal|chain_access_part")="org.intellij.vala.psi.HasTypeDescriptor"
+  implements("local_variable|parameter") = "org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor"
+  implements("literal|chain_access_part")="org.intellij.vala.psi.HasTypeDescriptor"
   implements("class_body|struct_body|enum_body|interface_body")="org.intellij.vala.psi.ValaTypeDeclarationBody"
   implements("enum_declaration")="org.intellij.vala.psi.ValaTypeDeclaration, org.intellij.vala.psi.ValaPsiNamedElement"
   implements("relational_operator|equality_operator|shift_operator|additive_operator|multiplicative_operator")="org.intellij.vala.psi.ValaBinaryOperator"
@@ -198,7 +198,7 @@
 
 vala_module ::= using_directive * namespace_member *
 symbol ::= symbol_part ( "." symbol_part )*
-symbol_part ::= ( "global::" identifier ) | identifier {methods=[getName setName getReference getNameIdentifier resolve]}
+symbol_part ::= ( "global::" identifier ) | identifier {methods=[getName setName getReference getNameIdentifier resolve] implements="org.intellij.vala.psi.ValaResolvableElement"}
 
 built_in_type ::= integral_type | floating_point_type | "bool" | "string" | "void" | "unichar"
 private integral_type ::= "char" | "uchar" | "short" | "ushort" | "long" | "ulong" | "size_t" | "ssize_t" | int_type
@@ -260,7 +260,7 @@ chain_access_part ::= member_access | pointer_member_access | method_call | elem
 element_access ::= "[" array_size "]"
 sizeof_expression ::= "sizeof" "(" type ")" {pin=1}
 typeof_expression ::= "typeof" "(" type ")" {pin=1}
-simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference getName setName getTypeDescriptor resolve]}
+simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference getName setName getTypeDescriptor resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor, org.intellij.vala.psi.ValaResolvableElement"}
 
 literal ::= "true" | "false" | "null" | integer_literal | real_literal | character_literal | string_literal | verbatim_string_literal | template_string_literal {methods=[getTypeDescriptor]}
 template_string_literal ::= "@" string_literal
@@ -280,7 +280,7 @@ lambda_expression ::= lambda_expression_params "=>" lambda_expression_body
 lambda_expression_body ::= expression | block
 
 yield_expression ::= "yield" ( base_access "." )? member method_call
-method_call ::= "(" arguments? ")" object_initializer? {methods=[getMethodDeclaration getTypeDescriptor getReference resolve]}
+method_call ::= "(" arguments? ")" object_initializer? {methods=[getMethodDeclaration getTypeDescriptor getReference resolve] implements="org.intellij.vala.psi.HasTypeDescriptor, org.intellij.vala.psi.ValaResolvableElement"}
 
 member_declaration_modifiers ::= member_declaration_modifier ( " " member_declaration_modifier )*
 member_declaration_modifier ::= "async" | "class" | "extern" | "inline" | "static" | "abstract" | "virtual" | "override" | "new"
@@ -400,7 +400,7 @@ property_declaration_modifiers ::= property_declaration_modifier ( " " property_
 property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "abstract" | "virtual" | "override" | "new"
 
 tuple ::= "(" expression ( "," expression )* ")"
-this_access ::= "this" {methods=[getReference resolve]}
+this_access ::= "this" {methods=[getReference resolve] implements="org.intellij.vala.psi.ValaResolvableElement"}
 base_access ::= "base"
 object_or_array_creation_expression ::= "new" (member | built_in_type) ( object_creation_expression | array_creation_expression ) {pin=1}
 object_creation_expression ::= "(" ( arguments )? ")" ( object_initializer )?
@@ -486,5 +486,5 @@ type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? type_base
 array_type ::= "[" array_size "]" ( "?" )?
 array_size ::= expression? ( "," expression? ) *
 inline_array_type ::= "[" integer_literal "]"
-identifier ::= ID {methods=[getName setName getReference resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement"}
+identifier ::= ID {methods=[getName setName getReference resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.ValaResolvableElement"}
 
