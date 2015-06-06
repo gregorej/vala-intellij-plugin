@@ -198,7 +198,7 @@
 
 vala_module ::= using_directive * namespace_member *
 symbol ::= symbol_part ( "." symbol_part )* {methods=[resolve] implements="org.intellij.vala.psi.ValaResolvableElement"}
-symbol_part ::= ( "global::" identifier ) | identifier {methods=[getName setName getReference getNameIdentifier resolve] implements="org.intellij.vala.psi.ValaResolvableElement"}
+symbol_part ::= ( "global::" identifier ) | identifier {methods=[getName setName getReference getNameIdentifier resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.ValaResolvableElement"}
 
 built_in_type ::= integral_type | floating_point_type | "bool" | "string" | "void" | "unichar"
 private integral_type ::= "char" | "uchar" | "short" | "ushort" | "long" | "ulong" | "size_t" | "ssize_t" | int_type

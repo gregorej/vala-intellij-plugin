@@ -8,12 +8,12 @@ import org.hamcrest.CustomTypeSafeMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.intellij.vala.psi.ValaCreationMethodDeclaration;
-import org.intellij.vala.psi.ValaMethodDeclaration;
 
 import java.util.Collection;
 
 import static org.hamcrest.Matchers.*;
 import static org.intellij.vala.psi.PsiMatchers.hasName;
+import static org.intellij.vala.psi.PsiMatchers.nameOfMethodDeclaration;
 import static org.junit.Assert.assertThat;
 
 public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase {
@@ -29,15 +29,15 @@ public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase 
     public void testSimpleMethodUsage() {
         Collection<UsageInfo> foundUsages = myFixture.testFindUsages("SimpleMethod.vala");
 
-        assertThat(foundUsages, contains(resolvingTo(methodDeclaration("some_method"))));
+        assertThat(foundUsages, contains(resolvingTo(nameOfMethodDeclaration("some_method"))));
     }
 
     public void testTwoMethodUsages() {
         Collection<UsageInfo> foundUsages = myFixture.testFindUsages("TwoMethodUsages.vala");
 
         assertThat(foundUsages, contains(
-                resolvingTo(methodDeclaration("some_method")),
-                resolvingTo(methodDeclaration("some_method"))
+                resolvingTo(nameOfMethodDeclaration("some_method")),
+                resolvingTo(nameOfMethodDeclaration("some_method"))
         ));
     }
 
@@ -58,10 +58,6 @@ public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase 
 
     private static Matcher<PsiElement> constructor(String name) {
         return allOf(instanceOf(ValaCreationMethodDeclaration.class), hasName(name));
-    }
-
-    private static Matcher<PsiElement> methodDeclaration(String name) {
-        return allOf(instanceOf(ValaMethodDeclaration.class), hasName(name));
     }
 
     private static Matcher<UsageInfo> resolvingTo(final Matcher<? super PsiElement> resolutionTarget) {

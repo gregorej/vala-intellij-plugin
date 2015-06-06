@@ -1,13 +1,17 @@
 package org.intellij.vala.reference;
 
 import com.intellij.psi.PsiElement;
-import org.intellij.vala.psi.*;
+import org.intellij.vala.psi.BasicTypeDescriptor;
+import org.intellij.vala.psi.ValaExpression;
+import org.intellij.vala.psi.ValaIdentifier;
+import org.intellij.vala.psi.ValaTypeDescriptor;
 import org.intellij.vala.psi.inference.ExpressionTypeInference;
 
 import java.io.IOException;
 
-import static org.hamcrest.Matchers.*;
-import static org.intellij.vala.psi.PsiMatchers.hasName;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.intellij.vala.psi.PsiMatchers.nameOfMethodDeclaration;
 import static org.intellij.vala.psi.impl.QualifiedNameBuilder.nameOf;
 import static org.junit.Assert.assertThat;
 
@@ -72,7 +76,7 @@ public class TypeInferenceTest extends ValaReferenceTestBase {
         myFixture.configureByFiles(getTestName(false) + ".vala");
 
         PsiElement referenced = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
-        assertThat(referenced, allOf(instanceOf(ValaMethodDeclaration.class), hasName("getName")));
+        assertThat(referenced, nameOfMethodDeclaration("getName"));
     }
 
     public void testInferFromCast() throws IOException {

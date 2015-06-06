@@ -8,6 +8,8 @@ import org.intellij.vala.reference.ValaReferenceTestBase;
 import static org.hamcrest.Matchers.*;
 import static org.intellij.vala.psi.PsiMatchers.hasName;
 import static org.intellij.vala.psi.PsiMatchers.hasParentOfType;
+import static org.intellij.vala.psi.PsiMatchers.identifier;
+import static org.intellij.vala.psi.PsiMatchers.nameOfMethodDeclaration;
 import static org.junit.Assert.assertThat;
 
 public class ResolveMethodDeclaration extends ValaReferenceTestBase {
@@ -17,7 +19,7 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaSimpleName.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName(equalTo("method1"))));
+        assertThat(referencedElement, nameOfMethodDeclaration("method1"));
     }
 
     public void testReferenceMethodInSameFileSameNamespaceLevel() {
@@ -25,7 +27,7 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaSimpleName.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName(equalTo("run"))));
+        assertThat(referencedElement, nameOfMethodDeclaration("run"));
     }
 
     public void testReferenceToMethodFromCallOnExplicitObject() {
@@ -33,7 +35,7 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName("open")));
+        assertThat(referencedElement, nameOfMethodDeclaration("open"));
     }
 
     public void testReferenceToMethodFromCallOnMethodCallChain() {
@@ -41,7 +43,7 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName("getName")));
+        assertThat(referencedElement, nameOfMethodDeclaration("getName"));
     }
 
     public void testReferenceToMethodInSuperClass() {
@@ -49,7 +51,7 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaMethodDeclaration.class), hasName("getCount")));
+        assertThat(referencedElement, nameOfMethodDeclaration("getCount"));
     }
 
     public void testReferenceToDelegate() {
@@ -57,7 +59,7 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaDelegateDeclaration.class), hasName("get_size")));
+        assertThat(referencedElement, allOf(hasParentOfType(ValaDelegateDeclaration.class), identifier("get_size")));
     }
 
     public void testReferenceToDelegateInInterface() {
@@ -65,7 +67,7 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaDelegateDeclaration.class), hasName("method"),
+        assertThat(referencedElement, allOf(hasParentOfType(ValaDelegateDeclaration.class), identifier("method"),
                 hasParentOfType(ValaInterfaceDeclaration.class)));
     }
 }

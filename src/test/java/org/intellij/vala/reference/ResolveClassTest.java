@@ -138,7 +138,8 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaEnumDeclaration.class), hasName("MyEnum")));
+        assertThat(referencedElement,
+                allOf(hasParentOfType(ValaEnumDeclaration.class), hasName("MyEnum"), instanceOf(ValaSymbolPart.class)));
     }
 
 }

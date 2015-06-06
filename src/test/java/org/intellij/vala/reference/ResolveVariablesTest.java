@@ -9,6 +9,8 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.nullValue;
 import static org.intellij.vala.psi.PsiMatchers.hasName;
+import static org.intellij.vala.psi.PsiMatchers.hasParentOfType;
+import static org.intellij.vala.psi.PsiMatchers.identifier;
 import static org.junit.Assert.assertThat;
 
 public class ResolveVariablesTest extends ValaReferenceTestBase {
@@ -34,7 +36,7 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("status")));
+        assertThat(referencedElement, allOf(hasParentOfType(ValaFieldDeclaration.class), identifier("status")));
     }
 
     public void testReferenceToFieldInCurrentClass() {
@@ -42,7 +44,7 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaSimpleName.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("status")));
+        assertThat(referencedElement, allOf(hasParentOfType(ValaFieldDeclaration.class), identifier("status")));
     }
 
     public void testReferenceToMethodArgument() {
@@ -66,7 +68,7 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("field")));
+        assertThat(referencedElement, allOf(hasParentOfType(ValaFieldDeclaration.class), identifier("field")));
     }
 
     public void testReferenceToFieldInExplicitObjectIndirect() {
@@ -74,7 +76,7 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("next")));
+        assertThat(referencedElement, allOf(identifier("next"), hasParentOfType(ValaFieldDeclaration.class)));
     }
 
     public void testReferenceToNonExistentVariable() {
@@ -90,11 +92,11 @@ public class ResolveVariablesTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaFieldDeclaration.class), hasName("count")));
+        assertThat(referencedElement, allOf(hasParentOfType(ValaFieldDeclaration.class), identifier("count")));
     }
 
     public void testReferenceToFieldInInferredObject() {
-        expect(ValaIdentifier.class).referencesTo(allOf(instanceOf(ValaFieldDeclaration.class), hasName("field")));
+        expect(ValaIdentifier.class).referencesTo(allOf(hasParentOfType(ValaFieldDeclaration.class), identifier("field")));
     }
 
     public void testReferenceToEnumValue() {

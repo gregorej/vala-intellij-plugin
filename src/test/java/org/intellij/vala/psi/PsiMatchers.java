@@ -14,7 +14,9 @@ import org.intellij.vala.reference.ResolveClassTest;
 
 import static com.intellij.psi.impl.DebugUtil.psiToString;
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 
 public final class PsiMatchers {
 
@@ -90,6 +92,10 @@ public final class PsiMatchers {
         return hasName(equalTo(name));
     }
 
+    public static Matcher<? super PsiElement> identifier(String name) {
+        return allOf(hasName(name), instanceOf(ValaIdentifier.class));
+    }
+
 
     public static Matcher<PsiElement> aClassDeclarationThat(final Matcher<? super ValaClassDeclaration> declarationMatcher) {
         return new CustomTypeSafeMatcher<PsiElement>("a class declaration that " + declarationMatcher) {
@@ -103,5 +109,9 @@ public final class PsiMatchers {
                 declarationMatcher.describeMismatch(item, mismatchDescription);
             }
         };
+    }
+
+    public static Matcher<PsiElement> nameOfMethodDeclaration(String name) {
+        return allOf(hasParentOfType(ValaMethodDeclaration.class), identifier(name));
     }
 }

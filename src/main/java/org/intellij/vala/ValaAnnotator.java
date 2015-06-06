@@ -31,7 +31,6 @@ public class ValaAnnotator implements Annotator {
 
     private static boolean isClassFieldAccess(PsiElement psiElement) {
         return psiElement instanceof ValaIdentifier
-                && psiElement.getReference() != null
-                && psiElement.getReference().resolve() instanceof ValaFieldDeclaration;
+                && ((ValaIdentifier) psiElement).resolve().filter(resolved -> resolved instanceof ValaFieldDeclaration).isPresent();
     }
 }

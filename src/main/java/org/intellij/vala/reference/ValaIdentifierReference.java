@@ -42,7 +42,13 @@ public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
     @Nullable
     @Override
     public PsiElement resolve() {
-        return resolve(myElement).orElse(null);
+        return resolve(myElement).map(resolved -> {
+            if (resolved instanceof ValaPsiNameIdentifierOwner) {
+                return ((ValaPsiNameIdentifierOwner) resolved).getNameIdentifier();
+            } else {
+                return resolved;
+            }
+        }).orElse(null);
     }
 
     public static Optional<PsiElement> resolve(ValaIdentifier identifier) {

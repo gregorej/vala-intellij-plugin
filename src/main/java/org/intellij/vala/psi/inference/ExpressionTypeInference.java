@@ -141,16 +141,12 @@ public class ExpressionTypeInference {
     }
 
     public static ValaTypeDescriptor inferType(ValaSimpleName valaSimpleName) {
-        PsiReference reference = valaSimpleName.getReference();
-        if (reference == null) {
+        return valaSimpleName.resolve().map(resolved -> {
+            if (resolved instanceof HasTypeDescriptor) {
+                return ((HasTypeDescriptor) resolved).getTypeDescriptor();
+            }
             return null;
-        }
-        PsiElement resolved = reference.resolve();
-
-        if (resolved instanceof HasTypeDescriptor) {
-            return ((HasTypeDescriptor) resolved).getTypeDescriptor();
-        }
-        return null;
+        }).orElse(null);
     }
 
     public static ValaTypeDescriptor inferType(ValaRelationalExpression valaRelationalExpression) {
