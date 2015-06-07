@@ -20,10 +20,6 @@ import static org.intellij.vala.psi.impl.ValaPsiElementUtil.getLastPart;
 
 public class ValaPsiImplUtil {
 
-    public static PsiReference getReference(ValaSimpleName simpleName) {
-        return simpleName.getIdentifier().getReference();
-    }
-
     public static Optional<PsiElement> resolve(ValaSimpleName simpleName) {
         return simpleName.getIdentifier().resolve();
     }
@@ -38,10 +34,6 @@ public class ValaPsiImplUtil {
 
     public static Optional<PsiElement> resolve(ValaSymbol symbol) {
         return SymbolReferenceRetriever.resolve(symbol);
-    }
-
-    public static PsiReference getReference(ValaSymbolPart part) {
-        return SymbolReferenceRetriever.getReference(part);
     }
 
     public static PsiReference getReference(ValaType type) {
@@ -172,16 +164,12 @@ public class ValaPsiImplUtil {
         return QualifiedNameBuilder.from(creationMethodDeclaration);
     }
 
-    public static PsiReference getReference(ValaMemberPart memberPart) {
-        return ValaMemberPartReferenceFactory.INSTANCE.create(memberPart);
-    }
-
     public static Optional<PsiElement> resolve(ValaMemberPart memberPart) {
         return (Optional<PsiElement>) ValaMemberPartReferenceFactory.resolve(memberPart);
     }
 
-    public static PsiReference getReference(ValaThisAccess thisAccess) {
-        return new ThisAccessReference(thisAccess);
+    public static PsiReference getReference(ValaResolvableElement resolvableElement) {
+        return new ValaResolvableElementReference(resolvableElement);
     }
 
     public static Optional<PsiElement> resolve(ValaThisAccess thisAccess) {
@@ -194,10 +182,6 @@ public class ValaPsiImplUtil {
 
     public static Optional<PsiElement> resolve(ValaMemberAccess memberAccess) {
         return memberAccess.getIdentifier().resolve();
-    }
-
-    public static PsiReference getReference(ValaIdentifier identifier) {
-        return new ValaIdentifierReference(identifier);
     }
 
     public static PsiReference getReference(ValaMethodCall methodCall) {

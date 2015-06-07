@@ -7,6 +7,7 @@ import org.intellij.vala.psi.ValaSymbolPart;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.intellij.vala.psi.PsiMatchers.hasName;
+import static org.intellij.vala.psi.PsiMatchers.hasParentOfType;
 import static org.junit.Assert.assertThat;
 
 public class TypeReferenceTest extends ValaReferenceTestBase {
@@ -16,6 +17,6 @@ public class TypeReferenceTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaClassDeclaration.class), hasName("SomeType")));
+        assertThat(referencedElement, allOf(hasParentOfType(ValaClassDeclaration.class), instanceOf(ValaSymbolPart.class), hasName("SomeType")));
     }
 }

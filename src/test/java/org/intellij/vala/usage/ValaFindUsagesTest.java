@@ -8,11 +8,13 @@ import org.hamcrest.CustomTypeSafeMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.intellij.vala.psi.ValaCreationMethodDeclaration;
+import org.intellij.vala.psi.ValaSymbolPart;
 
 import java.util.Collection;
 
 import static org.hamcrest.Matchers.*;
 import static org.intellij.vala.psi.PsiMatchers.hasName;
+import static org.intellij.vala.psi.PsiMatchers.hasParentOfType;
 import static org.intellij.vala.psi.PsiMatchers.nameOfMethodDeclaration;
 import static org.junit.Assert.assertThat;
 
@@ -57,7 +59,7 @@ public class ValaFindUsagesTest extends LightPlatformCodeInsightFixtureTestCase 
     }
 
     private static Matcher<PsiElement> constructor(String name) {
-        return allOf(instanceOf(ValaCreationMethodDeclaration.class), hasName(name));
+        return allOf(hasParentOfType(ValaCreationMethodDeclaration.class), hasName(name), instanceOf(ValaSymbolPart.class));
     }
 
     private static Matcher<UsageInfo> resolvingTo(final Matcher<? super PsiElement> resolutionTarget) {

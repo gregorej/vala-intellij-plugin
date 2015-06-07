@@ -2,6 +2,7 @@ package org.intellij.vala.reference;
 
 
 import com.intellij.psi.PsiElement;
+import org.hamcrest.Matcher;
 import org.intellij.vala.psi.*;
 
 import static org.hamcrest.Matchers.*;
@@ -26,7 +27,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
-        assertThat(referencedElement, instanceOf(ValaClassDeclaration.class));
+        assertThat(referencedElement, classDeclaration());
     }
 
     public void testResolveClassDefinitionInAnotherFile() {
@@ -34,7 +35,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaClassDeclaration.class), isInFile(hasName(containsString("FileContainingClassDefinition")))));
+        assertThat(referencedElement, allOf(classDeclaration(), isInFile(hasName(containsString("FileContainingClassDefinition")))));
     }
 
     public void testResolveClassDefaultConstructorInAnotherFile() {
@@ -42,7 +43,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaClassDeclaration.class), isInFile(hasName(containsString("FileContainingClassDefinition")))));
+        assertThat(referencedElement, allOf(classDeclaration(), isInFile(hasName(containsString("FileContainingClassDefinition")))));
     }
 
     public void testResolveNamedConstructorInAnotherFile() {
@@ -50,7 +51,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaCreationMethodDeclaration.class), isInFile(hasName(containsString("ClassWithMultipleConstructors")))));
+        assertThat(referencedElement, allOf(hasParentOfType(ValaCreationMethodDeclaration.class), isInFile(hasName(containsString("ClassWithMultipleConstructors")))));
     }
 
     public void testResolveClassDefinitionWithFullyDeclaredNamespaceInSameFile() {
@@ -58,7 +59,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(aClassDeclarationThat(hasName("SomeClass")), isInFile(hasName(containsString("ResolveClassDefinitionWithFullyDeclaredNamespaceInSameFile")))));
+        assertThat(referencedElement, allOf(classDeclaration("SomeClass"), isInFile(hasName(containsString("ResolveClassDefinitionWithFullyDeclaredNamespaceInSameFile")))));
     }
 
     public void testResolveClassDefinitionInSameFileButInNestedNamespace() {
@@ -66,7 +67,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(aClassDeclarationThat(hasName("SomeClass")), isInFile(hasName(containsString("ResolveClassDefinitionInSameFileButInNestedNamespace")))));
+        assertThat(referencedElement, allOf(classDeclaration("SomeClass"), isInFile(hasName(containsString("ResolveClassDefinitionInSameFileButInNestedNamespace")))));
     }
 
     public void testResolveNamedConstructorForClassInImportedNamespace() {
@@ -74,7 +75,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaCreationMethodDeclaration.class), isInFile(hasName(containsString("ClassWithMultipleConstructorsInNamespace")))));
+        assertThat(referencedElement, allOf(hasParentOfType(ValaCreationMethodDeclaration.class), isInFile(hasName(containsString("ClassWithMultipleConstructorsInNamespace")))));
     }
 
     public void testDoNotResolveNamedConstructorForClassInImportedNamespaceIfNamespaceIsNotUsed() {
@@ -90,7 +91,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(hasName("Parent"), instanceOf(ValaClassDeclaration.class)));
+        assertThat(referencedElement, classDeclaration("Parent"));
     }
 
     public void testReferenceToClassInVapi() {
@@ -98,7 +99,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(hasName("MyLibraryClass"), instanceOf(ValaClassDeclaration.class), isInFile(hasName("MyLibrary.vapi"))));
+        assertThat(referencedElement, allOf(classDeclaration("MyLibraryClass"), isInFile(hasName("MyLibrary.vapi"))));
     }
 
     public void testReferenceToStructConstructor() {
@@ -106,7 +107,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaMemberPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(hasName("from_string"), instanceOf(ValaCreationMethodDeclaration.class)));
+        assertThat(referencedElement, allOf(hasName("from_string"), hasParentOfType(ValaCreationMethodDeclaration.class)));
     }
 
     public void testReferenceToInterfaceDeclaration() {
@@ -114,7 +115,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referenceElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
-        assertThat(referenceElement, allOf(hasName("MyInterface"), instanceOf(ValaInterfaceDeclaration.class)));
+        assertThat(referenceElement, allOf(hasName("MyInterface"), hasParentOfType(ValaInterfaceDeclaration.class), instanceOf(ValaSymbolPart.class)));
     }
 
     public void testReferenceToStructDeclaration() {
@@ -122,7 +123,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referenceElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
-        assertThat(referenceElement, allOf(hasName("MyStruct"), instanceOf(ValaStructDeclaration.class)));
+        assertThat(referenceElement, allOf(hasName("MyStruct"), hasParentOfType(ValaStructDeclaration.class), instanceOf(ValaSymbolPart.class)));
     }
 
     public void testReferenceToEnumDeclaration() {
@@ -130,7 +131,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(instanceOf(ValaEnumDeclaration.class), hasName("MyEnum")));
+        assertThat(referencedElement, allOf(hasParentOfType(ValaEnumDeclaration.class), hasName("MyEnum"), instanceOf(ValaSymbolPart.class)));
     }
 
     public void testReferenceToEnumDeclarationFromEnumValueAccess() {
@@ -140,6 +141,14 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         assertThat(referencedElement,
                 allOf(hasParentOfType(ValaEnumDeclaration.class), hasName("MyEnum"), instanceOf(ValaSymbolPart.class)));
+    }
+
+    private static Matcher<? super PsiElement> classDeclaration(String name) {
+        return allOf(hasName(name), classDeclaration());
+    }
+
+    private static Matcher<? super PsiElement> classDeclaration() {
+        return allOf(instanceOf(ValaSymbolPart.class), hasParentOfType(ValaClassDeclaration.class));
     }
 
 }

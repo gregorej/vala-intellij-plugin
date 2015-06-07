@@ -23,8 +23,8 @@ import static org.intellij.vala.psi.impl.ValaPsiElementUtil.isMethodCall;
 
 public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
 
-    public ValaIdentifierReference(ValaIdentifier valaMemberAccess) {
-        super(valaMemberAccess, new TextRange(0, valaMemberAccess.getTextLength()));
+    public ValaIdentifierReference(ValaIdentifier valaIdentifier) {
+        super(valaIdentifier, new TextRange(0, valaIdentifier.getTextLength()));
     }
 
     private static PsiElement getPrecedingReference(ValaMemberAccess memberAccess) {
