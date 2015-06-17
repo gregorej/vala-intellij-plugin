@@ -2,6 +2,7 @@ package org.intellij.vala.psi.impl;
 
 
 import com.google.common.collect.ImmutableList;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.StubBasedPsiElement;
@@ -157,7 +158,23 @@ public class ValaPsiImplUtil {
     }
 
     public static PsiElement setName(PsiElement valaPsiElement, String newName) {
-        throw new IncorrectOperationException("changing name of this element is not supported");
+        throw new IncorrectOperationException("changing name of " + valaPsiElement.getClass() + " element is not supported");
+    }
+
+    public static PsiElement setName(ValaIdentifier identifier, String newName) {
+        identifier.replace(ValaElementFactory.createIdentifier(identifier.getProject(), newName));
+        return identifier;
+    }
+
+    public static PsiElement setName(ValaLocalVariable localVariable, String newName) {
+        final Project project = localVariable.getProject();
+        localVariable.getIdentifier().replace(ValaElementFactory.createIdentifier(project, newName));
+        return localVariable;
+    }
+
+    public static PsiElement setName(ValaSymbolPart symbolPart, String newName) {
+        symbolPart.getIdentifier().setName(newName);
+        return symbolPart;
     }
 
     public static QualifiedName getQName(ValaCreationMethodDeclaration creationMethodDeclaration) {
@@ -170,6 +187,14 @@ public class ValaPsiImplUtil {
 
     public static PsiReference getReference(ValaResolvableElement resolvableElement) {
         return new ValaResolvableElementReference(resolvableElement);
+    }
+
+    public static PsiReference getReference(ValaIdentifier resolvableElement) {
+        return new ValaIdentifierReference(resolvableElement);
+    }
+
+    public static PsiReference getReference(ValaSymbolPart symbolPart) {
+        return new ValaSymbolPartReference(symbolPart);
     }
 
     public static Optional<PsiElement> resolve(ValaThisAccess thisAccess) {

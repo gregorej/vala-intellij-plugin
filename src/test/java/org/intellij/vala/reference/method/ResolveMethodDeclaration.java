@@ -70,4 +70,22 @@ public class ResolveMethodDeclaration extends ValaReferenceTestBase {
         assertThat(referencedElement, allOf(hasParentOfType(ValaDelegateDeclaration.class), identifier("method"),
                 hasParentOfType(ValaInterfaceDeclaration.class)));
     }
+
+    public void testReferenceToDelegateInCurrentClass() {
+        myFixture.configureByFile(getTestName(false) + ".vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaSimpleName.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(hasParentOfType(ValaDelegateDeclaration.class), identifier("method2"),
+                hasParentOfType(ValaClassDeclaration.class)));
+    }
+
+    public void testReferenceToDelegateInSuperclassOfCurrentClass() {
+        myFixture.configureByFile(getTestName(false) + ".vala");
+
+        PsiElement referencedElement = getElementOfTypeAtCaret(ValaSimpleName.class).getReference().resolve();
+
+        assertThat(referencedElement, allOf(hasParentOfType(ValaDelegateDeclaration.class), identifier("methodInParent"),
+                hasParentOfType(ValaClassDeclaration.class)));
+    }
 }

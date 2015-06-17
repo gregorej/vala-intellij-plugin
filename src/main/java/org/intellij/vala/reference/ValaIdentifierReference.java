@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
+import com.intellij.util.IncorrectOperationException;
 import org.intellij.vala.psi.*;
 import org.intellij.vala.psi.impl.ValaPsiImplUtil;
 import org.intellij.vala.psi.index.DeclarationQualifiedNameIndex;
@@ -21,10 +22,10 @@ import static org.intellij.vala.psi.impl.ValaPsiElementUtil.findTypeDeclaration;
 import static org.intellij.vala.psi.impl.ValaPsiElementUtil.isMethodCall;
 
 
-public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
+public class ValaIdentifierReference extends ValaResolvableElementReference<ValaIdentifier> {
 
     public ValaIdentifierReference(ValaIdentifier valaIdentifier) {
-        super(valaIdentifier, new TextRange(0, valaIdentifier.getTextLength()));
+        super(valaIdentifier);
     }
 
     private static PsiElement getPrecedingReference(ValaMemberAccess memberAccess) {
@@ -39,16 +40,11 @@ public class ValaIdentifierReference extends PsiReferenceBase<ValaIdentifier> {
         return precedingReference;
     }
 
-    @Nullable
     @Override
-    public PsiElement resolve() {
-        return resolve(myElement).map(resolved -> {
-            if (resolved instanceof ValaPsiNameIdentifierOwner) {
-                return ((ValaPsiNameIdentifierOwner) resolved).getNameIdentifier();
-            } else {
-                return resolved;
-            }
-        }).orElse(null);
+    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
+        final ValaIdentifier renamedIdentifier = ValaElementFactory.createIdentifier(myElement.getProject(), newElementName);
+        myElement.replace(renamedIdentifier);
+        return myElement;
     }
 
     public static Optional<PsiElement> resolve(ValaIdentifier identifier) {
