@@ -1,7 +1,7 @@
-class MyClass {
+class MyCl<caret>ass {
 
 }
 
 int main(string [] args) {
-	MyCla<caret>ss something = null;
+	MyClass something = null;
 }

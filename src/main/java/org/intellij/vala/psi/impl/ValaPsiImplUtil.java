@@ -46,7 +46,7 @@ public class ValaPsiImplUtil {
     }
 
     public static ValaPsiElement getNameIdentifier(ValaTypeDeclaration typeDeclaration) {
-        return ValaPsiElementUtil.getLastPart(typeDeclaration.getSymbol());
+        return ValaPsiElementUtil.getLastPart(typeDeclaration.getSymbol()).getIdentifier();
     }
 
     public static ValaPsiElement getNameIdentifier(ValaDelegateDeclaration delegateDeclaration) {

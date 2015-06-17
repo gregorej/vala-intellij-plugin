@@ -115,7 +115,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referenceElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
-        assertThat(referenceElement, allOf(hasName("MyInterface"), hasParentOfType(ValaInterfaceDeclaration.class), instanceOf(ValaSymbolPart.class)));
+        assertThat(referenceElement, allOf(hasName("MyInterface"), hasParentOfType(ValaInterfaceDeclaration.class), instanceOf(ValaIdentifier.class)));
     }
 
     public void testReferenceToStructDeclaration() {
@@ -123,7 +123,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referenceElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
-        assertThat(referenceElement, allOf(hasName("MyStruct"), hasParentOfType(ValaStructDeclaration.class), instanceOf(ValaSymbolPart.class)));
+        assertThat(referenceElement, allOf(hasName("MyStruct"), hasParentOfType(ValaStructDeclaration.class), instanceOf(ValaIdentifier.class)));
     }
 
     public void testReferenceToEnumDeclaration() {
@@ -131,7 +131,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
 
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaSymbolPart.class).getReference().resolve();
 
-        assertThat(referencedElement, allOf(hasParentOfType(ValaEnumDeclaration.class), hasName("MyEnum"), instanceOf(ValaSymbolPart.class)));
+        assertThat(referencedElement, allOf(hasParentOfType(ValaEnumDeclaration.class), hasName("MyEnum"), instanceOf(ValaIdentifier.class)));
     }
 
     public void testReferenceToEnumDeclarationFromEnumValueAccess() {
@@ -140,7 +140,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
         PsiElement referencedElement = getElementOfTypeAtCaret(ValaIdentifier.class).getReference().resolve();
 
         assertThat(referencedElement,
-                allOf(hasParentOfType(ValaEnumDeclaration.class), hasName("MyEnum"), instanceOf(ValaSymbolPart.class)));
+                allOf(hasParentOfType(ValaEnumDeclaration.class), hasName("MyEnum"), instanceOf(ValaIdentifier.class)));
     }
 
     private static Matcher<? super PsiElement> classDeclaration(String name) {
@@ -148,7 +148,7 @@ public class ResolveClassTest extends ValaReferenceTestBase {
     }
 
     private static Matcher<? super PsiElement> classDeclaration() {
-        return allOf(instanceOf(ValaSymbolPart.class), hasParentOfType(ValaClassDeclaration.class));
+        return allOf(instanceOf(ValaIdentifier.class), hasParentOfType(ValaClassDeclaration.class));
     }
 
 }

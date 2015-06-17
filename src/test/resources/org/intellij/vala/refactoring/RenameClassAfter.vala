@@ -1,7 +1,7 @@
-class MyClassRenamed {
+class MyCl<caret>assRenamed {
 
 }
 
 int main(string [] args) {
-	MyCla<caret>ssRenamed something = null;
+	MyClassRenamed something = null;
 }
