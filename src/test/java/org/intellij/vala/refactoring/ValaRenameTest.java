@@ -28,4 +28,8 @@ public class ValaRenameTest extends LightPlatformCodeInsightFixtureTestCase {
     public void testRenameClass() {
         checkRenameTo("MyClassRenamed");
     }
+
+    public void testRenameLocalVariableWithMethodCallOnIt() {
+        checkRenameTo("goodName");
+    }
 }
