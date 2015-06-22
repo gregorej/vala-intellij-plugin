@@ -51,7 +51,7 @@ public class ValaParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public TokenSet getCommentTokens() {
-        return COMMENTS;
+        return TokenSet.orSet(COMMENTS, TokenSet.create(ValaTypes.PREPROCESSOR_DIRECTIVE));
     }
 
     @NotNull

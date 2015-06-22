@@ -96,4 +96,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testConstantNameStartingWithDecimal() {
         doTest(true);
     }
+
+    public void testPreprocessorDirectives() {
+        doTest(true);
+    }
 }

@@ -54,6 +54,7 @@ REAL_LITERAL=-?[0-9]+\.[0-9]+
 INTEGER_LITERAL=-?[0-9]+
 LINE_COMMENT="//".*
 BLOCK_COMMENT="/*" !([^]* "*/" [^]*) ("*/")?
+PREPROCESSOR_DIRECTIVE=("#if" | "#endif" | "#elif" | "#else") .* ("\r"|"\n"|"\r\n")
 CHARACTER_LITERAL='[A-Za-z0-9]'
 
 %state AT_SGN
@@ -218,6 +219,7 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
   {INTEGER_LITERAL}              { return INTEGER_LITERAL; }
   {LINE_COMMENT}                 { return LINE_COMMENT; }
   {BLOCK_COMMENT}                { return BLOCK_COMMENT; }
+  {PREPROCESSOR_DIRECTIVE}       { return PREPROCESSOR_DIRECTIVE; }
   {CHARACTER_LITERAL}            { return CHARACTER_LITERAL; }
 
   [^]                            { return com.intellij.psi.TokenType.BAD_CHARACTER; }
