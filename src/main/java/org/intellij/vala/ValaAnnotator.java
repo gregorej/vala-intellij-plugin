@@ -1,5 +1,6 @@
 package org.intellij.vala;
 
+import com.google.common.collect.ImmutableSet;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.progress.ProgressManager;
@@ -10,15 +11,32 @@ import org.intellij.vala.psi.ValaIdentifier;
 import org.intellij.vala.psi.ValaTypes;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
+
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INSTANCE_FIELD;
+import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.MARKUP_TAG;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.METADATA;
 
 public class ValaAnnotator implements Annotator {
 
+    private static final Set<String> VALA_BUILT_IN_TYPES = ImmutableSet.<String>builder()
+            .add("int")
+            .add("float")
+            .add("string")
+            .add("bool")
+            .add("char")
+            .add("double")
+            .add("long")
+            .add("unichar")
+            .build();
+
     @Override
     public void annotate(@NotNull PsiElement psiElement, @NotNull AnnotationHolder annotationHolder) {
         ProgressManager.checkCanceled();
+        if (VALA_BUILT_IN_TYPES.contains(psiElement.getText())) {
+            annotationHolder.createInfoAnnotation(psiElement, null).setTextAttributes(KEYWORD);
+        }
         if (isClassFieldAccess(psiElement)) {
             annotationHolder.createInfoAnnotation(psiElement, null).setTextAttributes(INSTANCE_FIELD);
         } else if (isAttribute(psiElement)) {

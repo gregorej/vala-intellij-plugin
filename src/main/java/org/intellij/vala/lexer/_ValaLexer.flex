@@ -175,29 +175,6 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
   "enum"                         { return KEY_ENUM; }
   "delegate"                     { return KEY_DELEGATE; }
   "void"                         { return TYPE_VOID; }
-  "string"                       { return TYPE_STRING; }
-  "char"                         { return TYPE_CHAR; }
-  "uchar"                        { return TYPE_UCHAR; }
-  "short"                        { return TYPE_SHORT; }
-  "ushort"                       { return TYPE_USHORT; }
-  "int"                          { return TYPE_INT; }
-  "uint"                         { return TYPE_UINT; }
-  "long"                         { return TYPE_LONG; }
-  "ulong"                        { return TYPE_ULONG; }
-  "size_t"                       { return TYPE_SIZE_T; }
-  "ssize_t"                      { return TYPE_SSIZE_T; }
-  "int8"                         { return TYPE_INT8; }
-  "uint8"                        { return TYPE_UINT8; }
-  "int16"                        { return TYPE_INT16; }
-  "uint16"                       { return TYPE_UINT16; }
-  "int32"                        { return TYPE_INT32; }
-  "uint32"                       { return TYPE_UINT32; }
-  "int64"                        { return TYPE_INT64; }
-  "uint64"                       { return TYPE_UINT64; }
-  "unichar"                      { return TYPE_UNICHAR; }
-  "float"                        { return TYPE_FLOAT; }
-  "double"                       { return TYPE_DOUBLE; }
-  "bool"                         { return TYPE_BOOL; }
   "(owned)"                      { return CAST_OWNED; }
   "(void)"                       { return CAST_VOID; }
   "(dynamic)"                    { return CAST_DYNAMIC; }

@@ -135,29 +135,6 @@
     PPROC_ELIF="#elif"
     PPROC_ENDIF="#endif"
     TYPE_VOID="void"
-    TYPE_STRING="string"
-    TYPE_CHAR="char"
-    TYPE_UCHAR="uchar"
-    TYPE_SHORT="short"
-    TYPE_USHORT="ushort"
-    TYPE_INT="int"
-    TYPE_UINT="uint"
-    TYPE_LONG="long"
-    TYPE_ULONG="ulong"
-    TYPE_SIZE_T="size_t"
-    TYPE_SSIZE_T="ssize_t"
-    TYPE_INT8="int8"
-    TYPE_UINT8="uint8"
-    TYPE_INT16="int16"
-    TYPE_UINT16="uint16"
-    TYPE_INT32="int32"
-    TYPE_UINT32="uint32"
-    TYPE_INT64="int64"
-    TYPE_UINT64="uint64"
-    TYPE_UNICHAR="unichar"
-    TYPE_FLOAT="float"
-    TYPE_DOUBLE="double"
-    TYPE_BOOL="bool"
     CAST_OWNED="(owned)"
     CAST_VOID="(void)"
     CAST_DYNAMIC="(dynamic)"
@@ -183,7 +160,7 @@
   extends("expression")=argument
   extends(".*expression")=expression
   extends("method_call|member_access|pointer_member_access|element_access")=chain_access_part
-  extends("literal|initializer|tuple|template|this_access|base_access|object_or_array_creation_expression|yield_expression|sizeof_expression|typeof_expression|simple_name|built_in_type")=simple_expression
+  extends("literal|initializer|tuple|template|this_access|base_access|object_or_array_creation_expression|yield_expression|sizeof_expression|typeof_expression|simple_name")=simple_expression
   extends(".*statement|local_variable_declarations|block")=statement
   extends("namespace_declaration|errordomain_declaration|field_declaration|constant_declaration|delegate_declaration")=namespace_member
   extends("method_declaration")=delegate_declaration
@@ -205,11 +182,6 @@ vala_module ::= using_directive * namespace_member *
 symbol ::= symbol_part ( "." symbol_part )* {methods=[resolve] implements="org.intellij.vala.psi.ValaResolvableElement"}
 symbol_part ::= ( "global::" identifier ) | identifier {methods=[getName setName getReference getNameIdentifier resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.ValaResolvableElement"}
 
-built_in_type ::= integral_type | floating_point_type | "bool" | "string" | "void" | "unichar"
-private integral_type ::= "char" | "uchar" | "short" | "ushort" | "long" | "ulong" | "size_t" | "ssize_t" | int_type
-private floating_point_type ::= "float" | "double"
-private int_type ::= "int" | "uint" | "int8" | "uint8" | "int16" | "uint16" | "int32" | "uint32" | "int64" | "uint64"
-
 using_directive ::= "using" symbol ( "," symbol )* ";"
 namespace_member ::= attributes?
                      ( namespace_declaration |
@@ -223,8 +195,9 @@ namespace_member ::= attributes?
                        field_declaration |
                        constant_declaration ) {methods=[getNamespace]}
 
-attributes ::= attribute*
-attribute ::= "[" identifier ( attribute_arguments )? "]"
+attributes ::= attribute_list*
+attribute_list ::= "[" attribute ("," attribute)* "]"
+attribute ::= identifier ( attribute_arguments )?
 attribute_arguments ::= "(" attribute_argument ( "," attribute_argument )* ")"
 attribute_argument ::= identifier "=" expression
 
@@ -258,7 +231,7 @@ unary_expression ::= ( unary_operator unary_expression ) |
 primary_expression ::= simple_expression chain_access_part* {pin=1}
 simple_expression ::= ( literal | initializer | tuple | template | this_access | base_access |
                                                    object_or_array_creation_expression | yield_expression | sizeof_expression | typeof_expression |
-                                                   simple_name | built_in_type )
+                                                   simple_name | "void" )
 
 chain_access_part ::= member_access | pointer_member_access | method_call | element_access | post_increment_expression | post_decrement_expression {methods=[getPrevious getTypeDescriptor]}
 
@@ -299,7 +272,6 @@ destructor_declaration ::= constructor_declaration_modifiers? "~" identifier "("
 class_declaration ::= access_modifier? type_declaration_modifiers? "class" symbol type_arguments? ( ":" base_types)? class_body
 {
     methods=[getName setName getMethodDeclarations getNamespaceMemberList toString getDeclarations getQName getSuperTypeDeclarations getDelegates getNameIdentifier]
-    pin=4
     stubClass="org.intellij.vala.psi.stub.ValaClassDeclarationStub"
 }
 
@@ -320,7 +292,7 @@ class_member ::= attributes?
                    creation_method_declaration |
                    destructor_declaration )
 {recoverWhile=class_member_recovery}
-private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_modifier|"["|"}"|identifier|built_in_type)
+private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_modifier|"["|"}"|identifier|"void")
 
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
 type_declaration_modifier ::= "abstract" | "extern" | "static"
@@ -407,7 +379,7 @@ property_declaration_modifier ::= "class" | "static" | "extern" | "inline" | "ab
 tuple ::= "(" expression ( "," expression )* ")"
 this_access ::= "this" {methods=[getReference resolve] implements="org.intellij.vala.psi.ValaResolvableElement"}
 base_access ::= "base"
-object_or_array_creation_expression ::= "new" (member | built_in_type) ( object_creation_expression | array_creation_expression ) {pin=1}
+object_or_array_creation_expression ::= "new" (member | "void") ( object_creation_expression | array_creation_expression ) {pin=1}
 object_creation_expression ::= "(" ( arguments )? ")" ( object_initializer )?
 object_initializer ::= "{" member_initializer ( "," member_initializer )? "}"
 member_initializer ::= identifier "=" expression
@@ -436,7 +408,7 @@ statement ::= block
               | expression_statement
               | do_statement
 {recoverWhile=statement_recovery}
-private statement_recovery ::= !("{"|"}"|";"|statement_recovering_keyword|comment|literal|identifier|built_in_type)
+private statement_recovery ::= !("{"|"}"|";"|statement_recovering_keyword|comment|literal|identifier|"void")
 private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"|"try"
 private comment ::= line_comment | block_comment
 
@@ -483,7 +455,7 @@ local_variable_declaration ::= local_tuple_declaration | local_variable {methods
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression {pin=5}
 local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {methods=[getName setName getTypeDescriptor]}
 expression_statement ::= statement_expression ";" {pin=1}
-type_base ::= (symbol type_arguments? ) | built_in_type {methods=[getTypeDescriptor]}
+type_base ::= (symbol type_arguments? ) | "void" {methods=[getTypeDescriptor]}
 type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? type_base ( "*" )* ( "?" )? array_type* ) {methods=[getTypeDescriptor]}
 type_arguments ::= "<" type_weak ( "," type_weak )* ">"
 type_parameters ::= "<" identifier ( "," identifier )* ">"

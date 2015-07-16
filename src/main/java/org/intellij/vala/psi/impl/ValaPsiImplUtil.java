@@ -332,14 +332,15 @@ public class ValaPsiImplUtil {
     }
 
     public static ValaTypeDescriptor getTypeDescriptor(ValaTypeBase typeBase) {
-        if (typeBase.getBuiltInType() != null) {
-            return ReferenceTypeDescriptor.forType(typeBase.getBuiltInType());
+        final ValaSymbol symbol = typeBase.getSymbol();
+        if (symbol == null) {
+            return BasicTypeDescriptor.VOID;
         }
-        PsiElement referenced = new ValaTypeReference(typeBase.getSymbol(), typeBase.getTextRange()).resolve();
-        if (referenced instanceof ValaDeclaration) {
-            return ReferenceTypeDescriptor.forQualifiedName(((ValaDeclaration) referenced).getQName());
-        }
-        return null;
+        return BasicTypeDescriptor.forName(symbol.getText()).orElseGet(() ->
+                symbol.resolve()
+                        .filter(referenced -> referenced instanceof ValaDeclaration)
+                        .map(referenced -> ReferenceTypeDescriptor.forQualifiedName(((ValaDeclaration) referenced).getQName()))
+                        .orElse(null));
     }
 
     public static List<ValaTypeDeclaration> getSuperTypeDeclarations(ValaClassDeclaration classDeclaration) {

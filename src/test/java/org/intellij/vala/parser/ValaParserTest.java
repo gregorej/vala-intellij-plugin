@@ -100,4 +100,12 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testPreprocessorDirectives() {
         doTest(true);
     }
+
+    public void testFieldDeclarationWithMemberDeclarationModifier() {
+        doTest(true);
+    }
+
+    public void testClassWithAttributesInSingleLine() {
+        doTest(true);
+    }
 }
