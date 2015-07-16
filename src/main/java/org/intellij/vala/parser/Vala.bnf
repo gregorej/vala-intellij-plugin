@@ -150,7 +150,7 @@
     verbatim_string_literal="regexp:\"\"\"(.|\n|\r)*\"\"\""
     string_literal="regexp:\"([^\"\\]|\\\"|\\\'|\\)*\""
     real_literal="regexp:-?\d+\.\d+"
-    integer_literal="regexp:-?\d+"
+    integer_literal="regexp:-?([0-9]+|(0x[a-fA-F0-9]+))"
     line_comment="regexp://.*"
     block_comment="regexp:/\*(.|\n)*\*/"
     preprocessor_directive="regexp:(#if | #endif | #elif | #else) .* (\r|\n|\r\n)"

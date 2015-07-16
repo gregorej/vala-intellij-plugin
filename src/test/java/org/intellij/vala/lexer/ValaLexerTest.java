@@ -43,6 +43,14 @@ public class ValaLexerTest {
     }
 
     @Test
+    public void shouldDetectIntegerWrittenInHex() throws IOException {
+        valaLexer.start("0xf6");
+
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.INTEGER_LITERAL));
+        assertThat(valaLexer.getTokenText(), is(equalTo("0xf6")));
+    }
+
+    @Test
     public void shouldHandleEmptyContent() throws IOException {
         valaLexer.start("");
 
