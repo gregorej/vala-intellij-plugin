@@ -163,6 +163,7 @@ CHARACTER_LITERAL='[A-Za-z0-9]'
   "get"                          { return KEY_GET; }
   "set"                          { return KEY_SET; }
   "construct"                    { return KEY_CONSTRUCT; }
+  "value"                    	 { return KEY_VALUE; }
   "signal"                       { return KEY_SIGNAL; }
   "static"                       { return KEY_STATIC; }
   "typeof"                       { return KEY_TYPEOF; }

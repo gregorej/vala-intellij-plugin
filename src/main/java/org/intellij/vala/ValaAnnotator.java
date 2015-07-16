@@ -5,9 +5,12 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
+import org.intellij.vala.lexer.ValaLexer;
 import org.intellij.vala.psi.ValaAttribute;
 import org.intellij.vala.psi.ValaFieldDeclaration;
 import org.intellij.vala.psi.ValaIdentifier;
+import org.intellij.vala.psi.ValaPropertyDeclaration;
 import org.intellij.vala.psi.ValaTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +40,9 @@ public class ValaAnnotator implements Annotator {
         if (VALA_BUILT_IN_TYPES.contains(psiElement.getText())) {
             annotationHolder.createInfoAnnotation(psiElement, null).setTextAttributes(KEYWORD);
         }
+        if (isPropertyContextKeyword(psiElement)) {
+            annotationHolder.createInfoAnnotation(psiElement, null).setTextAttributes(KEYWORD);
+        }
         if (isClassFieldAccess(psiElement)) {
             annotationHolder.createInfoAnnotation(psiElement, null).setTextAttributes(INSTANCE_FIELD);
         } else if (isAttribute(psiElement)) {
@@ -44,6 +50,11 @@ public class ValaAnnotator implements Annotator {
         } else if (psiElement.getNode().getElementType() == ValaTypes.PREPROCESSOR_DIRECTIVE) {
             annotationHolder.createInfoAnnotation(psiElement, null).setTextAttributes(MARKUP_TAG);
         }
+    }
+
+    private static boolean isPropertyContextKeyword(PsiElement psiElement) {
+        return ValaLexer.PROPERTY_CONTEXT_KEYWORDS.contains(psiElement.getNode().getElementType())
+                && PsiTreeUtil.getParentOfType(psiElement, ValaPropertyDeclaration.class) != null;
     }
 
     private static boolean isAttribute(PsiElement psiElement) {

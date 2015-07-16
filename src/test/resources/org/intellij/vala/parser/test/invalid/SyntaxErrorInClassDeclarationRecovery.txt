@@ -14,7 +14,7 @@ FILE(0,88)
         PsiElement({)('{')(16,17)
         PsiWhiteSpace('\n\t')(17,19)
         PsiElement(ID)('blahblah')(19,27)
-        PsiErrorElement:'(', '*', '.', <, '?', ID or '[' expected, got '}'(27,27)
+        PsiErrorElement:'(', '*', '.', <, <identifier>, '?' or '[' expected, got '}'(27,27)
           <empty list>
         PsiWhiteSpace('\n')(27,28)
         PsiElement(})('}')(28,29)

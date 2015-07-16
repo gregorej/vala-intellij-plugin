@@ -108,4 +108,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testClassWithAttributesInSingleLine() {
         doTest(true);
     }
+
+    public void testMethodsNamedWithPropertyContextKeywords() {
+        doTest(true);
+    }
 }

@@ -1,4 +1,4 @@
 class Node {
-	int value;
+	int someValue;
 	Node parent;
 }

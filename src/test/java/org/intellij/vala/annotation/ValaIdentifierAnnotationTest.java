@@ -37,6 +37,12 @@ public class ValaIdentifierAnnotationTest extends LightPlatformCodeInsightFixtur
         assertThat(textAttributesAtCaret().get(), equalTo(DefaultLanguageHighlighterColors.METADATA));
     }
 
+    public void testHighlightPropertyContextKeywords() {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+
+        assertThat(textAttributesAtCaret().get(), equalTo(DefaultLanguageHighlighterColors.KEYWORD));
+    }
+
     private Optional<TextAttributesKey> textAttributesAtCaret() {
         List<HighlightInfo> highlightInfos = myFixture.doHighlighting();
         PsiElement elementAtCaret = myFixture.getFile().findElementAt(myFixture.getCaretOffset());

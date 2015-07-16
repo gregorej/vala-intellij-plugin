@@ -28,7 +28,6 @@ public class ValaLexer extends LookAheadLexer {
             KEY_ELSE,
             KEY_SWITCH,
             KEY_CASE,
-            KEY_DEFAULT,
             KEY_DO,
             KEY_WHILE,
             KEY_FOR,
@@ -61,9 +60,6 @@ public class ValaLexer extends LookAheadLexer {
             KEY_VIRTUAL,
             KEY_OVERRIDE,
             KEY_CONST,
-            KEY_GET,
-            KEY_SET,
-            KEY_CONSTRUCT,
             KEY_SIGNAL,
             KEY_STATIC,
             KEY_TYPEOF,
@@ -75,6 +71,13 @@ public class ValaLexer extends LookAheadLexer {
             KEY_ERRORDOMAIN,
             KEY_ENUM,
             KEY_DELEGATE);
+
+    public static final TokenSet PROPERTY_CONTEXT_KEYWORDS = TokenSet.create(
+            KEY_GET,
+            KEY_SET,
+            KEY_DEFAULT,
+            KEY_CONSTRUCT,
+            KEY_VALUE);
 
     public static final TokenSet BUILT_IN_TYPES = TokenSet.create(
             TYPE_VOID

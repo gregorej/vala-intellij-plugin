@@ -119,6 +119,7 @@
     KEY_GET="get"
     KEY_SET="set"
     KEY_CONSTRUCT="construct"
+    KEY_VALUE="value"
     KEY_SIGNAL="signal"
     KEY_STATIC="static"
     KEY_TYPEOF="typeof"
@@ -463,5 +464,6 @@ type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? type_base
 array_type ::= "[" array_size "]" ( "?" )?
 array_size ::= expression? ( "," expression? ) *
 inline_array_type ::= "[" integer_literal "]"
-identifier ::= ID {methods=[getName setName getReference resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.ValaResolvableElement"}
+private property_context_keyword ::= "get" | "set" | "construct" | "value"
+identifier ::= property_context_keyword | ID {methods=[getName setName getReference resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.ValaResolvableElement"}
 
