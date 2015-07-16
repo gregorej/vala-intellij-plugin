@@ -227,7 +227,7 @@ shift_expression ::= additive_expression ( shift_operator additive_expression )*
 additive_expression ::= multiplicative_expression ( additive_operator multiplicative_expression )*
 multiplicative_expression ::= unary_expression (multiplicative_operator unary_expression )*
 unary_expression ::= ( unary_operator unary_expression ) |
-                     ( "(" ( "owned" | "void" | "dynamic" | "!" | type ) ")" unary_expression ) |
+                     ( "(" ( "owned" | "dynamic" | "!" | type ) ")" unary_expression ) |
                      primary_expression
 primary_expression ::= simple_expression chain_access_part* {pin=1}
 simple_expression ::= ( literal | initializer | tuple | template | this_access | base_access |
