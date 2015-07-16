@@ -112,4 +112,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testMethodsNamedWithPropertyContextKeywords() {
         doTest(true);
     }
+
+    public void testStaticMembers() {
+        doTest(true);
+    }
 }

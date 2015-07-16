@@ -293,7 +293,7 @@ class_member ::= attributes?
                    creation_method_declaration |
                    destructor_declaration )
 {recoverWhile=class_member_recovery}
-private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_modifier|"["|"}"|identifier|"void")
+private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_modifier|"["|"}"|identifier|"void"|member_declaration_modifier)
 
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
 type_declaration_modifier ::= "abstract" | "extern" | "static"
