@@ -389,7 +389,7 @@ argument ::= "ref" expression | "out" expression | expression | identifier ( ":"
 array_creation_expression ::= ( "[" "]" )* ( "["  array_size? "]" )? ( initializer )?
 initializer ::= "{" argument ( "," argument )* "}"
 
-block ::= "{" statement* "}"
+block ::= "{" statement* "}" {pin=1}
 statement ::= block
               | ";"
               | if_statement
@@ -445,7 +445,7 @@ continue_statement ::= "continue" ";" {pin=1}
 return_statement ::= "return" ( expression )? ";"
 yield_statement ::= "yield" ( expression_statement | "return" expression )? ";" {pin=1}
 throw_statement ::= "throw" expression ";" {pin=1}
-try_statement ::= "try" block catch_clause* finally_clause? {pin=1}
+try_statement ::= "try" block catch_clause* finally_clause?  {pin=2}
 catch_clause ::= "catch" ( "(" type_weak identifier ")" )? block {pin=1}
 finally_clause ::= "finally" block {pin=1}
 lock_statement ::= "lock" "(" expression ")" embedded_statement {pin=1}
@@ -464,6 +464,6 @@ type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? type_base
 array_type ::= "[" array_size "]" ( "?" )?
 array_size ::= expression? ( "," expression? ) *
 inline_array_type ::= "[" integer_literal "]"
-private property_context_keyword ::= "get" | "set" | "construct" | "value"
-identifier ::= property_context_keyword | ID {methods=[getName setName getReference resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.ValaResolvableElement"}
+private context_keyword ::= "get" | "set" | "construct" | "value" | "try" | "yield"
+identifier ::= context_keyword | ID {methods=[getName setName getReference resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.ValaResolvableElement"}
 
