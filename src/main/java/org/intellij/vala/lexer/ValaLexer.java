@@ -42,7 +42,6 @@ public class ValaLexer extends LookAheadLexer {
             KEY_THROW,
             KEY_FINALLY,
             KEY_CATCH,
-            KEY_LOCK,
             KEY_DELETE,
             KEY_BASE,
             KEY_THIS,

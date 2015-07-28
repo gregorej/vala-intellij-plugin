@@ -120,4 +120,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testSimplePreprocessor() {
         doTest(true);
     }
+
+    public void testClassWithAttributeWithEmptyParametersParens() {
+        doTest(true);
+    }
 }

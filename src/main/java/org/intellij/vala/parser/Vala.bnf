@@ -198,8 +198,8 @@ namespace_member ::= attributes?
 
 attributes ::= attribute_list*
 attribute_list ::= "[" attribute ("," attribute)* "]"
-attribute ::= identifier ( attribute_arguments )?
-attribute_arguments ::= "(" attribute_argument ( "," attribute_argument )* ")"
+attribute ::= identifier ( "(" attribute_arguments? ")" )?
+attribute_arguments ::= attribute_argument ( "," attribute_argument )*
 attribute_argument ::= identifier "=" expression
 
 access_modifier ::= "private" | "protected" | "public" | "internal"
@@ -326,7 +326,7 @@ interface_member ::= attributes?
                        property_declaration )
 
 namespace_declaration ::= "namespace" symbol "{" using_directive* namespace_member* "}" {methods=[getDeclarations getQName getNameIdentifier setName getName] pin=1}
-struct_declaration ::= access_modifier? type_declaration_modifiers? "struct" symbol ( ":" base_types )? struct_body {
+struct_declaration ::= access_modifier? type_declaration_modifiers? "struct" symbol type_arguments? ( ":" base_types )? struct_body {
 pin=3 methods=[getSuperTypeDeclarations getQName getDeclarations getName setName getDelegates getNameIdentifier]
 stubClass="org.intellij.vala.psi.stub.ValaStructDeclarationStub"
 }
@@ -464,6 +464,6 @@ type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? type_base
 array_type ::= "[" array_size "]" ( "?" )?
 array_size ::= expression? ( "," expression? ) *
 inline_array_type ::= "[" integer_literal "]"
-private context_keyword ::= "get" | "set" | "construct" | "value" | "try" | "yield"
+private context_keyword ::= "get" | "set" | "construct" | "value" | "try" | "yield" | "lock"
 identifier ::= context_keyword | ID {methods=[getName setName getReference resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.ValaResolvableElement"}
 
