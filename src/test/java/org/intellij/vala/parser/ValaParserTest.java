@@ -116,4 +116,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testStaticMembers() {
         doTest(true);
     }
+
+    public void testSimplePreprocessor() {
+        doTest(true);
+    }
 }
