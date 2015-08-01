@@ -128,4 +128,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testEscapedCharacterLiteral() {
         doTest(true);
     }
+
+    public void testReadLineMethodFromGlibVapi() {
+        doTest(true);
+    }
 }

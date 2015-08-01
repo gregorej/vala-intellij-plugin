@@ -408,7 +408,7 @@ statement ::= block
               | expression_statement
               | do_statement
 {recoverWhile=statement_recovery}
-private statement_recovery ::= !("{"|"}"|";"|statement_recovering_keyword|comment|literal|identifier|"void")
+private statement_recovery ::= !("{"|"}"|";"|"("|statement_recovering_keyword|comment|literal|identifier|"void")
 private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"|"try"
 private comment ::= line_comment | block_comment
 
