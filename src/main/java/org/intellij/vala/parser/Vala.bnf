@@ -408,7 +408,7 @@ statement ::= block
               | expression_statement
               | do_statement
 {recoverWhile=statement_recovery}
-private statement_recovery ::= !("{"|"}"|";"|"("|statement_recovering_keyword|comment|literal|identifier|"void")
+private statement_recovery ::= !("{"|"}"|";"|"("|statement_recovering_keyword|comment|literal|identifier|affiliation|"void")
 private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"|"try"
 private comment ::= line_comment | block_comment
 
@@ -450,7 +450,7 @@ finally_clause ::= "finally" block {pin=1}
 lock_statement ::= "lock" "(" expression ")" embedded_statement {pin=1}
 delete_statement ::= "delete" expression ";" {pin=1}
 
-local_variable_declarations ::= ( "var" | type ) local_variable_declaration ( "," local_variable_declaration )*
+local_variable_declarations ::= affiliation? ( "var" | type ) local_variable_declaration ( "," local_variable_declaration )*
 local_variable_declaration ::= local_tuple_declaration | local_variable {methods=[getTypeDescriptor]}
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression {pin=5}
 local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {methods=[getName setName getTypeDescriptor]}

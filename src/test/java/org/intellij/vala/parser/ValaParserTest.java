@@ -132,4 +132,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testReadLineMethodFromGlibVapi() {
         doTest(true);
     }
+
+    public void testMethodWithAffiliationsAndGenerics() {
+        doTest(true);
+    }
 }
