@@ -55,7 +55,7 @@ INTEGER_LITERAL=-?([0-9]+|(0x[a-fA-F0-9]+))
 LINE_COMMENT="//".*
 BLOCK_COMMENT="/*" !([^]* "*/" [^]*) ("*/")?
 PREPROCESSOR_DIRECTIVE=("#if" | "#endif" | "#elif" | "#else") .* ("\r"|"\n"|"\r\n")
-CHARACTER_LITERAL='[A-Za-z0-9]'
+CHARACTER_LITERAL='\\?[A-Za-z0-9]'
 
 %state AT_SGN
 

@@ -154,8 +154,7 @@
     line_comment="regexp://.*"
     block_comment="regexp:/\*(.|\n)*\*/"
     preprocessor_directive="regexp:(#if | #endif | #elif | #else) .* (\r|\n|\r\n)"
-    character_literal="regexp:\'[A-Za-z0-9]\'"
-
+    character_literal="regexp:\'\\?[A-Za-z0-9]\'"
   ]
 
   extends("expression")=argument

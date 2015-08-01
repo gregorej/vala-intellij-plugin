@@ -124,4 +124,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testClassWithAttributeWithEmptyParametersParens() {
         doTest(true);
     }
+
+    public void testEscapedCharacterLiteral() {
+        doTest(true);
+    }
 }

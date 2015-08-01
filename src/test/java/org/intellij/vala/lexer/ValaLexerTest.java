@@ -139,4 +139,13 @@ public class ValaLexerTest {
         assertThat(valaLexer.getTokenType(), is(ValaTypes.VERBATIM_STRING_LITERAL));
     }
 
+    @Test
+    public void shouldDetectEscapedCharacterLiteral() throws IOException {
+        final String escapedCharacter = "'\\n'";
+        valaLexer.start(escapedCharacter);
+
+        assertThat(valaLexer.getTokenText(), is(equalTo(escapedCharacter)));
+        assertThat(valaLexer.getTokenType(), is(ValaTypes.CHARACTER_LITERAL));
+    }
+
 }
