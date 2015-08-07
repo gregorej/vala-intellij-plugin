@@ -136,4 +136,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testMethodWithAffiliationsAndGenerics() {
         doTest(true);
     }
+
+    public void testConstructorCallWithArrayRangeArgument() {
+        doTest(true);
+    }
 }

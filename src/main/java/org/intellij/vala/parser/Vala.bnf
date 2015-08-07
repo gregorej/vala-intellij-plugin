@@ -235,7 +235,7 @@ simple_expression ::= ( literal | initializer | tuple | template | this_access |
 
 chain_access_part ::= member_access | pointer_member_access | method_call | element_access | post_increment_expression | post_decrement_expression {methods=[getPrevious getTypeDescriptor]}
 
-element_access ::= "[" array_size "]"
+element_access ::= "[" (array_range | array_size ) "]"
 sizeof_expression ::= "sizeof" "(" type ")" {pin=1}
 typeof_expression ::= "typeof" "(" type ")" {pin=1}
 simple_name ::= ( "global::" identifier | identifier ) type_arguments? {methods=[getReference getName setName getTypeDescriptor resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.HasTypeDescriptor, org.intellij.vala.psi.ValaResolvableElement"}
@@ -408,7 +408,7 @@ statement ::= block
               | expression_statement
               | do_statement
 {recoverWhile=statement_recovery}
-private statement_recovery ::= !("{"|"}"|";"|"("|statement_recovering_keyword|comment|literal|identifier|affiliation|"void")
+private statement_recovery ::= !("{"|"}"|";"|"("|"*"|statement_recovering_keyword|comment|literal|identifier|affiliation|"void")
 private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"|"try"
 private comment ::= line_comment | block_comment
 
@@ -462,7 +462,8 @@ type_parameters ::= "<" identifier ( "," identifier )* ">"
 type_weak ::= ( "void" ( "*" )* ) | ( "dynamic"? ("unowned" | "weak")? type_base ( "*" )* ( "?" )? array_type* ) {methods=[]}
 array_type ::= "[" array_size "]" ( "?" )?
 array_size ::= expression? ( "," expression? ) *
+array_range ::= expression ":" expression
 inline_array_type ::= "[" integer_literal "]"
-private context_keyword ::= "get" | "set" | "construct" | "value" | "try" | "yield" | "lock"
+private context_keyword ::= "get" | "set" | "construct" | "value" | "try" | "yield" | "lock" | "foreach" | "static"
 identifier ::= context_keyword | ID {methods=[getName setName getReference resolve] implements="org.intellij.vala.psi.ValaPsiNamedElement, org.intellij.vala.psi.ValaResolvableElement"}
 
