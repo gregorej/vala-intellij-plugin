@@ -9,6 +9,8 @@ import org.intellij.vala.psi.ValaTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Stack;
+
 import static org.intellij.vala.psi.ValaTypes.PREPROCESSOR_DIRECTIVE;
 
 public class ValaPreprocessorAwareLexer extends DelegateLexer {
@@ -22,6 +24,7 @@ public class ValaPreprocessorAwareLexer extends DelegateLexer {
     }
 
     private String inactiveTokenText;
+    private Stack<PreprocessorState> states = new Stack<>();
     private int inactiveTokenStart;
     private int inactiveTokenEnd;
 
@@ -35,7 +38,6 @@ public class ValaPreprocessorAwareLexer extends DelegateLexer {
     @Override
     public void start(@NotNull CharSequence buffer, int startOffset, int endOffset, int initialState) {
         super.start(buffer, startOffset, endOffset, initialState);
-        handlePreprocessorDirectives();
     }
 
     @Nullable
@@ -95,10 +97,18 @@ public class ValaPreprocessorAwareLexer extends DelegateLexer {
             } else if (tokenText.startsWith("#else")) {
                 handleElse();
             } else if (tokenText.startsWith("#endif")) {
-                preprocessorState = PreprocessorState.OUTSIDE;
+                handleEndif();
             }
         } else if (currentTokenType == null || preprocessorState == PreprocessorState.INACTIVE) {
             preprocessorState = PreprocessorState.OUTSIDE;
+        }
+    }
+
+    private void handleEndif() {
+        if (states.empty()) {
+            preprocessorState = PreprocessorState.OUTSIDE;
+        } else {
+            preprocessorState = states.pop();
         }
     }
 
@@ -126,6 +136,7 @@ public class ValaPreprocessorAwareLexer extends DelegateLexer {
     }
 
     private void handleIf(String tokenText) {
+        states.push(preprocessorState);
         if (evaluator.evaluate(tokenText)) {
             preprocessorState = PreprocessorState.ACTIVE;
         } else {

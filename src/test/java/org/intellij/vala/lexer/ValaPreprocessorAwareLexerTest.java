@@ -44,6 +44,33 @@ public class ValaPreprocessorAwareLexerTest {
 
     }
 
+    @Test
+    public void testReadNestedPreprocessorIf() throws Exception {
+        String content = readToString("org/intellij/vala/lexer/NestedPreprocessorIf.vala");
+
+        lexer.start(content);
+
+        List<Token> tokens = consumeTokensIgnoringWhiteSpace();
+
+        assertThat(tokens, contains(
+                token(PREPROCESSOR_DIRECTIVE),
+                token(KEY_STRUCT),
+                token(LEFT_CURLY),
+                token(PREPROCESSOR_DIRECTIVE, equalTo("#if INNER\n")),
+                token(KEY_CLASS),
+                token(LEFT_CURLY),
+                token(RIGHT_CURLY),
+                token(PREPROCESSOR_DIRECTIVE, equalTo("#else\n")),
+                token(INACTIVE_CODE, equalTo("const int SHOULD_NOT_APPEAR = 1;\n")),
+                token(PREPROCESSOR_DIRECTIVE, equalTo("#endif\n")),
+                token(RIGHT_CURLY),
+                token(PREPROCESSOR_DIRECTIVE, equalTo("#else\n")),
+                token(INACTIVE_CODE, equalTo("class {\n")),
+                token(PREPROCESSOR_DIRECTIVE, equalTo("#endif\n")),
+                token(RIGHT_CURLY)));
+
+    }
+
     private List<Token> consumeTokensIgnoringWhiteSpace() {
         IElementType type;
         List<Token> types = new ArrayList<>();
@@ -98,7 +125,7 @@ public class ValaPreprocessorAwareLexerTest {
         }
 
         public String toString() {
-            return type + " [" + text + "] (" + start + ", " + end + ")";
+            return type + " [" + text.replace("\n", "\\n") + "] (" + start + ", " + end + ")";
         }
     }
 
