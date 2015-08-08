@@ -455,7 +455,7 @@ local_variable_declaration ::= local_tuple_declaration | local_variable {methods
 local_tuple_declaration ::= "(" identifier ( "," identifier )* ")" "=" expression {pin=5}
 local_variable ::= identifier ( inline_array_type )? ( "=" expression )? {methods=[getName setName getTypeDescriptor]}
 expression_statement ::= statement_expression ";" {pin=1}
-type_base ::= (symbol type_arguments? ) | "void" {methods=[getTypeDescriptor]}
+type_base ::= "(" "unowned" symbol type_arguments? ")" | (symbol type_arguments? ) | "void" {methods=[getTypeDescriptor]}
 type ::= ( "void" ( "*" )* ) | ( ( "dynamic" )? ( "unowned" )? type_base ( "*" )* ( "?" )? array_type* ) {methods=[getTypeDescriptor]}
 type_arguments ::= "<" type_weak ( "," type_weak )* ">"
 type_parameters ::= "<" identifier ( "," identifier )* ">"
