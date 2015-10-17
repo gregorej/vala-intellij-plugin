@@ -24,7 +24,7 @@ public class ValaEnumDeclarationStubElementType extends IStubElementType<ValaEnu
 
     @Override
     public ValaEnumDeclaration createPsi(@NotNull ValaEnumDeclarationStub valaNamespaceLikeStub) {
-        return new ValaEnumDeclarationImpl(valaNamespaceLikeStub, (IStubElementType) ValaTypes.CLASS_DECLARATION);
+        return new ValaEnumDeclarationImpl(valaNamespaceLikeStub, (IStubElementType) ValaTypes.ENUM_DECLARATION);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class ValaInterfaceDeclarationStubElementType extends IStubElementType<Va
 
     @Override
     public ValaInterfaceDeclaration createPsi(@NotNull ValaInterfaceDeclarationStub valaNamespaceLikeStub) {
-        return new ValaInterfaceDeclarationImpl(valaNamespaceLikeStub, (IStubElementType) ValaTypes.CLASS_DECLARATION);
+        return new ValaInterfaceDeclarationImpl(valaNamespaceLikeStub, (IStubElementType) ValaTypes.INTERFACE_DECLARATION);
     }
 
     @Override

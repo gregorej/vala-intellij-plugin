@@ -23,7 +23,7 @@ public class ValaStructDeclarationStubElementType extends IStubElementType<ValaS
 
     @Override
     public ValaStructDeclaration createPsi(@NotNull ValaStructDeclarationStub valaNamespaceLikeStub) {
-        return new ValaStructDeclarationImpl(valaNamespaceLikeStub, (IStubElementType) ValaTypes.CLASS_DECLARATION);
+        return new ValaStructDeclarationImpl(valaNamespaceLikeStub, (IStubElementType) ValaTypes.STRUCT_DECLARATION);
     }
 
     @Override
