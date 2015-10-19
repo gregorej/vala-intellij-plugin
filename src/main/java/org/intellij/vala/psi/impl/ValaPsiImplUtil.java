@@ -154,7 +154,11 @@ public class ValaPsiImplUtil {
     }
 
     public static String getName(ValaParameter parameter) {
-        return parameter.getIdentifier().getText();
+        final ValaIdentifier identifier = parameter.getIdentifier();
+        if (identifier == null) {
+            return null;
+        }
+        return identifier.getText();
     }
 
     public static PsiElement setName(PsiElement valaPsiElement, String newName) {

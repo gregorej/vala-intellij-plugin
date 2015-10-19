@@ -6,6 +6,10 @@ class ClassWithTwoMethods {
 	int method2() {
 
 	}
+
+	void methodWithVarargs(...) {
+
+	}
 }
 
 int main(string [] args) {

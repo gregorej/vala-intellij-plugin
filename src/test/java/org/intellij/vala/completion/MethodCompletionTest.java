@@ -23,6 +23,6 @@ public class MethodCompletionTest extends CompletionTestBase {
     }
 
     public void testMultipleMethodsFromSameClassCompletion() {
-        expect(lookupItem("method1"), lookupItem("method2"));
+        expect(lookupItem("method1"), lookupItem("method2"), lookupItem("methodWithVarargs"));
     }
 }

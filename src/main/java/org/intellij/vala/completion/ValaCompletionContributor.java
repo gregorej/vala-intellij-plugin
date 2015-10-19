@@ -210,9 +210,11 @@ public class ValaCompletionContributor extends CompletionContributor {
             for (int i = 0; i < parameterList.size(); i++) {
                 ValaParameter parameter = parameterList.get(i);
                 final String paramName = parameter.getName();
-                constructorTemplate.addVariable(paramName, new TextExpression(paramName), true);
-                if (i < parameterList.size() - 1) {
-                    constructorTemplate.addTextSegment(", ");
+                if (paramName != null) {
+                    constructorTemplate.addVariable(paramName, new TextExpression(paramName), true);
+                    if (i < parameterList.size() - 1) {
+                        constructorTemplate.addTextSegment(", ");
+                    }
                 }
             }
         }
