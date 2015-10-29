@@ -12,8 +12,24 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.List;
+import java.util.Optional;
 
 public class ValaSdkDescriptor {
+
+    public static enum GtkVersion {
+        GTK_3("gtk+-3.0"),
+        GTK_2("gtk+-2.0");
+
+        private final String vapiFileName;
+
+        GtkVersion(String vapiFileName) {
+            this.vapiFileName = vapiFileName;
+        }
+
+        String getVapiFileName() {
+            return vapiFileName;
+        }
+    }
 
     private String version;
     private List<File> vapiFiles;
@@ -47,7 +63,7 @@ public class ValaSdkDescriptor {
     }
 
     @Nullable
-    public static ValaSdkDescriptor fromDirectory(File valaHome) throws IOException {
+    public static ValaSdkDescriptor fromDirectory(File valaHome, Optional<GtkVersion> gtkVersion) throws IOException {
         String version = readVersion(valaHome);
         VirtualFile valaSdkRoot = VfsUtil.findFileByIoFile(valaHome, false);
         Asserts.notNull(valaSdkRoot, "Vala SDK root directory could not be found");
@@ -55,7 +71,8 @@ public class ValaSdkDescriptor {
         Asserts.notNull(vapiDirectory, "No .vapi directory in Vala SDK root");
         ImmutableList.Builder<File> vapiFiles = ImmutableList.builder();
         for (VirtualFile vfs : vapiDirectory.getChildren()) {
-            if (vfs.getName().endsWith(".vapi")) {
+            final String name = vfs.getName();
+            if (name.endsWith(".vapi") && (!name.startsWith("gtk+-") || gtkVersion.map(gtk -> name.startsWith(gtk.getVapiFileName())).orElse(false))) {
                 vapiFiles.add(VfsUtil.virtualToIoFile(vfs));
             }
         }
@@ -69,7 +86,7 @@ public class ValaSdkDescriptor {
             return null;
         }
         File valaHome = new File(valaHomePath);
-        return fromDirectory(valaHome);
+        return fromDirectory(valaHome, Optional.of(GtkVersion.GTK_3));
     }
 
     private static String readVersion(File valaHome) throws IOException {

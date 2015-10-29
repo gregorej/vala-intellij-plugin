@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 public class SdkSelectionDialog extends JDialog {
     private JPanel contentPane;
@@ -17,6 +18,8 @@ public class SdkSelectionDialog extends JDialog {
     private JTextField sdkHomePath;
     private JButton browseButton;
     private JLabel errorLabel;
+    private JRadioButton gtk3RadioButton;
+    private JRadioButton gtk2RadioButton;
     private ValaSdkDescriptor selectedSdk;
 
     public SdkSelectionDialog(JComponent parent) {
@@ -50,10 +53,20 @@ public class SdkSelectionDialog extends JDialog {
 
     private void onOK() {
         try {
-            selectedSdk = ValaSdkDescriptor.fromDirectory(new File(sdkHomePath.getText()));
+            selectedSdk = ValaSdkDescriptor.fromDirectory(new File(sdkHomePath.getText()), getGtkVersion());
             dispose();
         } catch (IOException e) {
             errorLabel.setText("Could not create Vala SDK: " + e.getMessage());
+        }
+    }
+
+    private Optional<ValaSdkDescriptor.GtkVersion> getGtkVersion() {
+        if (gtk3RadioButton.isSelected()) {
+            return Optional.of(ValaSdkDescriptor.GtkVersion.GTK_3);
+        } else if (gtk2RadioButton.isSelected()) {
+            return Optional.of(ValaSdkDescriptor.GtkVersion.GTK_2);
+        } else {
+            return Optional.empty();
         }
     }
 
