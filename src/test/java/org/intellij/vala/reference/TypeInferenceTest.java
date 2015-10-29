@@ -37,7 +37,12 @@ public class TypeInferenceTest extends ValaReferenceTestBase {
         assertThat(inferredType(), is((ValaTypeDescriptor) BasicTypeDescriptor.STRING));
     }
 
-    public void testInferTypeFromConstructor() throws IOException {
+    public void testInferTypeFromObjectCreation() throws IOException {
+        myFixture.configureByFiles(getTestName(false) + ".vala");
+        assertThat(inferredType().getQualifiedName(), is(equalTo(nameOf("MyClass"))));
+    }
+
+    public void testInferTypeFromObjectCreationForClassWithExplicitConstructor() throws IOException {
         myFixture.configureByFiles(getTestName(false) + ".vala");
         assertThat(inferredType().getQualifiedName(), is(equalTo(nameOf("MyClass"))));
     }

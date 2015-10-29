@@ -400,8 +400,10 @@ public class ValaPsiImplUtil {
     public static ValaTypeDescriptor getTypeDescriptor(ValaObjectOrArrayCreationExpression objectOrArrayCreationExpression) {
         ValaMember member = objectOrArrayCreationExpression.getMember();
         PsiElement referenced = new ValaConstructorReference(ValaPsiElementUtil.getLastPart(member)).resolve();
-        if (referenced instanceof ValaClassDeclaration) {
-            return ReferenceTypeDescriptor.forQualifiedName(((ValaClassDeclaration) referenced).getQName());
+        if (referenced instanceof ValaInstantiableTypeDeclaration) {
+            return ReferenceTypeDescriptor.forQualifiedName(((ValaInstantiableTypeDeclaration) referenced).getQName());
+        } else if (referenced instanceof ValaCreationMethodDeclaration) {
+            return ReferenceTypeDescriptor.forQualifiedName(((ValaCreationMethodDeclaration) referenced).getTypeDeclaration().getQName());
         }
         return null;
     }

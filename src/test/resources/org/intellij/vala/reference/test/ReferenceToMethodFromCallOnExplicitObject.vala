@@ -1,5 +1,7 @@
 class File {
 
+	public File() {}
+
 	void open () {
 	}
 
