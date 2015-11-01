@@ -292,7 +292,7 @@ class_member ::= attributes?
                    creation_method_declaration |
                    destructor_declaration )
 {recoverWhile=class_member_recovery}
-private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_modifier|"["|"}"|identifier|"void"|member_declaration_modifier)
+private class_member_recovery ::= !("~"|";"|"interface"|"class"|"enum"|access_modifier|"["|"}"|identifier|"void"|member_declaration_modifier|"const")
 
 type_declaration_modifiers ::= type_declaration_modifier ( " " type_declaration_modifier )*
 type_declaration_modifier ::= "abstract" | "extern" | "static"
@@ -409,7 +409,7 @@ statement ::= block
               | do_statement
 {recoverWhile=statement_recovery}
 private statement_recovery ::= !("{"|"}"|";"|"("|"*"|statement_recovering_keyword|comment|literal|identifier|affiliation|"void")
-private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"|"try"
+private statement_recovering_keyword ::= "if"|"while"|"for"|"foreach"|"class"|"namespace"|"enum"|"struct"|"errordomain"|"do"|"switch"|"case"|"var"|"return"|"this"|"try"|"const"
 private comment ::= line_comment | block_comment
 
 if_statement ::= "if" "(" expression ")" embedded_statement ( "else" embedded_statement )?  {pin=1}

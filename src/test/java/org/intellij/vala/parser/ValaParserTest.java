@@ -140,4 +140,8 @@ public class ValaParserTest extends AbstractValaParserTest {
     public void testConstructorCallWithArrayRangeArgument() {
         doTest(true);
     }
+
+    public void testMultipleConstants() {
+        doTest(true);
+    }
 }
